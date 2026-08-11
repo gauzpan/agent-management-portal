@@ -1,0 +1,14 @@
+:root{
+--text-display-xxl-size:64px;--text-display-xxl-weight:540;--text-display-xxl-lh:0.96;--text-display-xxl-ls:0em;
+--text-display-xl-size:48px;--text-display-xl-weight:460;--text-display-xl-lh:0.96;--text-display-xl-ls:-1.32px;
+--text-display-lg-size:28px;--text-display-lg-weight:540;--text-display-lg-lh:1.14;--text-display-lg-ls:-0.63px;
+--text-display-md-size:22px;--text-display-md-weight:460;--text-display-md-lh:1.1;--text-display-md-ls:-0.315px;
+--text-heading-lg-size:20px;--text-heading-lg-weight:460;--text-heading-lg-lh:1.2;--text-heading-lg-ls:-0.4px;
+--text-body-lg-size:18px;--text-body-lg-weight:540;--text-body-lg-lh:1.5;--text-body-lg-ls:-0.135px;
+--text-body-md-size:16px;--text-body-md-weight:460;--text-body-md-lh:1.5;--text-body-md-ls:0em;
+--text-body-strong-size:18.72px;--text-body-strong-weight:700;--text-body-strong-lh:1.5;--text-body-strong-ls:0em;
+--text-button-md-size:16px;--text-button-md-weight:700;--text-button-md-lh:1.0;--text-button-md-ls:0em;
+--text-button-cap-size:14px;--text-button-cap-weight:600;--text-button-cap-lh:1.0;--text-button-cap-ls:0em;
+--text-caption-size:14px;--text-caption-weight:460;--text-caption-lh:1.4;--text-caption-ls:0em;
+--text-micro-size:12px;--text-micro-weight:540;--text-micro-lh:1.4;--text-micro-ls:0em;
+}

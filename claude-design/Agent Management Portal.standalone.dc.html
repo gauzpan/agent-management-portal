@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#00843d">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#00843d"/>
+    <rect x="80" y="80" width="200" height="640" rx="20" fill="#004d24"/>
+    <rect x="110" y="120" width="44" height="44" rx="10" fill="#ffcd00"/>
+    <text x="170" y="150" font-family="Georgia,serif" font-size="26" font-weight="600" fill="#ffffff">AMP</text>
+    <rect x="110" y="200" width="140" height="12" rx="6" fill="#1a9c55"/>
+    <rect x="110" y="230" width="160" height="12" rx="6" fill="#1a9c55" opacity="0.7"/>
+    <rect x="110" y="260" width="120" height="12" rx="6" fill="#1a9c55" opacity="0.6"/>
+    <rect x="110" y="290" width="150" height="12" rx="6" fill="#1a9c55" opacity="0.5"/>
+    <rect x="320" y="80" width="800" height="120" rx="16" fill="#ffffff"/>
+    <text x="360" y="130" font-family="Georgia,serif" font-size="34" font-weight="600" fill="#292827">Agent Management Portal</text>
+    <text x="360" y="165" font-family="sans-serif" font-size="18" fill="#73706d">Kensington Melbourne College</text>
+    <rect x="320" y="230" width="250" height="140" rx="12" fill="#ffffff"/>
+    <rect x="590" y="230" width="250" height="140" rx="12" fill="#ffffff"/>
+    <rect x="860" y="230" width="260" height="140" rx="12" fill="#00247d"/>
+    <text x="880" y="290" font-family="Georgia,serif" font-size="46" font-weight="600" fill="#ffffff">94%</text>
+    <text x="880" y="320" font-family="sans-serif" font-size="14" fill="#ffcd00">Compliance</text>
+    <circle cx="450" cy="300" r="42" fill="none" stroke="#00843d" stroke-width="14"/>
+    <circle cx="450" cy="300" r="42" fill="none" stroke="#ffcd00" stroke-width="14" stroke-dasharray="80 300" transform="rotate(-90 450 300)"/>
+    <rect x="320" y="400" width="800" height="320" rx="16" fill="#ffffff"/>
+    <rect x="360" y="440" width="720" height="40" rx="8" fill="#fafaf8"/>
+    <rect x="360" y="500" width="720" height="1" fill="#e8e4dd"/>
+    <rect x="360" y="530" width="720" height="1" fill="#e8e4dd"/>
+    <rect x="360" y="560" width="720" height="1" fill="#e8e4dd"/>
+    <rect x="360" y="590" width="720" height="1" fill="#e8e4dd"/>
+    <rect x="960" y="510" width="90" height="24" rx="12" fill="#e0f4e8"/>
+    <rect x="960" y="540" width="90" height="24" rx="12" fill="#fff4d4"/>
+    <rect x="960" y="570" width="90" height="24" rx="12" fill="#dbe6ff"/>
+  </svg>
+</template>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/tokens/colors.css">
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/tokens/typography.css">
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/tokens/radius.css">
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/tokens/shadows.css">
+<link rel="stylesheet" href="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/styles.css">
+<script src="_ds/gauzpan-hub-design-system-74fce8aa-2db2-4fb2-bcae-6448d4369c7d/_ds_bundle.js"></script>
+<style>
+  html,body{margin:0;background:#fafaf8;font-family:var(--font-body);color:var(--color-ink);}
+  *{box-sizing:border-box;}
+  a{color:var(--color-teal-deep);}
+  a:hover{color:var(--color-primary);}
+  .amp-scroll::-webkit-scrollbar{width:8px;height:8px;}
+  .amp-scroll::-webkit-scrollbar-thumb{background:#e8e4dd;border-radius:8px;}
+  @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.35}}
+</style>
+</helmet>
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:#00843d;">
+    <div style="padding:56px 64px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(120% 80% at 20% 10%, #1a9c55 0%, #00843d 45%, #004d24 100%);">
+      <div style="display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:540;font-size:18px;letter-spacing:-0.2px;">
+        <div style="width:26px;height:26px;border-radius:6px;background:#ffcd00;display:flex;align-items:center;justify-content:center;color:#00247d;font-weight:700;font-size:14px;">A</div>
+        Agent Management Portal
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-weight:460;font-size:56px;line-height:0.98;letter-spacing:-1.32px;margin-bottom:24px;">A single home for every education agent partnership.</div>
+        <div style="font-size:16px;line-height:1.55;color:#d7ecdd;max-width:440px;">Onboard lawfully, monitor performance, share the right collateral, and stay compliant with ESOS and ASQA — from one workspace.</div>
+      </div>
+      <div style="display:flex;gap:24px;font-size:12px;color:#bcd4c4;">
+        <div>ESOS Act aligned</div><div>ASQA standards</div><div>PRISMS · ASQAnet ready</div>
+      </div>
+    </div>
+    <div style="background:#fafaf8;display:flex;align-items:center;justify-content:center;padding:40px;">
+      <div style="width:100%;max-width:400px;">
+        <div style="font-family:var(--font-display);font-weight:540;font-size:28px;letter-spacing:-0.7px;color:#292827;margin-bottom:8px;">Sign in</div>
+        <div style="color:#73706d;font-size:14px;margin-bottom:32px;">Use your college workspace credentials.</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <label style="font-size:12px;font-weight:600;color:#292827;letter-spacing:0.2px;">
+            Work email
+            <input value="{{ loginEmail }}" onInput="{{ setLoginEmail }}" placeholder="admin@college.edu.au" style="width:100%;margin-top:6px;padding:12px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;outline:none;">
+          </label>
+          <label style="font-size:12px;font-weight:600;color:#292827;letter-spacing:0.2px;">
+            Password
+            <input type="password" placeholder="••••••••••" style="width:100%;margin-top:6px;padding:12px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;outline:none;">
+          </label>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+            <label style="display:flex;align-items:center;gap:6px;color:#73706d;"><input type="checkbox"> Keep me signed in</label>
+            <a href="#" style="text-decoration:underline;">Forgot password?</a>
+          </div>
+          <button onClick="{{ doLogin }}" style="margin-top:8px;padding:14px 20px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:540;cursor:pointer;font-family:inherit;">Continue</button>
+          <div style="text-align:center;font-size:12px;color:#9a9794;margin-top:8px;">or</div>
+          <button style="padding:12px 20px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-weight:540;cursor:pointer;font-family:inherit;">Continue with SSO</button>
+          <div style="text-align:center;font-size:12px;color:#9a9794;margin-top:24px;">Are you an agent? <a href="#" style="text-decoration:underline;">Sign in to the Agent Portal</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;grid-template-columns:232px 1fr;min-height:100vh;">
+  <aside style="background:#00843d;color:#fff;padding:24px 16px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh;">
+    <div style="display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:540;font-size:17px;padding:8px 10px 24px;">
+      <div style="width:26px;height:26px;border-radius:6px;background:#ffcd00;display:flex;align-items:center;justify-content:center;color:#00247d;font-weight:700;font-size:14px;">A</div>
+      <div style="line-height:1.15;">
+        <div>AMP</div>
+        <div style="font-size:10px;color:#bcd4c4;font-weight:460;letter-spacing:0.4px;">Kensington Melbourne College</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#bcd4c4;padding:6px 12px 4px;letter-spacing:0.8px;text-transform:uppercase;">Workspace</div>
+    <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+      <div onClick="{{ item.go }}" style="padding:10px 12px;border-radius:8px;font-size:14px;cursor:pointer;background:{{ item.bg }};color:{{ item.color }};display:flex;align-items:center;justify-content:space-between;">
+        <span>{{ item.label }}</span>
+        <span style="font-size:11px;background:{{ item.badgeBg }};color:{{ item.badgeColor }};padding:2px 7px;border-radius:999px;font-weight:600;">{{ item.badge }}</span>
+      </div>
+    </sc-for>
+    <div style="flex:1;"></div>
+    <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:16px;margin-top:16px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 10px;">
+        <div style="width:32px;height:32px;border-radius:999px;background:#ffcd00;color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">PR</div>
+        <div style="font-size:13px;line-height:1.3;">
+          <div style="font-weight:540;">Priya Ramesh</div>
+          <div style="color:#bcd4c4;font-size:11px;">Admissions Manager</div>
+        </div>
+      </div>
+      <div onClick="{{ goLogout }}" style="padding:8px 10px;font-size:13px;color:#bcd4c4;cursor:pointer;">Log out</div>
+    </div>
+  </aside>
+
+  <main style="background:#fafaf8;min-width:0;">
+    <header style="display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid #e8e4dd;background:#fff;position:sticky;top:0;z-index:10;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.5px;">{{ pageTitle }}</div>
+        
+      </div>
+      <input placeholder="Search agents, applications, documents…" style="width: 586px; padding: 9px 14px 9px 34px; border: 1px solid #e8e4dd; border-radius: 8px; font-size: 13px; font-family: inherit; background: #fafaf8; outline: none; height: 37px"><div style="display:flex;align-items:center;gap:12px;">
+        <div style="position:relative;">
+          
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9a9794;font-size:14px;">⌕</span>
+        </div>
+        <div style="position:relative;width:36px;height:36px;border-radius:8px;background:#fafaf8;border:1px solid #e8e4dd;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <span style="font-size:15px;">◔</span>
+          <span style="position:absolute;top:-4px;right:-4px;background:#ffcd00;color:#00247d;font-size:10px;font-weight:700;padding:1px 5px;border-radius:999px;">4</span>
+        </div>
+        <button onClick="{{ goInvite }}" style="padding:9px 16px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;font-family:inherit;">+ Invite agent</button>
+      </div>
+    </header>
+
+    <div style="padding:32px 40px 64px;">
+
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:16px;margin-bottom:24px;">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;">
+              <div style="font-size:12px;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;">{{ k.label }}</div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:32px;letter-spacing:-0.6px;margin-top:8px;">{{ k.value }}</div>
+              <div style="font-size:12px;color:{{ k.trendColor }};margin-top:4px;">{{ k.trend }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:24px;">
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:18px;">New Applications - Pending your review</div>
+              <a href="#" onClick="{{ goApplications }}" style="font-size:12px;">See all →</a>
+            </div>
+            <div style="font-size:12px;color:#73706d;margin-bottom:16px;">Oldest first</div>
+            <sc-for list="{{ pendingReview }}" as="p" hint-placeholder-count="4">
+              <div onClick="{{ p.open }}" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #e8e4dd;cursor:pointer;">
+                <div>
+                  <div style="font-size:14px;font-weight:540;">{{ p.name }}</div>
+                  <div style="font-size:12px;color:#73706d;">{{ p.country }} · {{ p.age }}</div>
+                </div>
+                <div style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ p.statusBg }};color:{{ p.statusColor }};">{{ p.status }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:18px;">Active agent risk profile</div>
+              <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#e0f4e8;color:#00843d;">28 agents</span>
+            </div>
+            <div style="font-size:12px;color:#73706d;margin-bottom:16px;">Weighted by student activity &amp; compliance score</div>
+            <div style="display:flex;align-items:center;gap:20px;">
+              <div style="position:relative;flex-shrink:0;">
+                <svg viewBox="0 0 120 120" style="width:140px;height:140px;transform:rotate(-90deg);">
+                  <circle cx="60" cy="60" r="46" fill="none" stroke="#00843d" stroke-width="22" stroke-dasharray="130.2 289" stroke-dashoffset="0"></circle>
+                  <circle cx="60" cy="60" r="46" fill="none" stroke="#ffcd00" stroke-width="22" stroke-dasharray="82.6 289" stroke-dashoffset="-130.2"></circle>
+                  <circle cx="60" cy="60" r="46" fill="none" stroke="#e08040" stroke-width="22" stroke-dasharray="47.2 289" stroke-dashoffset="-212.8"></circle>
+                  <circle cx="60" cy="60" r="46" fill="none" stroke="#a12020" stroke-width="22" stroke-dasharray="29.4 289" stroke-dashoffset="-260"></circle>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                  <div style="font-size:10px;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;">Healthy</div>
+                  <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.5px;">64%</div>
+                </div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ riskSegments }}" as="s" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                    <span style="width:10px;height:10px;border-radius:3px;background:{{ s.color }};flex-shrink:0;"></span>
+                    <div style="flex:1;">
+                      <div style="font-weight:540;color:#292827;">{{ s.label }}</div>
+                      <div style="color:#9a9794;font-size:11px;">{{ s.criteria }}</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-weight:540;">{{ s.count }}</div>
+                      <div style="color:#9a9794;font-size:11px;">{{ s.pct }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:12px;">Expiring certifications</div>
+            <sc-for list="{{ expiring }}" as="e" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #e8e4dd;font-size:13px;">
+                <div>
+                  <div style="font-weight:540;">{{ e.agent }}</div>
+                  <div style="color:#73706d;font-size:11px;">{{ e.cert }}</div>
+                </div>
+                <div style="color:{{ e.color }};font-weight:600;font-size:12px;">{{ e.due }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:12px;">Top performers · QTD</div>
+            <sc-for list="{{ topAgents }}" as="a" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid #e8e4dd;font-size:13px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:28px;height:28px;border-radius:999px;background:{{ a.avatarBg }};color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;">{{ a.initials }}</div>
+                  <div>
+                    <div style="font-weight:540;">{{ a.name }}</div>
+                    <div style="color:#73706d;font-size:11px;">{{ a.country }}</div>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-weight:540;">{{ a.enrol }}</div>
+                  <div style="color:#00843d;font-size:11px;">{{ a.conv }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#00247d;color:#fff;border-radius:12px;padding:24px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:6px;">Compliance snapshot</div>
+            <div style="font-size:12px;color:#bcd4c4;margin-bottom:20px;">Live check against ESOS &amp; ASQA</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:44px;letter-spacing:-1px;">94%</div>
+              <div style="font-size:12px;color:#ffcd00;">+2.1 vs last quarter</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:#bcd4c4;">Agents with valid MARN</span><span>18 / 22</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:#bcd4c4;">QEAC · PIER current</span><span>26 / 28</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:#bcd4c4;">Reference checks complete</span><span>28 / 28</span></div>
+            </div>
+            <div onClick="{{ goAgents }}" style="margin-top:20px;padding:9px 14px;background:#ffcd00;color:#00247d;border-radius:999px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;display:inline-block;">Open compliance ledger →</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isApplications }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:8px;margin-bottom:18px;">
+          <sc-for list="{{ appStatusFilters }}" as="f" hint-placeholder-count="6">
+            <div onClick="{{ f.set }}" style="padding:8px 14px;border-radius:999px;font-size:13px;font-weight:540;cursor:pointer;background:{{ f.bg }};color:{{ f.color }};border:1px solid {{ f.border }};">{{ f.label }} <span style="opacity:0.6;margin-left:4px;">{{ f.count }}</span></div>
+          </sc-for>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:56px 2fr 1.4fr 1fr 1fr 1.2fr 140px;padding:14px 20px;background:#fafaf8;font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #e8e4dd;">
+            <div><input type="checkbox"></div><div>Business</div><div>Contact</div><div>Country</div><div>Submitted</div><div>Status</div><div style="text-align:right;">Actions</div>
+          </div>
+          <sc-for list="{{ applications }}" as="a" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:56px 2fr 1.4fr 1fr 1fr 1.2fr 140px;padding:14px 20px;border-bottom:1px solid #e8e4dd;font-size:13px;align-items:center;background:{{ a.rowBg }};">
+              <div><input type="checkbox"></div>
+              <div>
+                <div style="font-weight:540;color:#292827;">{{ a.business }}</div>
+                <div style="color:#9a9794;font-size:11px;">App-{{ a.id }} · {{ a.contact }}</div>
+              </div>
+              <div style="color:#73706d;">
+                <div>{{ a.email }}</div>
+                <div style="font-size:11px;color:#9a9794;">{{ a.phone }}</div>
+              </div>
+              <div style="color:#73706d;"><span style="margin-right:6px;">{{ a.flag }}</span>{{ a.country }}</div>
+              <div style="color:#73706d;">
+                <div>{{ a.date }}</div>
+                <div style="font-size:11px;color:#9a9794;">{{ a.age }}</div>
+              </div>
+              <div><span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ a.statusBg }};color:{{ a.statusColor }};">{{ a.status }}</span></div>
+              <div style="text-align:right;"><span onClick="{{ a.open }}" style="color:{{ a.ctaColor }};font-weight:600;font-size:13px;cursor:pointer;">{{ a.ctaLabel }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isApplication }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:24px;">
+          <div>
+            <div onClick="{{ goApplications }}" style="font-size:13px;color:#73706d;cursor:pointer;margin-bottom:12px;">← All applications</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+              <div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+                  <div style="font-family:var(--font-display);font-weight:540;font-size:28px;letter-spacing:-0.7px;">Sunrise Overseas Consultants</div>
+                  <div style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:#fff4d4;color:#8a6b00;">In Review</div>
+                </div>
+                <div style="font-size:13px;color:#73706d;">App-2087 · Submitted 4 days ago · Contact Ananya Iyer · 🇮🇳 India</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button onClick="{{ openRequestInfo }}" style="padding:9px 14px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Request info</button>
+                <button onClick="{{ openReject }}" style="padding:9px 14px;background:#fff;color:#a12020;border:1px solid #f3d4d4;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Reject</button>
+                <button onClick="{{ openApprove }}" style="padding:9px 16px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Approve</button>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:20px;border-bottom:1px solid #e8e4dd;margin-bottom:20px;">
+              <sc-for list="{{ appTabs }}" as="t" hint-placeholder-count="5">
+                <div onClick="{{ t.set }}" style="padding:12px 0;font-size:13px;font-weight:540;cursor:pointer;border-bottom:2px solid {{ t.border }};color:{{ t.color }};">{{ t.label }}</div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ appTabBiz }}" hint-placeholder-val="{{ true }}">
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                  <div style="font-family:var(--font-display);font-weight:540;font-size:16px;">Business details</div>
+                  <div style="display:flex;gap:8px;">
+                    <button style="padding:7px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Edit</button>
+                    <button style="padding:7px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Compare with prior submission</button>
+                  </div>
+                </div>
+                <sc-for list="{{ bizFields }}" as="f" hint-placeholder-count="12">
+                  <div style="display:grid;grid-template-columns:200px 1fr 180px;gap:16px;padding:11px 0;border-top:1px solid #f3f0eb;font-size:13px;align-items:baseline;">
+                    <div style="color:#73706d;font-weight:540;">{{ f.label }}</div>
+                    <div style="color:#292827;">{{ f.value }}</div>
+                    <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;">
+                      <sc-if value="{{ f.ok }}" hint-placeholder-val="{{ true }}"><span style="width:14px;height:14px;border-radius:999px;background:#00843d;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">✓</span></sc-if>
+                      <span style="font-size:11px;color:#9a9794;">{{ f.source }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div><div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+                <div style="padding:20px 24px;background:radial-gradient(120% 100% at 90% 10%, #1a9c55 0%, #00843d 60%, #004d24 100%);color:#fff;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <span style="font-size:16px;">✦</span>
+                        <div style="font-size:11px;font-weight:600;color:#ffcd00;text-transform:uppercase;letter-spacing:0.8px;">AI compliance scan · {{ aiSummary.model }}</div>
+                      </div>
+                      <div style="font-family:var(--font-display);font-weight:540;font-size:18px;letter-spacing:-0.3px;line-height:1.35;">{{ aiSummary.text }}</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                      <div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Risk score</div>
+                      <div style="display:inline-block;margin-top:4px;padding:4px 12px;border-radius:999px;background:{{ aiSummary.riskBg }};color:{{ aiSummary.riskColor }};font-weight:700;font-size:13px;">{{ aiSummary.risk }}</div>
+                      <div style="font-size:11px;color:#bcd4c4;margin-top:8px;">Confidence {{ aiSummary.confidence }}</div>
+                      <div style="font-size:10px;color:#bcd4c4;">Scanned {{ aiSummary.scanTime }}</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:14px;display:flex;gap:8px;">
+                    <button style="padding:7px 12px;background:rgba(255,255,255,0.16);color:#fff;border:1px solid rgba(255,255,255,0.24);border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Re-run scan</button>
+                    <button style="padding:7px 12px;background:#ffcd00;color:#00247d;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Ask copilot about this agent</button>
+                  </div>
+                </div>
+
+                <div style="padding:20px 24px;">
+                  <div style="font-size:12px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;">Insights &amp; recommendations</div>
+                  <sc-for list="{{ aiInsights }}" as="ins" hint-placeholder-count="5">
+                    <div style="display:flex;gap:12px;padding:12px 0;border-top:1px solid #f3f0eb;">
+                      <div style="width:22px;height:22px;border-radius:6px;background:{{ ins.bg }};color:{{ ins.color }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">{{ ins.tone === 'good' ? '✓' : ins.tone === 'warn' ? '!' : 'i' }}</div>
+                      <div>
+                        <div style="font-size:13px;font-weight:540;color:#292827;margin-bottom:2px;">{{ ins.title }}</div>
+                        <div style="font-size:12px;color:#73706d;line-height:1.5;">{{ ins.text }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              
+            </sc-if>
+
+            <sc-if value="{{ appTabRefs }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px 24px;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                  <div>
+                    <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:2px;">Reference collection</div>
+                    <div style="font-size:12px;color:#73706d;">Send a standardised reference form. Responses stream back to this tab; admin verifies and marks Pass / Fail.</div>
+                  </div>
+                  <div style="display:flex;gap:16px;font-size:12px;">
+                    <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Received</div><div style="font-weight:600;color:#00843d;font-size:16px;">{{ refereeSummary.received }} / {{ refereeSummary.target }}</div></div>
+                    <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Awaiting</div><div style="font-weight:600;color:#8a6b00;font-size:16px;">{{ refereeSummary.pending }}</div></div>
+                    <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Not sent</div><div style="font-weight:600;color:#73706d;font-size:16px;">{{ refereeSummary.notSent }}</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px 24px;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                  <div style="font-size:12px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">Reference form template</div>
+                  <div style="display:flex;gap:8px;">
+                    <button style="padding:7px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Preview email</button>
+                    <button style="padding:7px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Edit template</button>
+                  </div>
+                </div>
+                <div style="background:#fafaf8;border-radius:8px;padding:16px 18px;font-size:13px;line-height:1.6;color:#292827;">
+                  <div style="font-weight:600;margin-bottom:6px;">Subject · {{ refereeForm.subject }}</div>
+                  <div style="color:#5a5652;margin-bottom:12px;font-size:12px;">{{ refereeForm.intro }}</div>
+                  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#9a9794;font-weight:600;margin-bottom:8px;">5 questions</div>
+                  <sc-for list="{{ refereeForm.questions }}" as="q" hint-placeholder-count="5">
+                    <div style="display:flex;gap:8px;padding:5px 0;font-size:12px;color:#292827;">
+                      <span style="color:#9a9794;">▪</span><span>{{ q }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div style="font-family:var(--font-display);font-weight:540;font-size:16px;">Referees</div>
+                <div style="display:flex;gap:8px;">
+                  <button style="padding:8px 14px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">+ Add referee</button>
+                  <button style="padding:8px 14px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">Send form to all pending</button>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <sc-for list="{{ refereeQueue }}" as="r" hint-placeholder-count="4">
+                  <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:18px 20px;">
+                    <div style="display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:flex-start;">
+                      <div style="width:40px;height:40px;border-radius:999px;background:{{ r.avatarBg }};color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">{{ r.name.split(' ').filter(w=>!w.endsWith('.')).map(w=>w[0]).slice(0,2).join('') }}</div>
+                      <div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                          <div style="font-weight:600;font-size:14px;">{{ r.name }}</div>
+                          <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ r.bg }};color:{{ r.color }};">{{ r.state }}</span>
+                        </div>
+                        <div style="color:#73706d;font-size:12px;margin-top:2px;">{{ r.role }} · {{ r.org }}</div>
+                        <div style="color:#9a9794;font-size:11px;margin-top:2px;">{{ r.email }}</div>
+                      </div>
+                      <div style="display:flex;gap:6px;flex-shrink:0;">
+                        <sc-if value="{{ r.state === 'Not sent' }}" hint-placeholder-val="{{ false }}">
+                          <button style="padding:7px 12px;background:#00843d;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Send form</button>
+                        </sc-if>
+                        <sc-if value="{{ r.state === 'Awaiting response' }}" hint-placeholder-val="{{ false }}">
+                          <button style="padding:7px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Resend</button>
+                          <button style="padding:7px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Copy link</button>
+                        </sc-if>
+                        <sc-if value="{{ r.state === 'Received' }}" hint-placeholder-val="{{ false }}">
+                          <button style="padding:7px 12px;background:#fff;color:#00843d;border:1px solid #00843d;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">✓ Mark as Pass</button>
+                          <button style="padding:7px 12px;background:#fff;color:#a12020;border:1px solid #f3d4d4;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Fail</button>
+                        </sc-if>
+                      </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid #f3f0eb;font-size:12px;">
+                      <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Sent</div><div style="color:#292827;margin-top:2px;">{{ r.sent }}</div></div>
+                      <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Received</div><div style="color:#292827;margin-top:2px;">{{ r.received }}</div></div>
+                      <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Ethics</div><div style="color:#292827;margin-top:2px;">{{ r.rating }}</div></div>
+                      <div><div style="color:#9a9794;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Application quality</div><div style="color:#292827;margin-top:2px;">{{ r.quality }}</div></div>
+                    </div>
+
+                    <sc-if value="{{ r.state === 'Received' }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:12px;padding:12px 14px;background:#fafaf8;border-radius:8px;font-size:12px;color:#292827;line-height:1.5;font-style:italic;">"{{ r.note }}"</div>
+                    </sc-if>
+                    <sc-if value="{{ r.state !== 'Received' }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:12px;font-size:11px;color:#9a9794;">{{ r.note }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ appTabDocs }}" hint-placeholder-val="{{ false }}">
+
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <div style="font-family:var(--font-display);font-weight:540;font-size:16px;">Business registration certificate</div>
+                <div style="font-size:12px;color:#73706d;">business-reg.pdf · 340 KB</div>
+              </div>
+              <div style="position:relative;background:#fafaf8;border:1px dashed #e8e4dd;border-radius:8px;padding:32px;min-height:360px;">
+                <div style="font-family:'Times New Roman', serif;color:#292827;line-height:1.6;">
+                  <div style="text-align:center;font-weight:700;font-size:16px;margin-bottom:12px;letter-spacing:1px;">CERTIFICATE OF INCORPORATION</div>
+                  <div style="text-align:center;color:#73706d;font-size:12px;margin-bottom:24px;">Registrar of Companies · Ministry of Corporate Affairs</div>
+                  <div style="font-size:13px;margin-bottom:8px;">This is to certify that <b>Sunrise Overseas Consultants Pvt. Ltd.</b> is incorporated under the Companies Act, 2013.</div>
+                  <div style="font-size:13px;margin-bottom:8px;">Corporate Identification Number: <b>U74999MH2018PTC308421</b></div>
+                  <div style="font-size:13px;margin-bottom:8px;">Date of Incorporation: <b>14 August 2018</b></div>
+                  <div style="font-size:13px;margin-bottom:8px;">Registered Office: 4th Floor, Kanchan Chambers, Andheri West, Mumbai — 400058</div>
+                  <div style="font-size:13px;margin-bottom:24px;color:#a12020;">Authorised representative: <b>Ananya Iyer</b> · valid through 2027-05-31</div>
+                  <div style="font-size:12px;color:#73706d;">Given under my hand at Mumbai this fourteenth day of August, two thousand and eighteen.</div>
+                </div>
+
+                <div style="position:absolute;top:70px;right:24px;width:240px;background:#fff;border:1px solid #00843d;border-radius:8px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,132,61,0.15);">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#00843d;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">✦ AI · Match</div>
+                  <div style="font-size:12px;color:#292827;line-height:1.4;">Business name matches application form entry.</div>
+                </div>
+
+                <div style="position:absolute;top:180px;right:24px;width:240px;background:#fff;border:1px solid #d4a300;border-radius:8px;padding:12px 14px;box-shadow:0 4px 12px rgba(255,205,0,0.2);">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#8a6b00;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">✦ AI · Attention</div>
+                  <div style="font-size:12px;color:#292827;line-height:1.4;">Authorised representative expires 31 May 2027 — flag renewal reminder.</div>
+                </div>
+
+                <div style="position:absolute;bottom:32px;left:32px;width:240px;background:#fff;border:1px solid #00843d;border-radius:8px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,132,61,0.15);">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#00843d;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">✦ AI · Registration</div>
+                  <div style="font-size:12px;color:#292827;line-height:1.4;">CIN verified against MCA registry · matches ASIC extract on file.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:14px;">
+                <sc-for list="{{ docThumbs }}" as="d" hint-placeholder-count="5">
+                  <div onClick="{{ d.set }}" style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid {{ d.border }};background:{{ d.bg }};font-size:12px;cursor:pointer;">
+                    <div style="font-weight:540;color:{{ d.textColor }};">{{ d.label }}</div>
+                    <div style="font-size:11px;color:{{ d.subColor }};margin-top:2px;">{{ d.status }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            </sc-if>
+          </div>
+
+          <div>
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;margin-bottom:16px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:14px;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;">Compliance checklist</div>
+              <sc-for list="{{ compliance }}" as="c" hint-placeholder-count="6">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid #f3f0eb;font-size:13px;">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:16px;height:16px;border-radius:4px;background:{{ c.iconBg }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">{{ c.icon }}</div>
+                    <span>{{ c.label }}</span>
+                  </div>
+                  <span style="font-size:11px;color:{{ c.stateColor }};font-weight:600;">{{ c.state }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;margin-bottom:16px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:14px;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;">Referees</div>
+              <sc-for list="{{ referees }}" as="r" hint-placeholder-count="2">
+                <div style="padding:12px 0;border-top:1px solid #f3f0eb;font-size:13px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <div style="font-weight:540;">{{ r.name }}</div>
+                    <span style="font-size:11px;font-weight:600;color:{{ r.color }};">{{ r.state }}</span>
+                  </div>
+                  <div style="color:#73706d;font-size:12px;">{{ r.role }} · {{ r.contact }}</div>
+                  <div style="color:#292827;font-size:12px;margin-top:6px;font-style:italic;">"{{ r.note }}"</div>
+                </div>
+              </sc-for>
+              <button style="margin-top:12px;width:100%;padding:9px;background:#fafaf8;color:#292827;border:1px dashed #e8e4dd;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">+ Record another reference</button>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:14px;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;">Activity</div>
+              <sc-for list="{{ activity }}" as="x" hint-placeholder-count="4">
+                <div style="display:flex;gap:10px;padding:8px 0;font-size:12px;">
+                  <div style="width:6px;height:6px;border-radius:999px;background:{{ x.dot }};margin-top:6px;flex-shrink:0;"></div>
+                  <div style="flex:1;">
+                    <div style="color:#292827;">{{ x.text }}</div>
+                    <div style="color:#9a9794;font-size:11px;">{{ x.when }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAgents }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid #e8e4dd;">
+          <sc-for list="{{ agentTabs }}" as="t" hint-placeholder-count="3">
+            <div onClick="{{ t.set }}" style="padding:14px 20px;font-size:14px;font-weight:540;cursor:pointer;border-bottom:2px solid {{ t.border }};color:{{ t.color }};margin-bottom:-1px;display:flex;align-items:center;gap:8px;">
+              {{ t.label }}
+              <span style="font-size:11px;background:{{ t.badgeBg }};color:{{ t.badgeColor }};padding:2px 8px;border-radius:999px;font-weight:600;">{{ t.count }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-bottom:14px;align-items:center;">
+          <div style="display:flex;gap:8px;">
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:13px;color:#292827;">Country · All</div>
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:13px;color:#292827;">Tier · All</div>
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:13px;color:#292827;">Onboarded · Last 12 months</div>
+          </div>
+          <div style="font-size:12px;color:#73706d;">{{ agentCountLabel }}</div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 1fr 1fr 100px;padding:14px 20px;background:#fafaf8;font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #e8e4dd;">
+            <div>Agent</div><div>Country</div><div>Status</div><div>Enrolments</div><div>Conversion</div><div>Compliance</div><div></div>
+          </div>
+          <sc-for list="{{ agents }}" as="a" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1.2fr 1fr 1fr 1fr 100px;padding:14px 20px;border-bottom:1px solid #e8e4dd;font-size:13px;align-items:center;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;border-radius:8px;background:{{ a.avatarBg }};color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">{{ a.initials }}</div>
+                <div>
+                  <div style="font-weight:540;">{{ a.name }}</div>
+                  <div style="color:#9a9794;font-size:11px;">Since {{ a.since }}</div>
+                </div>
+              </div>
+              <div style="color:#73706d;"><span style="margin-right:6px;">{{ a.flag }}</span>{{ a.country }}</div>
+              <div>
+                <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ a.statusBg }};color:{{ a.statusColor }};">
+                  <span style="width:6px;height:6px;border-radius:999px;background:{{ a.statusColor }};animation:{{ a.pulse }};"></span>
+                  {{ a.status }}
+                </div>
+              </div>
+              <div style="font-weight:540;">{{ a.enrol }}</div>
+              <div style="color:#00843d;font-weight:540;">{{ a.conv }}</div>
+              <div>
+                <div style="width:100px;height:6px;background:#f3f0eb;border-radius:999px;overflow:hidden;">
+                  <div style="width:{{ a.comp }};height:100%;background:{{ a.compColor }};"></div>
+                </div>
+                <div style="font-size:11px;color:#73706d;margin-top:2px;">{{ a.comp }}</div>
+              </div>
+              <div style="text-align:right;"><span onClick="{{ a.open }}" style="color:#00843d;font-weight:600;font-size:13px;cursor:pointer;">Open →</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAgent }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ goAgents }}" style="font-size:13px;color:#73706d;cursor:pointer;margin-bottom:12px;">← All agents</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:56px;height:56px;border-radius:12px;background:#ffcd00;color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">GB</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+                <div style="font-family:var(--font-display);font-weight:540;font-size:28px;letter-spacing:-0.7px;">Global Bridge Education</div>
+                <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:#e0f4e8;color:#00843d;">
+                  <span style="width:6px;height:6px;border-radius:999px;background:#00843d;animation:pulse-dot 2s infinite;"></span> Active
+                </div>
+              </div>
+              <div style="font-size:13px;color:#73706d;">🇻🇳 Vietnam · Onboarded Feb 2023 · MARN 1789004 · Next review 21 Sep 2026</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button style="padding:9px 14px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Message</button>
+            <button onClick="{{ goOffboard }}" style="padding:9px 14px;background:#fff;color:#a12020;border:1px solid #f3d4d4;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Terminate</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(6, 1fr);gap:12px;margin-bottom:24px;">
+          <sc-for list="{{ agentMetrics }}" as="m" hint-placeholder-count="6">
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:16px;">
+              <div style="font-size:10px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">{{ m.label }}</div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.4px;margin-top:6px;color:{{ m.color }};">{{ m.value }}</div>
+              <div style="font-size:11px;color:#9a9794;margin-top:2px;">{{ m.hint }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:16px;">
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:16px;">Enrolments · trailing 12 months</div>
+              <div style="display:flex;gap:12px;font-size:11px;color:#73706d;">
+                <div style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:#00843d;border-radius:2px;"></span>Enrolments</div>
+                <div style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:#ffcd00;border-radius:2px;"></span>Applications</div>
+              </div>
+            </div>
+            <svg viewBox="0 0 600 220" style="width:100%;height:220px;">
+              <line x1="0" y1="200" x2="600" y2="200" stroke="#e8e4dd"></line>
+              <line x1="0" y1="150" x2="600" y2="150" stroke="#f3f0eb"></line>
+              <line x1="0" y1="100" x2="600" y2="100" stroke="#f3f0eb"></line>
+              <line x1="0" y1="50" x2="600" y2="50" stroke="#f3f0eb"></line>
+              <path d="M0,180 L50,160 L100,170 L150,140 L200,120 L250,130 L300,100 L350,80 L400,90 L450,70 L500,60 L550,50 L600,45" fill="none" stroke="#ffcd00" stroke-width="2"></path>
+              <path d="M0,190 L50,180 L100,175 L150,160 L200,150 L250,155 L300,130 L350,115 L400,120 L450,100 L500,95 L550,85 L600,80" fill="none" stroke="#00843d" stroke-width="2.5"></path>
+              <path d="M0,190 L50,180 L100,175 L150,160 L200,150 L250,155 L300,130 L350,115 L400,120 L450,100 L500,95 L550,85 L600,80 L600,200 L0,200 Z" fill="url(#g)" opacity="0.15"></path>
+              <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#00843d"></stop><stop offset="100%" stop-color="#00843d" stop-opacity="0"></stop></linearGradient></defs>
+            </svg>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#9a9794;margin-top:6px;">
+              <span>Sep 25</span><span>Nov</span><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep 26</span>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:16px;">Compliance ledger</div>
+            <sc-for list="{{ ledger }}" as="l" hint-placeholder-count="5">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid #f3f0eb;font-size:13px;">
+                <div>
+                  <div style="font-weight:540;">{{ l.item }}</div>
+                  <div style="color:#9a9794;font-size:11px;">{{ l.detail }}</div>
+                </div>
+                <div style="font-size:11px;font-weight:600;color:{{ l.color }};padding:3px 9px;border-radius:999px;background:{{ l.bg }};">{{ l.state }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAgreement }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:960px;">
+          <div onClick="{{ goApplications }}" style="font-size:13px;color:#73706d;cursor:pointer;margin-bottom:12px;">← All applications</div>
+
+          <div style="display:flex;gap:0;margin-bottom:24px;background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:12px 20px;">
+            <sc-for list="{{ agreementSteps }}" as="s" hint-placeholder-count="3">
+              <div style="flex:1;display:flex;align-items:center;gap:10px;">
+                <div style="width:26px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:{{ s.state === 'done' ? '#00843d' : s.state === 'current' ? '#00247d' : '#eeece9' }};color:{{ s.state === 'upcoming' ? '#9a9794' : '#fff' }};">{{ s.state === 'done' ? '✓' : s.n }}</div>
+                <div>
+                  <div style="font-size:11px;color:#9a9794;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;">Step {{ s.n }}</div>
+                  <div style="font-size:13px;font-weight:540;color:{{ s.state === 'upcoming' ? '#9a9794' : '#292827' }};">{{ s.label }}</div>
+                </div>
+                <sc-if value="{{ s.n }}" hint-placeholder-val="0">
+                  <div style="flex:1;height:1px;background:#e8e4dd;margin:0 8px;"></div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px;">
+            <div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:26px;letter-spacing:-0.6px;margin-bottom:6px;">Send official agreement</div>
+              <div style="font-size:14px;color:#73706d;margin-bottom:20px;">Sunrise Overseas Consultants has been approved. Send the recruitment agreement to formalise the partnership before granting portal access.</div>
+
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                  <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;">Agreement preview</div>
+                  <a href="#" style="font-size:12px;">Open full document ↗</a>
+                </div>
+                <div style="background:#fafaf8;border:1px solid #e8e4dd;border-radius:8px;padding:22px 26px;font-family:'Times New Roman', serif;color:#292827;line-height:1.6;">
+                  <div style="text-align:center;font-weight:700;font-size:14px;letter-spacing:1px;margin-bottom:4px;">INTERNATIONAL RECRUITMENT AGREEMENT</div>
+                  <div style="text-align:center;color:#73706d;font-size:11px;margin-bottom:16px;">v6.2 · ESOS Act 2000 · ASQA compliant</div>
+                  <div style="font-size:12px;margin-bottom:8px;">This Agreement is made on <b>14 August 2026</b> between:</div>
+                  <div style="font-size:12px;margin-bottom:8px;"><b>Kensington Melbourne College</b> (ABN 41 002 999 145) ("the College"); and</div>
+                  <div style="font-size:12px;margin-bottom:14px;"><b>Sunrise Overseas Consultants Pvt. Ltd.</b> (CIN U74999MH2018PTC308421) ("the Agent").</div>
+                  <div style="font-size:12px;margin-bottom:6px;font-weight:700;">1. Appointment &amp; Territory</div>
+                  <div style="font-size:12px;margin-bottom:10px;color:#5a5652;">The College appoints the Agent on a non-exclusive basis to promote its programs in India, Nepal and Sri Lanka …</div>
+                  <div style="font-size:12px;margin-bottom:6px;font-weight:700;">2. Commission</div>
+                  <div style="font-size:12px;margin-bottom:10px;color:#5a5652;">The College shall pay the Agent 15% of Year 1 tuition per enrolled student, following clearance of the census date …</div>
+                  <div style="font-size:12px;margin-bottom:6px;font-weight:700;">3. Compliance Obligations</div>
+                  <div style="font-size:12px;color:#5a5652;">The Agent warrants that it maintains current MARN registration, QEAC certification and ESOS attestation, and shall …</div>
+                </div>
+              </div>
+
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:14px;">Key terms</div>
+                <sc-for list="{{ agreementTerms }}" as="t" hint-placeholder-count="5">
+                  <div style="display:grid;grid-template-columns:170px 1fr;padding:11px 0;border-top:1px solid #f3f0eb;font-size:13px;">
+                    <div style="color:#73706d;font-weight:540;">{{ t.label }}</div>
+                    <div>
+                      <div style="color:#292827;">{{ t.value }}</div>
+                      <div style="color:#9a9794;font-size:11px;margin-top:2px;">{{ t.hint }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+                <button style="margin-top:14px;padding:8px 14px;background:#fafaf8;color:#292827;border:1px dashed #e8e4dd;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">Edit clauses in template editor</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;margin-bottom:16px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:14px;">Signatories</div>
+                <sc-for list="{{ agreementSignatories }}" as="p" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid #f3f0eb;">
+                    <div style="width:28px;height:28px;border-radius:999px;background:#eeece9;color:#292827;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">{{ p.order }}</div>
+                    <div style="width:36px;height:36px;border-radius:999px;background:{{ p.avatarBg }};color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">{{ p.name.split(' ').map(w=&gt;w[0]).slice(0,2).join('') }}</div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-size:13px;font-weight:540;">{{ p.name }}</div>
+                      <div style="color:#73706d;font-size:11px;">{{ p.role }}</div>
+                      <div style="color:#9a9794;font-size:11px;">{{ p.email }}</div>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;background:{{ p.party === 'College' ? '#e0f4e8' : '#ede1ff' }};color:{{ p.party === 'College' ? '#00843d' : '#5c2ba0' }};">{{ p.party }}</span>
+                  </div>
+                </sc-for>
+                <button style="margin-top:12px;width:100%;padding:9px;background:#fafaf8;color:#292827;border:1px dashed #e8e4dd;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">+ Add signatory</button>
+              </div>
+
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;margin-bottom:16px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:12px;">Send via</div>
+                <sc-for list="{{ agreementSendVia }}" as="c" hint-placeholder-count="3">
+                  <label style="display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid {{ c.border }};border-radius:8px;margin-bottom:8px;cursor:pointer;background:{{ c.bg }};">
+                    <input type="checkbox" checked="{{ c.checked }}" style="margin-top:2px;">
+                    <div>
+                      <div style="font-weight:540;font-size:13px;">{{ c.name }}</div>
+                      <div style="color:#73706d;font-size:11px;line-height:1.4;">{{ c.detail }}</div>
+                    </div>
+                  </label>
+                </sc-for>
+              </div>
+
+              <div style="background:#f8f5f0;border:1px solid #e8d9c4;border-radius:12px;padding:16px 18px;font-size:12px;color:#5a4a2a;line-height:1.5;margin-bottom:16px;">
+                <div style="font-weight:600;color:#8a6b00;margin-bottom:4px;">Compliance note</div>
+                Once signed, the agreement is auto-filed to the agent record and audit log. Portal invitation unlocks only after both parties countersign.
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button onClick="{{ sendAgreement }}" style="padding:12px 20px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Send for signature</button>
+                <button style="padding:11px 18px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Save draft &amp; send later</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isGovReg }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1040px;">
+          <div onClick="{{ goAgents }}" style="font-size:13px;color:#73706d;cursor:pointer;margin-bottom:12px;">← All agents</div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:16px;padding:24px 28px;margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:280px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                  <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:#e0f4e8;color:#00843d;">Agreement signed · 14 Aug 2026</span>
+                  <span style="font-size:11px;color:#73706d;">Triggered post-agreement workflow</span>
+                </div>
+                <div style="font-family:var(--font-display);font-weight:540;font-size:24px;letter-spacing:-0.5px;margin-bottom:4px;">Register Sunrise Overseas Consultants on government portals</div>
+                <div style="font-size:13px;color:#73706d;line-height:1.5;">Now that both parties have countersigned, complete the following government-portal registrations before granting AMP access. These are logged to the audit trail on submission.</div>
+              </div>
+              <div style="min-width:220px;text-align:right;">
+                <div style="font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">Registration progress</div>
+                <div style="font-family:var(--font-display);font-weight:540;font-size:32px;letter-spacing:-0.6px;margin-top:2px;">2 <span style="color:#9a9794;font-size:20px;">/ 5</span></div>
+                <div style="width:200px;height:6px;background:#f3f0eb;border-radius:999px;margin-top:6px;margin-left:auto;overflow:hidden;">
+                  <div style="width:40%;height:100%;background:#00843d;"></div>
+                </div>
+                <div style="font-size:11px;color:#9a9794;margin-top:6px;">Est. completion · 4 Sep 2026</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+            <sc-for list="{{ govPortals }}" as="p" hint-placeholder-count="5">
+              <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px 22px;display:grid;grid-template-columns:56px 1.6fr 1fr 160px;gap:20px;align-items:center;">
+                <div style="width:48px;height:48px;border-radius:10px;background:#00247d;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:0.5px;">{{ p.name.slice(0,4) }}</div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+                    <div style="font-weight:600;font-size:15px;">{{ p.name }}</div>
+                    <span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:{{ p.priorityBg }};color:#fff;text-transform:uppercase;letter-spacing:0.4px;">{{ p.priority }}</span>
+                  </div>
+                  <div style="font-size:11px;color:#9a9794;margin-bottom:6px;">{{ p.full }} · {{ p.owner }}</div>
+                  <div style="font-size:12px;color:#73706d;line-height:1.4;">{{ p.desc }}</div>
+                </div>
+                <div>
+                  <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ p.bg }};color:{{ p.color }};">{{ p.status }}</span>
+                  <div style="font-size:11px;color:#9a9794;margin-top:6px;">{{ p.ref }}</div>
+                  <div style="font-size:11px;color:#292827;margin-top:2px;">{{ p.due }}</div>
+                </div>
+                <div style="text-align:right;">
+                  <button style="padding:9px 14px;background:{{ p.status === 'Complete' ? '#fff' : '#292827' }};color:{{ p.status === 'Complete' ? '#292827' : '#fff' }};border:1px solid {{ p.status === 'Complete' ? '#e8e4dd' : '#292827' }};border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;width:100%;">{{ p.action }}</button>
+                  <div style="font-size:11px;color:#9a9794;margin-top:6px;text-align:center;">Opens portal ↗</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#00247d;color:#fff;border-radius:12px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:280px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:4px;">Once all required registrations are complete</div>
+              <div style="font-size:12px;color:#bcd4c4;line-height:1.5;">AMP will unlock the portal invitation step and notify Ananya by email + WhatsApp. Registration references are auto-attached to the agent record.</div>
+            </div>
+            <button onClick="{{ goInvite }}" style="padding:10px 18px;background:#ffcd00;color:#00247d;border:none;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;">Skip to portal invite →</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAudit }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:16px;margin-bottom:20px;">
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:18px;">
+            <div style="font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">Total events · YTD</div>
+            <div style="font-family:var(--font-display);font-weight:540;font-size:26px;letter-spacing:-0.5px;margin-top:6px;">2,847</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:18px;">
+            <div style="font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">Events · last 24h</div>
+            <div style="font-family:var(--font-display);font-weight:540;font-size:26px;letter-spacing:-0.5px;margin-top:6px;">38</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:18px;">
+            <div style="font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">Retention</div>
+            <div style="font-family:var(--font-display);font-weight:540;font-size:26px;letter-spacing:-0.5px;margin-top:6px;">7 years</div>
+            <div style="font-size:11px;color:#9a9794;margin-top:2px;">ESOS s.19 requirement</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:18px;">
+            <div style="font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">Integrity</div>
+            <div style="font-family:var(--font-display);font-weight:540;font-size:26px;letter-spacing:-0.5px;margin-top:6px;color:#00843d;">Verified</div>
+            <div style="font-size:11px;color:#9a9794;margin-top:2px;">SHA-256 chained · immutable</div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:12px;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <sc-for list="{{ auditFilters }}" as="f" hint-placeholder-count="7">
+              <div style="padding:7px 12px;border-radius:999px;font-size:12px;font-weight:540;cursor:pointer;background:{{ f.active ? '#00843d' : '#fff' }};color:{{ f.active ? '#fff' : '#292827' }};border:1px solid {{ f.active ? '#00843d' : '#e8e4dd' }};">{{ f.label }} <span style="opacity:0.7;margin-left:4px;">{{ f.count }}</span></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:12px;color:#292827;">Actor · Anyone</div>
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:12px;color:#292827;">Range · Last 30 days</div>
+            <button style="padding:8px 14px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">Export CSV</button>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:180px 200px 1.4fr 1.6fr 130px 120px;padding:14px 20px;background:#fafaf8;font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #e8e4dd;">
+            <div>Timestamp</div><div>Actor</div><div>Target</div><div>Action</div><div>Category</div><div>Origin</div>
+          </div>
+          <sc-for list="{{ auditEvents }}" as="e" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:180px 200px 1.4fr 1.6fr 130px 120px;padding:14px 20px;border-bottom:1px solid #e8e4dd;font-size:13px;align-items:flex-start;">
+              <div style="color:#292827;font-size:12px;">{{ e.time }}</div>
+              <div>
+                <div style="font-weight:540;">{{ e.actor }}</div>
+                <div style="color:#9a9794;font-size:11px;">{{ e.role }}</div>
+              </div>
+              <div style="color:#292827;">{{ e.target }}</div>
+              <div>
+                <div style="color:#292827;">{{ e.action }}</div>
+                <div style="color:#9a9794;font-size:11px;margin-top:2px;">{{ e.detail }}</div>
+              </div>
+              <div><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fafaf8;border:1px solid #e8e4dd;color:{{ e.color }};">{{ e.category }}</span></div>
+              <div style="color:#9a9794;font-size:11px;">
+                <div>{{ e.ip }}</div>
+                <div>{{ e.device }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:20px;font-size:12px;color:#9a9794;line-height:1.5;">Every event is cryptographically chained (SHA-256) — tampering breaks the chain. Retained 7 years to satisfy ESOS s.19 and ASQA record-keeping obligations. Export locks a verified snapshot to disk.</div>
+      </sc-if>
+
+      <sc-if value="{{ isInvite }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:640px;">
+          <div onClick="{{ goDashboard }}" style="font-size:13px;color:#73706d;cursor:pointer;margin-bottom:12px;">← Back</div>
+          <div style="font-family:var(--font-display);font-weight:540;font-size:28px;letter-spacing:-0.7px;margin-bottom:8px;">Invite approved agent</div>
+          <div style="font-size:14px;color:#73706d;margin-bottom:28px;">Send portal access to Sunrise Overseas Consultants. Choose one or more channels — the invitation link is unique and expires after 7 days.</div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:12px;">Recipient</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafaf8;border-radius:8px;">
+              <div style="width:36px;height:36px;border-radius:8px;background:#ffcd00;color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">AI</div>
+              <div style="flex:1;">
+                <div style="font-weight:540;">Ananya Iyer · Sunrise Overseas Consultants</div>
+                <div style="color:#73706d;font-size:12px;">ananya@sunriseoverseas.in · +91 98333 71120</div>
+              </div>
+              <div style="font-size:11px;font-weight:600;color:#00843d;">Approved</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:14px;">Send via</div>
+            <sc-for list="{{ inviteChannels }}" as="c" hint-placeholder-count="3">
+              <label style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid {{ c.border }};border-radius:8px;margin-bottom:8px;cursor:pointer;background:{{ c.bg }};">
+                <input type="checkbox" checked="{{ c.checked }}">
+                <div style="flex:1;">
+                  <div style="font-weight:540;font-size:14px;">{{ c.name }}</div>
+                  <div style="color:#73706d;font-size:12px;">{{ c.detail }}</div>
+                </div>
+              </label>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:24px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:12px;">Preview</div>
+            <div style="padding:16px;background:#fafaf8;border-radius:8px;font-size:13px;line-height:1.6;color:#292827;">
+              <div style="font-weight:600;margin-bottom:8px;">Welcome to Melbourne Institute — your portal is ready</div>
+              Hi Ananya, your application has been approved. Use the link below to set your password and access marketing collateral, course guides and student handbook.<br><br>
+              <span style="color:#00843d;">→ amp.melbourneinstitute.edu.au/invite/8fT2q9</span><br><br>
+              <span style="color:#9a9794;font-size:12px;">Link expires 7 days from now.</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;justify-content:flex-end;">
+            <button style="padding:11px 18px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Save draft</button>
+            <button onClick="{{ sendInvite }}" style="padding:11px 20px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Send invitation</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMarketing }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div style="font-size:14px;color:#73706d;">All approved agents automatically receive updated versions. Obsolete files are auto-removed from agent portals.</div>
+          <button style="padding:9px 16px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">+ Upload collateral</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;">
+          <sc-for list="{{ collateral }}" as="c" hint-placeholder-count="6">
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;">
+              <div style="height:140px;background:{{ c.thumbBg }};display:flex;align-items:center;justify-content:center;position:relative;">
+                <div style="font-family:var(--font-display);font-weight:540;font-size:22px;color:{{ c.thumbColor }};text-align:center;padding:0 20px;letter-spacing:-0.4px;line-height:1.1;">{{ c.thumbLabel }}</div>
+                <div style="position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;background:{{ c.badgeBg }};color:{{ c.badgeColor }};text-transform:uppercase;letter-spacing:0.5px;">{{ c.badge }}</div>
+              </div>
+              <div style="padding:16px;">
+                <div style="font-weight:540;font-size:14px;margin-bottom:4px;">{{ c.title }}</div>
+                <div style="color:#73706d;font-size:12px;margin-bottom:12px;">{{ c.meta }}</div>
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:#9a9794;">
+                  <span>Downloads · {{ c.downloads }}</span>
+                  <span>{{ c.updated }}</span>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOffboard }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:720px;">
+          <div onClick="{{ goAgents }}" style="font-size:13px;color:#73706d;cursor:pointer;margin-bottom:12px;">← Back to agents</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:28px;letter-spacing:-0.7px;">Terminate agent</div>
+            <div style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:#fbe4e4;color:#a12020;">Irreversible</div>
+          </div>
+          <div style="font-size:14px;color:#73706d;margin-bottom:24px;">Terminating <b style="color:#292827;">Global Bridge Education</b> revokes their portal access, marketing downloads and invalidates all pending invitations. Enrolled students remain, but no new applications will be accepted.</div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:12px;">Reason</div>
+            <sc-for list="{{ offboardReasons }}" as="r" hint-placeholder-count="4">
+              <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid {{ r.border }};border-radius:8px;margin-bottom:8px;cursor:pointer;background:{{ r.bg }};">
+                <input type="radio" name="offboard" checked="{{ r.checked }}">
+                <div>
+                  <div style="font-weight:540;font-size:13px;">{{ r.label }}</div>
+                  <div style="color:#73706d;font-size:12px;">{{ r.detail }}</div>
+                </div>
+              </label>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:12px;">Compliance actions on termination</div>
+            <sc-for list="{{ offboardSteps }}" as="s" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #f3f0eb;font-size:13px;">
+                <div style="width:18px;height:18px;border-radius:4px;background:#00843d;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">✓</div>
+                <span>{{ s }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;margin-bottom:24px;">
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;margin-bottom:8px;">Type "TERMINATE" to confirm</div>
+            <input placeholder="TERMINATE" style="width:100%;padding:12px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafaf8;outline:none;">
+          </div>
+
+          <div style="display:flex;gap:8px;justify-content:flex-end;">
+            <button onClick="{{ goAgents }}" style="padding:11px 18px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Cancel</button>
+            <button style="padding:11px 20px;background:#a12020;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Terminate agent</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isAgentView }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#00843d;color:#fff;border-radius:16px;padding:32px 36px;margin-bottom:24px;background:radial-gradient(120% 80% at 90% 10%, #1a9c55 0%, #00843d 55%, #004d24 100%);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div style="font-size:13px;color:#bcd4c4;margin-bottom:6px;">Wednesday, 12 August 2026</div>
+              <div style="font-family:var(--font-display);font-weight:460;font-size:36px;letter-spacing:-1px;">Welcome back, Ananya.</div>
+              <div style="font-size:14px;color:#d7ecdd;margin-top:6px;">Sunrise Overseas Consultants · Partner since Feb 2024</div>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.14);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:540;">
+              <span style="width:8px;height:8px;border-radius:999px;background:#ffcd00;animation:pulse-dot 2s infinite;"></span>
+              Partnership · Active
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:24px;margin-top:32px;">
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Students enrolled</div><div style="font-family:var(--font-display);font-size:28px;font-weight:540;margin-top:4px;">47</div></div>
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Applications open</div><div style="font-family:var(--font-display);font-size:28px;font-weight:540;margin-top:4px;">12</div></div>
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Conversion QTD</div><div style="font-family:var(--font-display);font-size:28px;font-weight:540;margin-top:4px;">68%</div></div>
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Next commission</div><div style="font-family:var(--font-display);font-size:28px;font-weight:540;margin-top:4px;">14 Sep</div></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <div style="font-family:var(--font-display);font-weight:540;font-size:18px;">New marketing material</div>
+              <a href="#" style="font-size:13px;">See all</a>
+            </div>
+            <sc-for list="{{ agentMarketing }}" as="m" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid #f3f0eb;">
+                <div style="display:flex;align-items:center;gap:14px;">
+                  <div style="width:44px;height:44px;border-radius:8px;background:{{ m.iconBg }};color:{{ m.iconColor }};display:flex;align-items:center;justify-content:center;font-size:16px;">▤</div>
+                  <div>
+                    <div style="font-weight:540;font-size:14px;">{{ m.title }}</div>
+                    <div style="color:#73706d;font-size:12px;">{{ m.meta }}</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:{{ m.badgeBg }};color:{{ m.badgeColor }};">{{ m.badge }}</span>
+                  <button style="padding:8px 14px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">Download</button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:24px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:18px;margin-bottom:16px;">Pending tasks</div>
+            <sc-for list="{{ agentTasks }}" as="t" hint-placeholder-count="3">
+              <div style="padding:12px 0;border-top:1px solid #f3f0eb;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:540;">
+                  <span>{{ t.title }}</span>
+                  <span style="font-size:11px;color:{{ t.color }};">{{ t.due }}</span>
+                </div>
+                <div style="color:#73706d;font-size:12px;margin-top:4px;">{{ t.detail }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isInvoices }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:16px;margin-bottom:20px;">
+          <sc-for list="{{ invoiceKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;">
+              <div style="font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;">{{ k.label }}</div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:28px;letter-spacing:-0.6px;margin-top:8px;color:{{ k.color }};">{{ k.value }}</div>
+              <div style="font-size:12px;color:#73706d;margin-top:4px;">{{ k.hint }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="display:flex;gap:8px;">
+            <div style="padding:7px 12px;border:1px solid #00843d;background:#e0f4e8;border-radius:8px;font-size:13px;color:#00843d;font-weight:540;">All invoices <span style="opacity:0.7;margin-left:4px;">36</span></div>
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:13px;color:#292827;">Period · August 2026</div>
+            <div style="padding:7px 12px;border:1px solid #e8e4dd;border-radius:8px;background:#fff;font-size:13px;color:#292827;">Agent · All</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button style="padding:9px 14px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Export CSV</button>
+            <button style="padding:9px 16px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Generate August run</button>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 2fr 0.8fr 1fr 1.2fr 1.2fr 100px;padding:14px 20px;background:#fafaf8;font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #e8e4dd;">
+            <div>Invoice</div><div>Agent</div><div>Students</div><div>Period</div><div>Amount</div><div>Status</div><div style="text-align:right;">Actions</div>
+          </div>
+          <sc-for list="{{ invoices }}" as="i" hint-placeholder-count="7">
+            <div style="display:grid;grid-template-columns:1fr 2fr 0.8fr 1fr 1.2fr 1.2fr 100px;padding:14px 20px;border-bottom:1px solid #e8e4dd;font-size:13px;align-items:center;">
+              <div style="font-weight:540;color:#292827;">{{ i.id }}</div>
+              <div style="color:#292827;">{{ i.agent }}</div>
+              <div style="color:#73706d;">{{ i.students }} enrolled</div>
+              <div style="color:#73706d;">{{ i.period }}</div>
+              <div style="font-weight:540;font-family:var(--font-display);">{{ i.amount }}</div>
+              <div><span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:{{ i.statusBg }};color:{{ i.statusColor }};">{{ i.status }}</span></div>
+              <div style="text-align:right;"><span style="color:#00843d;font-weight:600;font-size:13px;cursor:pointer;">View →</span></div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:24px;display:grid;grid-template-columns:1.6fr 1fr;gap:16px;">
+          <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+              <div>
+                <div style="font-family:var(--font-display);font-weight:540;font-size:16px;">Finance system sync</div>
+                <div style="font-size:12px;color:#73706d;margin-top:2px;">Every approved invoice posts to the connected ERP. Reconnect any expired tokens to keep runs flowing.</div>
+              </div>
+              <a href="#" onClick="{{ goSettings }}" style="font-size:12px;">Manage integrations →</a>
+            </div>
+            <sc-for list="{{ integrations }}" as="g" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #f3f0eb;">
+                <div style="width:32px;height:32px;border-radius:8px;background:{{ g.logoBg }};color:{{ g.logoColor }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;">{{ g.logo }}</div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;font-weight:540;">{{ g.name }} <span style="font-size:10px;color:#9a9794;font-weight:460;text-transform:uppercase;letter-spacing:0.4px;margin-left:4px;">{{ g.kind }}</span></div>
+                  <div style="font-size:11px;color:#9a9794;">{{ g.lastSync }}</div>
+                </div>
+                <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ g.bg }};color:{{ g.color }};">{{ g.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#00247d;color:#fff;border-radius:12px;padding:24px;">
+            <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:4px;">Commission auto-matching</div>
+            <div style="font-size:12px;color:#bcd4c4;margin-bottom:16px;">Match invoices against enrolled students past their census date, then post commissions straight to your ERP.</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;">
+              <div style="display:flex;justify-content:space-between;"><span style="color:#bcd4c4;">Auto-matched this run</span><span>32 / 36</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:#bcd4c4;">Awaiting census clear</span><span>3</span></div>
+              <div style="display:flex;justify-content:space-between;"><span style="color:#bcd4c4;">Manual review</span><span>1</span></div>
+            </div>
+            <div style="margin-top:18px;padding:10px 14px;background:#ffcd00;color:#00247d;border-radius:999px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;">Post 32 invoices to NetSuite →</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#00247d;color:#fff;border-radius:16px;padding:28px 32px;margin-bottom:24px;background:radial-gradient(120% 100% at 90% 10%, #1a3d8f 0%, #00247d 60%, #00174d 100%);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;">
+            <div style="max-width:520px;">
+              <div style="font-size:11px;font-weight:600;color:#ffcd00;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Executive report builder</div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:26px;letter-spacing:-0.6px;line-height:1.15;margin-bottom:8px;">Generate the H2 2026 Agent Activity Report for the board.</div>
+              <div style="font-size:13px;color:#bcd4c4;line-height:1.5;">Semi-annual pack covering every active agent's applications, enrolments, conversion, compliance status and risk-band shifts — ready to share with execs by 31 January.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
+              <button style="padding:11px 18px;background:#ffcd00;color:#00247d;border:none;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;">+ Generate new report</button>
+              <button style="padding:11px 18px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:999px;font-size:13px;font-weight:540;cursor:pointer;">Schedule recurring</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:24px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.15);">
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Reporting period</div><div style="font-family:var(--font-display);font-size:18px;font-weight:540;margin-top:4px;">Jul – Dec 2026</div></div>
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Agents in scope</div><div style="font-family:var(--font-display);font-size:18px;font-weight:540;margin-top:4px;">28 active</div></div>
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Data sources</div><div style="font-family:var(--font-display);font-size:18px;font-weight:540;margin-top:4px;">AMP + Salesforce + NetSuite</div></div>
+            <div><div style="font-size:11px;color:#bcd4c4;text-transform:uppercase;letter-spacing:0.6px;">Next scheduled run</div><div style="font-family:var(--font-display);font-size:18px;font-weight:540;margin-top:4px;">14 Jan 2027</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-family:var(--font-display);font-weight:540;font-size:18px;">Report templates</div>
+          <div style="font-size:12px;color:#73706d;">6 templates · shared workspace</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-bottom:32px;">
+          <sc-for list="{{ reportTemplates }}" as="r" hint-placeholder-count="6">
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:20px;display:flex;flex-direction:column;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ r.tagBg }};color:{{ r.tagColor }};text-transform:uppercase;letter-spacing:0.5px;">{{ r.tag }}</span>
+                <span style="font-size:11px;color:#9a9794;">{{ r.schedule }}</span>
+              </div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:15px;letter-spacing:-0.2px;margin-bottom:6px;line-height:1.25;">{{ r.title }}</div>
+              <div style="font-size:12px;color:#73706d;line-height:1.5;margin-bottom:16px;flex:1;">{{ r.desc }}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid #f3f0eb;">
+                <span style="font-size:11px;color:#9a9794;">{{ r.last }}</span>
+                <button style="padding:7px 12px;background:#00843d;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Generate</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-family:var(--font-display);font-weight:540;font-size:18px;">Recent reports</div>
+          <a href="#" style="font-size:13px;">View archive →</a>
+        </div>
+        <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:2.4fr 1.4fr 1.2fr 1fr 180px;padding:14px 20px;background:#fafaf8;font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #e8e4dd;">
+            <div>Report</div><div>Generated by</div><div>Period</div><div>Format</div><div style="text-align:right;">Actions</div>
+          </div>
+          <sc-for list="{{ recentReports }}" as="r" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:2.4fr 1.4fr 1.2fr 1fr 180px;padding:14px 20px;border-bottom:1px solid #e8e4dd;font-size:13px;align-items:center;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:44px;border-radius:4px;background:#fafaf8;border:1px solid #e8e4dd;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:{{ r.color }};letter-spacing:0.4px;">PDF</div>
+                <div style="font-weight:540;color:#292827;">{{ r.name }}</div>
+              </div>
+              <div style="color:#73706d;">{{ r.by }}</div>
+              <div style="color:#73706d;">{{ r.period }}</div>
+              <div style="color:#73706d;font-size:12px;">{{ r.pages }}</div>
+              <div style="text-align:right;display:flex;gap:6px;justify-content:flex-end;">
+                <button style="padding:6px 12px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Download</button>
+                <button style="padding:6px 12px;background:#292827;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:540;cursor:pointer;">Share</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:220px 1fr;gap:32px;">
+          <aside>
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#73706d;padding:0 12px 10px;">Settings</div>
+            <div style="padding:9px 12px;border-radius:8px;background:#e0f4e8;color:#00843d;font-size:13px;font-weight:540;margin-bottom:2px;">Staff members</div>
+            <div style="padding:9px 12px;border-radius:8px;color:#73706d;font-size:13px;margin-bottom:2px;">Workspace</div>
+            <div style="padding:9px 12px;border-radius:8px;color:#73706d;font-size:13px;margin-bottom:2px;">Roles &amp; permissions</div>
+            <div style="padding:9px 12px;border-radius:8px;color:#73706d;font-size:13px;margin-bottom:2px;">Notifications</div>
+            <div style="padding:9px 12px;border-radius:8px;color:#73706d;font-size:13px;margin-bottom:2px;">Compliance integrations</div>
+            <div style="padding:9px 12px;border-radius:8px;color:#73706d;font-size:13px;margin-bottom:2px;">Audit log</div>
+            <div style="padding:9px 12px;border-radius:8px;color:#73706d;font-size:13px;margin-bottom:2px;">Billing</div>
+          </aside>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+              <div>
+                <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.4px;">Staff members</div>
+                <div style="font-size:13px;color:#73706d;margin-top:4px;">Invite Kensington Melbourne College staff and assign role-based access. Roles determine what each member can see and do inside AMP.</div>
+              </div>
+              <button style="padding:10px 16px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;">+ Invite member</button>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:center;">
+              <input placeholder="Email address" style="flex:1;padding:11px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafaf8;outline:none;">
+              <select style="padding:11px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fafaf8;outline:none;">
+                <option>Admin</option><option>Finance</option><option>Editor</option><option>Reviewer</option>
+              </select>
+              <button style="padding:11px 18px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Send invite</button>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;overflow:hidden;margin-bottom:24px;">
+              <div style="display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 80px;padding:14px 20px;background:#fafaf8;font-size:11px;font-weight:600;color:#73706d;text-transform:uppercase;letter-spacing:0.6px;border-bottom:1px solid #e8e4dd;">
+                <div>Member</div><div>Role</div><div>Access</div><div>Last active</div><div></div>
+              </div>
+              <sc-for list="{{ staff }}" as="s" hint-placeholder-count="6">
+                <div style="display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 80px;padding:14px 20px;border-bottom:1px solid #e8e4dd;font-size:13px;align-items:center;">
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:36px;height:36px;border-radius:999px;background:{{ s.avatarBg }};color:#00247d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">{{ s.initials }}</div>
+                    <div>
+                      <div style="font-weight:540;">{{ s.name }}</div>
+                      <div style="color:#9a9794;font-size:11px;">{{ s.email }}</div>
+                    </div>
+                  </div>
+                  <div style="color:#73706d;">{{ s.role }}</div>
+                  <div><span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:#fafaf8;border:1px solid #e8e4dd;color:#292827;">{{ s.access }}</span></div>
+                  <div>
+                    <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ s.statusBg }};color:{{ s.statusColor }};margin-right:6px;">{{ s.status }}</span>
+                    <span style="color:#9a9794;font-size:11px;">{{ s.lastActive }}</span>
+                  </div>
+                  <div style="text-align:right;color:#9a9794;font-size:16px;cursor:pointer;">···</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:32px;margin-bottom:12px;">
+              <div>
+                <div style="font-family:var(--font-display);font-weight:540;font-size:16px;">ERP &amp; CRM integrations</div>
+                <div style="font-size:12px;color:#73706d;margin-top:4px;">Connect the finance and student systems Kensington Melbourne College already runs on.</div>
+              </div>
+              <button style="padding:8px 14px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:12px;font-weight:540;cursor:pointer;">Browse marketplace</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
+              <sc-for list="{{ integrations }}" as="g" hint-placeholder-count="6">
+                <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:18px;display:flex;gap:14px;">
+                  <div style="width:44px;height:44px;border-radius:10px;background:{{ g.logoBg }};color:{{ g.logoColor }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">{{ g.logo }}</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                      <div style="font-weight:540;font-size:14px;">{{ g.name }}</div>
+                      <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;background:#fafaf8;border:1px solid #e8e4dd;color:#73706d;text-transform:uppercase;letter-spacing:0.4px;">{{ g.kind }}</span>
+                    </div>
+                    <div style="font-size:12px;color:#73706d;line-height:1.4;margin-bottom:10px;">{{ g.desc }}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                      <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:{{ g.bg }};color:{{ g.color }};">{{ g.status }}</span>
+                      <span style="font-size:11px;color:#9a9794;">{{ g.lastSync }}</span>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:12px;">Roles &amp; permissions</div>
+            <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:12px;">
+              <sc-for list="{{ rolePermissions }}" as="p" hint-placeholder-count="5">
+                <div style="background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:16px;">
+                  <div style="font-size:11px;font-weight:600;color:{{ p.color }};text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">{{ p.role }}</div>
+                  <div style="font-size:12px;color:#73706d;line-height:1.4;">{{ p.desc }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</sc-if>
+
+<sc-if value="{{ modalApprove }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(41,40,39,0.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px;" onClick="{{ closeModal }}">
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:520px;width:100%;box-shadow:var(--shadow-2);">
+      <div style="width:48px;height:48px;border-radius:12px;background:#e0f4e8;color:#00843d;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;">✓</div>
+      <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.4px;margin-bottom:8px;">Approve Sunrise Overseas Consultants?</div>
+      <div style="font-size:14px;color:#73706d;line-height:1.5;margin-bottom:20px;">Their status will change to <b style="color:#00843d;">Approved</b>, an approval email will be sent, and they'll be queued for portal invitation. An audit log entry will be created.</div>
+      <div style="background:#fafaf8;border-radius:8px;padding:14px;font-size:12px;color:#292827;line-height:1.6;margin-bottom:20px;">
+        <div>✓ 6 of 6 compliance checks passed</div>
+        <div>✓ 2 references verified</div>
+        <div>✓ AI review found no risks</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onClick="{{ closeModal }}" style="padding:10px 16px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Cancel</button>
+        <button onClick="{{ confirmApprove }}" style="padding:10px 18px;background:#00843d;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Approve &amp; send email</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ modalReject }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(41,40,39,0.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px;" onClick="{{ closeModal }}">
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:520px;width:100%;box-shadow:var(--shadow-2);">
+      <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.4px;margin-bottom:16px;">Reject application</div>
+      <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;">Reason</label>
+      <select style="width:100%;padding:11px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:14px;">
+        <option>Incomplete business registration</option><option>Failed reference checks</option><option>Regulatory non-compliance</option><option>Duplicate application</option>
+      </select>
+      <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;">Comments to agent</label>
+      <textarea rows="4" placeholder="These comments will be included in the rejection email." style="width:100%;padding:11px 14px;border:1px solid #e8e4dd;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;resize:vertical;margin-bottom:20px;"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onClick="{{ closeModal }}" style="padding:10px 16px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Cancel</button>
+        <button onClick="{{ confirmReject }}" style="padding:10px 18px;background:#a12020;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Send rejection</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ modalRequestInfo }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(41,40,39,0.4);display:flex;align-items:center;justify-content:center;z-index:100;padding:24px;" onClick="{{ closeModal }}">
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:520px;width:100%;box-shadow:var(--shadow-2);">
+      <div style="font-family:var(--font-display);font-weight:540;font-size:22px;letter-spacing:-0.4px;margin-bottom:8px;">Request more information</div>
+      <div style="font-size:13px;color:#73706d;margin-bottom:20px;">Status will change to <b style="color:#8a4b00;">Pending Agent Response</b>. The agent receives an email with the checked items.</div>
+      <sc-for list="{{ requestItems }}" as="r" hint-placeholder-count="4">
+        <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid #f3f0eb;font-size:13px;cursor:pointer;">
+          <input type="checkbox" checked="{{ r.checked }}" style="margin-top:2px;">
+          <div>
+            <div style="font-weight:540;">{{ r.title }}</div>
+            <div style="color:#73706d;font-size:12px;">{{ r.detail }}</div>
+          </div>
+        </label>
+      </sc-for>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button onClick="{{ closeModal }}" style="padding:10px 16px;background:#fff;color:#292827;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Cancel</button>
+        <button onClick="{{ confirmRequestInfo }}" style="padding:10px 18px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Send request</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:24px;right:24px;z-index:150;display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+    <sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="width:360px;height:480px;background:#fff;border:1px solid #e8e4dd;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,0.15);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="padding:14px 16px;background:radial-gradient(120% 100% at 90% 10%, #1a9c55 0%, #00843d 60%, #004d24 100%);color:#fff;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;font-size:16px;">✦</div>
+            <div>
+              <div style="font-family:var(--font-display);font-weight:540;font-size:14px;">Ask AMP</div>
+              <div style="font-size:11px;color:#bcd4c4;display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:999px;background:#ffcd00;animation:pulse-dot 2s infinite;"></span>AI copilot · online</div>
+            </div>
+          </div>
+          <div onClick="{{ toggleChat }}" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">×</div>
+        </div>
+        <div style="flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+          <div style="max-width:80%;padding:10px 14px;background:#fafaf8;border-radius:12px 12px 12px 4px;font-size:13px;line-height:1.5;color:#292827;">Hi Priya — I can summarise applications, draft agent emails, run compliance checks or pull a report. What do you need?</div>
+          <div style="align-self:flex-end;max-width:80%;padding:10px 14px;background:#00843d;color:#fff;border-radius:12px 12px 4px 12px;font-size:13px;line-height:1.5;">Which active agents are trending toward the At risk band this quarter?</div>
+          <div style="max-width:85%;padding:10px 14px;background:#fafaf8;border-radius:12px 12px 12px 4px;font-size:13px;line-height:1.55;color:#292827;">3 agents shifted from Watch → At risk in the last 30 days: <b>Southern Cross Study</b> (QEAC expiring, conv 58%), <b>Reef &amp; Ridge Global</b> (comp 48%, suspended) and <b>Meridian Overseas</b> (2 visa refusals). Want me to draft a check-in email for each?</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <div style="padding:6px 10px;background:#fff;border:1px solid #e8e4dd;border-radius:999px;font-size:11px;color:#292827;cursor:pointer;">Draft emails</div>
+            <div style="padding:6px 10px;background:#fff;border:1px solid #e8e4dd;border-radius:999px;font-size:11px;color:#292827;cursor:pointer;">Show on dashboard</div>
+            <div style="padding:6px 10px;background:#fff;border:1px solid #e8e4dd;border-radius:999px;font-size:11px;color:#292827;cursor:pointer;">Export as PDF</div>
+          </div>
+        </div>
+        <div style="padding:12px;border-top:1px solid #e8e4dd;display:flex;gap:8px;align-items:center;background:#fff;">
+          <input placeholder="Ask about agents, applications, compliance…" style="flex:1;padding:9px 12px;border:1px solid #e8e4dd;border-radius:8px;font-size:13px;font-family:inherit;background:#fafaf8;outline:none;">
+          <button style="width:36px;height:36px;background:#292827;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;">→</button>
+        </div>
+      </div>
+    </sc-if>
+    <div onClick="{{ toggleChat }}" style="width:56px;height:56px;border-radius:999px;background:radial-gradient(120% 100% at 30% 20%, #1a9c55 0%, #00843d 60%, #004d24 100%);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,132,61,0.35);position:relative;">
+      <div style="font-size:22px;line-height:1;">✦</div>
+      <span style="position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:999px;background:#ffcd00;border:2px solid #fff;"></span>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#292827;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,0.2);">{{ toastMsg }}</div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = {
+    route: 'login',
+    agentTab: 'active',
+    docIdx: 0,
+    modal: null,
+    toast: null,
+    loginEmail: 'priya.ramesh@melbourneinstitute.edu.au',
+    appFilter: 'all',
+    chatOpen: false,
+    appTab: 'biz',
+  };
+
+  go(route) { this.setState({ route, modal: null }); window.scrollTo(0,0); }
+
+  showToast(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: null }), 2600);
+  }
+
+  status(name) {
+    const map = {
+      'New': ['#dbe6ff', '#00247d'],
+      'In Review': ['#fff4d4', '#8a6b00'],
+      'Pending Documents': ['#ffe4c4', '#8a4b00'],
+      'Pending Agent Response': ['#ede1ff', '#5c2ba0'],
+      'Approved': ['#e0f4e8', '#00843d'],
+      'Agreement Signed': ['#dbe6ff', '#00247d'],
+      'Rejected': ['#fbe4e4', '#a12020'],
+      'Active': ['#e0f4e8', '#00843d'],
+      'Suspended': ['#fbe4e4', '#a12020'],
+      'Expiring Soon': ['#fff4d4', '#8a6b00'],
+      'Terminated': ['#eeece9', '#73706d'],
+      'Draft': ['#eeece9', '#73706d'],
+    };
+    return map[name] || map['Draft'];
+  }
+
+  navItem(label, route, badge, badgeColor) {
+    const active = this.state.route === route || (route === 'agents' && ['agent','offboard'].includes(this.state.route));
+    return {
+      label, badge: badge || '',
+      bg: active ? 'rgba(255,255,255,0.14)' : 'transparent',
+      color: active ? '#fff' : '#bcd4c4',
+      badgeBg: badge ? (badgeColor || '#ffcd00') : 'transparent',
+      badgeColor: badge ? '#00247d' : 'transparent',
+      go: () => this.go(route),
+    };
+  }
+
+  renderVals() {
+    const r = this.state.route;
+    const isApp = r !== 'login';
+    const pageMeta = {
+      dashboard: ['', 'Melbourne Institute of Higher Education · 28 active partners'],
+      applications: ['Applications', '12 pending your review · sorted by oldest first'],
+      application: ['Reviewing application', 'App-2087 · Sunrise Overseas Consultants'],
+      agents: ['Agent directory', 'Track partnership status, performance and compliance'],
+      agent: ['Agent profile', 'Global Bridge Education · Vietnam'],
+      invite: ['Send portal invitation', 'Sunrise Overseas Consultants · India'],
+      marketing: ['Marketing collateral', 'The single source of truth shared with every agent'],
+      offboard: ['Terminate agent', 'Global Bridge Education · Vietnam'],
+      'agent-view': ['Agent portal', 'Sunrise Overseas Consultants · Partner view'],
+      invoices: ['Invoices &amp; commissions', 'Kensington Melbourne College · Agent billing ledger'],
+      agreement: ['Send agent agreement', 'Sunrise Overseas Consultants · Step 2 of 3 · Approval → Agreement → Invite'],
+      reports: ['Reports', 'Generate exec-ready reports on agent activity, performance and compliance'],
+      audit: ['Audit trail', 'Immutable, timestamped record of every action across AMP · retained for 7 years'],
+      'gov-registration': ['Register agent on government portals', 'Sunrise Overseas Consultants · post-agreement compliance tasks'],
+      settings: ['Settings', 'Workspace, staff members and role-based access'],
+    }[r] || ['', ''];
+
+    const bar = (label, count, color, height) => ({ label, count, color, height: (height*100)+'%' });
+
+    const applications = [
+      { id: '2088', business: 'Highland Study Bridge', contact: 'Elena Martins', email: 'elena@highlandstudy.pt', phone: '+351 21 555 0290', country: 'Portugal', flag: '🇵🇹', date: '5 Aug 2026', age: 'signed 3h ago', status: 'Agreement Signed', ctaLabel: 'Start onboarding' },
+      { id: '2087', business: 'Sunrise Overseas Consultants', contact: 'Ananya Iyer', email: 'ananya@sunriseoverseas.in', phone: '+91 98333 71120', country: 'India', flag: '🇮🇳', date: '4 Aug 2026', age: '4 days ago', status: 'In Review' },
+      { id: '2086', business: 'Emerald Pathway Global', contact: 'Kwame Osei', email: 'kwame@emeraldpathway.com', phone: '+233 24 555 1010', country: 'Ghana', flag: '🇬🇭', date: '4 Aug 2026', age: '4 days ago', status: 'New' },
+      { id: '2085', business: 'Northstar Study Abroad', contact: 'Linh Pham', email: 'linh@northstar.vn', phone: '+84 24 3838 9900', country: 'Vietnam', flag: '🇻🇳', date: '3 Aug 2026', age: '5 days ago', status: 'Pending Documents' },
+      { id: '2084', business: 'Andes Education Partners', contact: 'Sofía Reyes', email: 'sofia@andes.co', phone: '+57 1 400 8899', country: 'Colombia', flag: '🇨🇴', date: '2 Aug 2026', age: '6 days ago', status: 'Pending Agent Response' },
+      { id: '2083', business: 'Silk Route Advisors', contact: 'Farhan Malik', email: 'farhan@silkroute.pk', phone: '+92 300 121 4433', country: 'Pakistan', flag: '🇵🇰', date: '1 Aug 2026', age: 'a week ago', status: 'In Review' },
+      { id: '2082', business: 'Cerulean Study Group', contact: 'Miguel Santos', email: 'miguel@cerulean.br', phone: '+55 11 3211 5567', country: 'Brazil', flag: '🇧🇷', date: '31 Jul 2026', age: '8 days ago', status: 'New' },
+      { id: '2081', business: 'Beacon Global Ed', contact: 'Wei Zhang', email: 'wei@beaconglobaled.cn', phone: '+86 21 5566 0011', country: 'China', flag: '🇨🇳', date: '29 Jul 2026', age: '10 days ago', status: 'Approved' },
+      { id: '2080', business: 'Meridian Overseas', contact: 'Rania Haddad', email: 'rania@meridianoverseas.ae', phone: '+971 4 555 2299', country: 'UAE', flag: '🇦🇪', date: '27 Jul 2026', age: '12 days ago', status: 'Rejected' },
+    ].map(a => {
+      const [bg, col] = this.status(a.status);
+      const isOnboarding = a.status === 'Agreement Signed';
+      return { ...a, statusBg: bg, statusColor: col,
+        ctaLabel: a.ctaLabel || 'Review →',
+        ctaColor: isOnboarding ? '#00247d' : '#00843d',
+        rowBg: isOnboarding ? '#fbfbff' : 'transparent',
+        open: () => this.go(isOnboarding ? 'gov-registration' : 'application') };
+    });
+
+    const filterList = ['all','Agreement Signed','New','In Review','Pending Documents','Pending Agent Response','Approved','Rejected'];
+    const counts = filterList.reduce((acc, f) => {
+      acc[f] = f === 'all' ? applications.length : applications.filter(a => a.status === f).length;
+      return acc;
+    }, {});
+    const appStatusFilters = filterList.map(f => {
+      const isSel = this.state.appFilter === f;
+      const [sBg, sCol] = f === 'all' ? ['#00843d', '#fff'] : this.status(f);
+      return {
+        label: f === 'all' ? 'All' : f,
+        count: counts[f],
+        bg: isSel ? (f === 'all' ? '#00843d' : sBg) : '#fff',
+        color: isSel ? (f === 'all' ? '#fff' : sCol) : '#292827',
+        border: isSel && f === 'all' ? '#00843d' : '#e8e4dd',
+        set: () => this.setState({ appFilter: f }),
+      };
+    });
+    const filteredApplications = this.state.appFilter === 'all' ? applications : applications.filter(a => a.status === this.state.appFilter);
+
+    const agents = [
+      { name: 'Global Bridge Education', initials: 'GB', avatarBg: '#ffcd00', country: 'Vietnam', flag: '🇻🇳', status: 'Active', since: 'Feb 23', enrol: 128, conv: '71%', comp: '96%' },
+      { name: 'Wattle & Willow Advisors', initials: 'WW', avatarBg: '#c4e8d4', country: 'India', flag: '🇮🇳', status: 'Active', since: 'Aug 22', enrol: 94, conv: '64%', comp: '92%' },
+      { name: 'Southern Cross Study', initials: 'SC', avatarBg: '#ffe4a0', country: 'Nepal', flag: '🇳🇵', status: 'Expiring Soon', since: 'Nov 21', enrol: 61, conv: '58%', comp: '74%' },
+      { name: 'Kangaroo Path Partners', initials: 'KP', avatarBg: '#d4d4f4', country: 'Philippines', flag: '🇵🇭', status: 'Active', since: 'Mar 24', enrol: 47, conv: '69%', comp: '89%' },
+      { name: 'Reef & Ridge Global', initials: 'RR', avatarBg: '#f4c4c4', country: 'Kenya', flag: '🇰🇪', status: 'Suspended', since: 'Jun 23', enrol: 12, conv: '32%', comp: '48%' },
+      { name: 'Boomerang EduAgency', initials: 'BE', avatarBg: '#c4e8f4', country: 'Sri Lanka', flag: '🇱🇰', status: 'Active', since: 'Jan 25', enrol: 33, conv: '61%', comp: '88%' },
+      { name: 'Outback Global Study', initials: 'OG', avatarBg: '#e4d4f4', country: 'Bangladesh', flag: '🇧🇩', status: 'Active', since: 'Oct 24', enrol: 28, conv: '67%', comp: '91%' },
+    ].map(a => {
+      const [bg, col] = this.status(a.status);
+      const compNum = parseInt(a.comp);
+      return { ...a, statusBg: bg, statusColor: col, pulse: a.status === 'Active' ? 'pulse-dot 2s infinite' : 'none',
+        compColor: compNum >= 85 ? '#00843d' : compNum >= 65 ? '#d4a300' : '#a12020',
+        open: () => this.go('agent') };
+    });
+
+    const tabList = [
+      { key: 'active', label: 'Active agents', count: 22, badgeBg: '#e0f4e8', badgeColor: '#00843d' },
+      { key: 'new', label: 'New requests', count: 12, badgeBg: '#ffcd00', badgeColor: '#00247d' },
+      { key: 'terminated', label: 'Terminated', count: 4, badgeBg: '#eeece9', badgeColor: '#73706d' },
+    ];
+    const agentTabs = tabList.map(t => ({
+      ...t,
+      border: this.state.agentTab === t.key ? '#00843d' : 'transparent',
+      color: this.state.agentTab === t.key ? '#00843d' : '#73706d',
+      set: () => {
+        if (t.key === 'new') this.go('applications');
+        else this.setState({ agentTab: t.key });
+      },
+    }));
+
+    return {
+      isLogin: r === 'login',
+      isApp,
+      isDashboard: r === 'dashboard',
+      isApplications: r === 'applications',
+      isApplication: r === 'application',
+      isAgents: r === 'agents',
+      isAgent: r === 'agent',
+      isInvite: r === 'invite',
+      isMarketing: r === 'marketing',
+      isOffboard: r === 'offboard',
+      isAgentView: r === 'agent-view',
+      isInvoices: r === 'invoices',
+      isAgreement: r === 'agreement',
+      isGovReg: r === 'gov-registration',
+      isAudit: r === 'audit',
+      isReports: r === 'reports',
+      isSettings: r === 'settings',
+
+      pageTitle: pageMeta[0],
+      pageSub: pageMeta[1],
+      loginEmail: this.state.loginEmail,
+      setLoginEmail: (e) => this.setState({ loginEmail: e.target.value }),
+
+      doLogin: () => this.go('dashboard'),
+      goLogout: () => this.go('login'),
+      goDashboard: () => this.go('dashboard'),
+      goApplications: () => this.go('applications'),
+      goAgents: () => this.go('agents'),
+      goInvite: () => this.go('invite'),
+      goOffboard: () => this.go('offboard'),
+      goSettings: () => this.go('settings'),
+      chatOpen: this.state.chatOpen,
+      toggleChat: () => this.setState({ chatOpen: !this.state.chatOpen }),
+
+      navItems: [
+        this.navItem('Dashboard', 'dashboard'),
+        this.navItem('Applications', 'applications', '12'),
+        this.navItem('Agents', 'agents', '28'),
+        this.navItem('Marketing collateral', 'marketing'),
+        this.navItem('Invoices', 'invoices', '7'),
+        this.navItem('Reports', 'reports'),
+        this.navItem('Audit trail', 'audit'),
+        this.navItem('Settings', 'settings'),
+        this.navItem('Agent portal preview', 'agent-view'),
+      ],
+
+      kpis: [
+        { label: 'New applications', value: '12', trend: '↑ 4 this week', trendColor: '#00843d' },
+        { label: 'Active agents', value: '28', trend: '2 pending review', trendColor: '#73706d' },
+        { label: 'Enrolments · YTD', value: '486', trend: '↑ 12% vs last year', trendColor: '#00843d' },
+        { label: 'Compliance score', value: '94%', trend: '3 certs expiring in 30d', trendColor: '#d4a300' },
+      ],
+
+      riskSegments: [
+        { label: 'Healthy', criteria: 'High activity · comp ≥ 90%', count: 18, pct: '64%', color: '#00843d' },
+        { label: 'Watch', criteria: 'Slowing activity or 80–89%', count: 6, pct: '21%', color: '#ffcd00' },
+        { label: 'At risk', criteria: 'Low enrolments or 65–79%', count: 3, pct: '11%', color: '#e08040' },
+        { label: 'Critical', criteria: 'Stalled &amp; comp < 65%', count: 1, pct: '4%', color: '#a12020' },
+      ],
+
+      pipelineBars: [
+        bar('New', 12, '#00247d', 0.55),
+        bar('In Review', 8, '#ffcd00', 0.4),
+        bar('Pending Docs', 5, '#e08040', 0.28),
+        bar('Pending Agent', 3, '#8a5cc4', 0.18),
+        bar('Approved', 21, '#00843d', 0.85),
+        bar('Rejected', 4, '#a12020', 0.22),
+        bar('Active', 22, '#00843d', 1.0),
+        bar('Terminated', 2, '#73706d', 0.14),
+      ],
+
+      pendingReview: [
+        { name: 'Sunrise Overseas Consultants', country: '🇮🇳 India', age: '4 days waiting', status: 'In Review', open: () => this.go('application') },
+        { name: 'Emerald Pathway Global', country: '🇬🇭 Ghana', age: '4 days waiting', status: 'New', open: () => this.go('application') },
+        { name: 'Northstar Study Abroad', country: '🇻🇳 Vietnam', age: '5 days waiting', status: 'Pending Documents', open: () => this.go('application') },
+        { name: 'Silk Route Advisors', country: '🇵🇰 Pakistan', age: '7 days waiting', status: 'In Review', open: () => this.go('application') },
+      ].map(p => { const [bg, col] = this.status(p.status); return { ...p, statusBg: bg, statusColor: col }; }),
+
+      expiring: [
+        { agent: 'Southern Cross Study', cert: 'QEAC certification', due: 'in 8 days', color: '#a12020' },
+        { agent: 'Kangaroo Path Partners', cert: 'MARN registration', due: 'in 23 days', color: '#d4a300' },
+        { agent: 'Boomerang EduAgency', cert: 'ASIC extract', due: 'in 28 days', color: '#d4a300' },
+      ],
+
+      topAgents: [
+        { name: 'Global Bridge Education', country: '🇻🇳 Vietnam', initials: 'GB', avatarBg: '#ffcd00', enrol: '128 enrol', conv: '71% conv' },
+        { name: 'Wattle & Willow', country: '🇮🇳 India', initials: 'WW', avatarBg: '#c4e8d4', enrol: '94 enrol', conv: '64% conv' },
+        { name: 'Kangaroo Path', country: '🇵🇭 Philippines', initials: 'KP', avatarBg: '#d4d4f4', enrol: '47 enrol', conv: '69% conv' },
+        { name: 'Boomerang EduAgency', country: '🇱🇰 Sri Lanka', initials: 'BE', avatarBg: '#c4e8f4', enrol: '33 enrol', conv: '61% conv' },
+      ],
+
+      appStatusFilters,
+      applications: filteredApplications,
+      agentCountLabel: this.state.agentTab === 'active' ? '22 active agents' : this.state.agentTab === 'terminated' ? '4 terminated agents' : '',
+      agentTabs,
+      agents: this.state.agentTab === 'terminated' ? agents.slice(0,2).map(a => ({ ...a, status: 'Terminated', statusBg: '#eeece9', statusColor: '#73706d', pulse: 'none' })) : agents,
+
+      appTabs: [
+        { key: 'docs', label: 'Documents · 5' },
+        { key: 'biz', label: 'Business details' },
+        { key: 'contact', label: 'Contact' },
+        { key: 'refs', label: 'Referees · 2' },
+        { key: 'audit', label: 'Audit trail' },
+      ].map(t => ({ ...t,
+        border: this.state.appTab === t.key ? '#00843d' : 'transparent',
+        color: this.state.appTab === t.key ? '#00843d' : '#73706d',
+        set: () => this.setState({ appTab: t.key }),
+      })),
+      appTabDocs: this.state.appTab === 'docs',
+      appTabBiz: this.state.appTab === 'biz',
+      appTabRefs: this.state.appTab === 'refs',
+
+      refereeForm: {
+        subject: 'Reference request · Sunrise Overseas Consultants for Kensington Melbourne College',
+        intro: 'Sunrise Overseas Consultants has listed you as a professional referee in their agent application to Kensington Melbourne College. The form below takes ~5 minutes and is confidential — only the college compliance team sees your response.',
+        questions: [
+          'How long have you known / worked with this agent?',
+          'How would you rate their ethical conduct on a scale of 1–5?',
+          'How would you rate the quality of student applications they refer?',
+          'Have there been any incidents of misrepresentation or complaints?',
+          'Would you continue to accept applications from this agent? Why or why not?',
+        ],
+      },
+
+      refereeQueue: [
+        { name: 'Dr. Meera Kapoor', role: 'Registrar', org: 'RMIT Alumni Network', email: 'meera.kapoor@rmit.edu.au', state: 'Received', color: '#00843d', bg: '#e0f4e8', sent: '10 Aug 2026 · 09:12', received: '12 Aug 2026 · 14:36', rating: '5 / 5', quality: '5 / 5', note: 'Ananya has referred students to RMIT for four years. All applications well-vetted. Would continue accepting without reservation.', decision: 'Pass', decisionColor: '#00843d', avatarBg: '#c4e8d4' },
+        { name: 'Nguyen Hoa', role: 'Director, Northstar Study Abroad', org: 'Northstar Study', email: 'hoa@northstar.vn', state: 'Received', color: '#00843d', bg: '#e0f4e8', sent: '10 Aug 2026 · 09:12', received: '11 Aug 2026 · 22:04', rating: '4 / 5', quality: '4 / 5', note: 'Reliable partner. Strong ethical practices, communicates promptly. No misrepresentation issues in 3 years of working together.', decision: 'Pass', decisionColor: '#00843d', avatarBg: '#ffe4a0' },
+        { name: 'Prof. Anil Menon', role: 'Head of International Admissions', org: 'Deakin University', email: 'a.menon@deakin.edu.au', state: 'Awaiting response', color: '#8a6b00', bg: '#fff4d4', sent: '10 Aug 2026 · 09:12', received: '—', rating: '—', quality: '—', note: 'Reminder scheduled 15 Aug 2026 (5 days after send).', decision: 'Pending', decisionColor: '#8a6b00', avatarBg: '#d4d4f4' },
+        { name: 'Sarah Whittaker', role: 'Compliance Manager', org: 'La Trobe University', email: 's.whittaker@latrobe.edu.au', state: 'Not sent', color: '#73706d', bg: '#eeece9', sent: '—', received: '—', rating: '—', quality: '—', note: 'Added by admin · form not yet issued.', decision: 'Pending', decisionColor: '#73706d', avatarBg: '#f4c4c4' },
+      ],
+
+      refereeSummary: { received: 2, pending: 1, notSent: 1, target: 4 },
+
+      bizFields: [
+        { label: 'Legal business name', value: 'Sunrise Overseas Consultants Pvt. Ltd.', source: 'Verified · MCA registry', ok: true },
+        { label: 'Trading name', value: 'Sunrise Overseas', source: 'Application form', ok: true },
+        { label: 'Business type', value: 'Private Limited Company', source: 'Certificate of Incorporation', ok: true },
+        { label: 'Registration number (CIN)', value: 'U74999MH2018PTC308421', source: 'MCA registry match', ok: true },
+        { label: 'ABN / Foreign registration', value: 'Not applicable · overseas entity', source: '—', ok: null },
+        { label: 'Year established', value: '2018 · 8 years operating', source: 'Verified', ok: true },
+        { label: 'Head office', value: '4th Floor, Kanchan Chambers, Andheri West, Mumbai — 400058', source: 'Certificate of Incorporation', ok: true },
+        { label: 'Website', value: 'sunriseoverseas.in', source: 'Live · SSL valid · WHOIS matches', ok: true },
+        { label: 'Directors', value: 'Ananya Iyer · Rakesh Iyer', source: 'MCA director filings', ok: true },
+        { label: 'Number of employees', value: '24 (12 counsellors, 6 admin, 6 support)', source: 'Self-reported', ok: null },
+        { label: 'Annual student volume', value: '~180 outbound students / yr', source: 'Self-reported', ok: null },
+        { label: 'Existing college partnerships', value: 'RMIT, Deakin, La Trobe, Curtin', source: 'Cross-verified with 2 partners', ok: true },
+      ],
+
+      aiInsights: [
+        { tone: 'good', title: 'Legal entity fully verifiable', text: 'CIN matches MCA public registry; registered office aligns with Certificate of Incorporation and ASIC extract on file.', color: '#00843d', bg: '#e0f4e8' },
+        { tone: 'good', title: 'Established operating history', text: '8 years continuous operation with active director filings. No adverse mentions found across MCA, LinkedIn, or major English/Hindi news sources.', color: '#00843d', bg: '#e0f4e8' },
+        { tone: 'warn', title: 'Verify director credentials manually', text: 'Rakesh Iyer is not listed on the application form. Recommend requesting an updated authorised representative form.', color: '#8a6b00', bg: '#fff4d4' },
+        { tone: 'info', title: 'Positive market reputation', text: 'Partner cross-checks with RMIT and Deakin returned favourable references — ethical conduct and prompt communication highlighted.', color: '#00247d', bg: '#dbe6ff' },
+        { tone: 'warn', title: 'Self-reported metrics not independently verified', text: 'Employee count and annual student volume are self-declared. Suggest requesting audited financials or previous-year enrolment records.', color: '#8a6b00', bg: '#fff4d4' },
+      ],
+
+      aiSummary: {
+        risk: 'Low',
+        riskColor: '#00843d',
+        riskBg: '#e0f4e8',
+        confidence: '92%',
+        text: 'The applicant is a legitimate, established Indian recruitment consultancy with a clean regulatory footprint and positive references from two existing college partners. Two items warrant human verification before approval: (1) confirmation of the second director on record, and (2) supporting evidence for self-reported volume metrics.',
+        scanTime: '4h ago',
+        model: 'Claude Sonnet 4.5 · AMP Compliance Agent',
+      },
+
+      docThumbs: [
+        { key: 0, label: 'Business Reg.', status: 'Verified', ok: true },
+        { key: 1, label: 'ASIC Extract', status: 'Verified', ok: true },
+        { key: 2, label: 'QEAC / PIER', status: 'Verified', ok: true },
+        { key: 3, label: 'MARN', status: 'Not required', ok: null },
+        { key: 4, label: 'Identity docs', status: 'Missing page', ok: false },
+      ].map(d => ({
+        ...d,
+        set: () => this.setState({ docIdx: d.key }),
+        border: d.key === this.state.docIdx ? '#00843d' : '#e8e4dd',
+        bg: d.key === this.state.docIdx ? '#e0f4e8' : '#fff',
+        textColor: '#292827',
+        subColor: d.ok === true ? '#00843d' : d.ok === false ? '#a12020' : '#9a9794',
+      })),
+
+      compliance: [
+        { label: 'Legal entity verified', state: 'Passed', stateColor: '#00843d', icon: '✓', iconBg: '#00843d' },
+        { label: 'Business registration', state: 'Passed', stateColor: '#00843d', icon: '✓', iconBg: '#00843d' },
+        { label: 'QEAC / PIER certificate', state: 'Passed', stateColor: '#00843d', icon: '✓', iconBg: '#00843d' },
+        { label: 'MARN registration', state: 'Not required', stateColor: '#9a9794', icon: '–', iconBg: '#9a9794' },
+        { label: 'Identity documents', state: 'Missing page', stateColor: '#a12020', icon: '!', iconBg: '#a12020' },
+        { label: 'References complete', state: 'Passed', stateColor: '#00843d', icon: '✓', iconBg: '#00843d' },
+      ],
+
+      referees: [
+        { name: 'Dr. Meera Kapoor', role: 'Registrar, RMIT Alumni Network', contact: 'meera.kapoor@rmit.edu.au', state: 'Passed', color: '#00843d', note: 'Ananya has referred students to RMIT for four years. All applications well-vetted.' },
+        { name: 'Nguyen Hoa', role: 'Director, Northstar Study', contact: 'hoa@northstar.vn', state: 'Passed', color: '#00843d', note: 'Reliable partner. Strong ethical practices, communicates promptly.' },
+      ],
+
+      activity: [
+        { text: 'Priya opened application', when: '2 minutes ago', dot: '#00843d' },
+        { text: 'AI document scan completed', when: '4 hours ago', dot: '#00247d' },
+        { text: 'Reference from Dr. Meera Kapoor received', when: 'Yesterday', dot: '#00843d' },
+        { text: 'Application submitted via website', when: '4 days ago', dot: '#73706d' },
+      ],
+
+      openApprove: () => this.setState({ modal: 'approve' }),
+      openReject: () => this.setState({ modal: 'reject' }),
+      openRequestInfo: () => this.setState({ modal: 'requestInfo' }),
+      closeModal: () => this.setState({ modal: null }),
+      modalApprove: this.state.modal === 'approve',
+      modalReject: this.state.modal === 'reject',
+      modalRequestInfo: this.state.modal === 'requestInfo',
+      confirmApprove: () => { this.setState({ modal: null }); this.showToast('Approved · draft agreement ready for review'); this.go('agreement'); },
+      confirmReject: () => { this.setState({ modal: null }); this.showToast('Rejection sent'); this.go('applications'); },
+      confirmRequestInfo: () => { this.setState({ modal: null }); this.showToast('Request for more information sent to agent'); this.go('applications'); },
+
+      requestItems: [
+        { title: 'Updated identity documents', detail: 'Front and back of directors\' government ID.', checked: true },
+        { title: 'Signed compliance declaration', detail: 'ESOS Act attestation form v3.1.', checked: true },
+        { title: 'Additional reference', detail: 'One more college referee required.', checked: false },
+        { title: 'Business insurance certificate', detail: 'Current professional indemnity certificate.', checked: false },
+      ],
+
+      agentMetrics: [
+        { label: 'Enrolments', value: '128', hint: 'trailing 12 months', color: '#292827' },
+        { label: 'Conversion', value: '71%', hint: 'app → enrolment', color: '#00843d' },
+        { label: 'Visa refusal', value: '4.2%', hint: 'sector avg 8%', color: '#00843d' },
+        { label: 'Withdrawals', value: '3', hint: 'past 12 months', color: '#d4a300' },
+        { label: 'Compliance', value: '96%', hint: '48 of 50 checks', color: '#00843d' },
+        { label: 'Cert. expiry', value: '184d', hint: 'QEAC renewal', color: '#292827' },
+      ],
+
+      ledger: [
+        { item: 'MARN 1789004', detail: 'Migration Agents Registration Authority', state: 'Valid', color: '#00843d', bg: '#e0f4e8' },
+        { item: 'QEAC certified', detail: 'Renews 21 Feb 2027', state: 'Valid', color: '#00843d', bg: '#e0f4e8' },
+        { item: 'Business registration', detail: 'VNM Ministry of Industry', state: 'Valid', color: '#00843d', bg: '#e0f4e8' },
+        { item: 'Professional indemnity', detail: 'AUD 5M coverage', state: 'Valid', color: '#00843d', bg: '#e0f4e8' },
+        { item: 'ESOS declaration v3.1', detail: 'Signed 12 Aug 2025', state: 'Renew', color: '#8a6b00', bg: '#fff4d4' },
+      ],
+
+      inviteChannels: [
+        { name: 'Email', detail: 'ananya@sunriseoverseas.in', checked: true, border: '#00843d', bg: '#e0f4e8' },
+        { name: 'WhatsApp', detail: '+91 98333 71120', checked: true, border: '#00843d', bg: '#e0f4e8' },
+        { name: 'SMS', detail: '+91 98333 71120', checked: false, border: '#e8e4dd', bg: '#fff' },
+      ],
+      sendInvite: () => { this.showToast('Portal invitation sent via Email + WhatsApp'); this.go('agents'); },
+
+      collateral: [
+        { title: 'Undergraduate Course Guide 2027', meta: 'PDF · 8.4 MB · v4.1', downloads: 214, updated: 'Updated 2 days ago', badge: 'New', badgeBg: '#ffcd00', badgeColor: '#00247d', thumbBg: 'linear-gradient(135deg,#00843d,#004d24)', thumbColor: '#fff', thumbLabel: 'Undergraduate Course Guide' },
+        { title: 'Postgraduate Handbook 2027', meta: 'PDF · 6.1 MB · v2.3', downloads: 158, updated: 'Updated 1 week ago', badge: 'Live', badgeBg: '#e0f4e8', badgeColor: '#00843d', thumbBg: 'linear-gradient(135deg,#00247d,#1a3d8f)', thumbColor: '#fff', thumbLabel: 'Postgraduate Handbook' },
+        { title: 'Tuition Fee Schedule 2027', meta: 'PDF · 1.2 MB · v1.0', downloads: 302, updated: 'Updated 4 days ago', badge: 'Updated', badgeBg: '#fff4d4', badgeColor: '#8a6b00', thumbBg: '#fafaf8', thumbColor: '#292827', thumbLabel: 'Tuition Fee Schedule 2027' },
+        { title: 'Melbourne Campus Brochure', meta: 'PDF · 12.3 MB · v3.0', downloads: 189, updated: 'Updated 3 weeks ago', badge: 'Live', badgeBg: '#e0f4e8', badgeColor: '#00843d', thumbBg: 'linear-gradient(135deg,#ffcd00,#e6a000)', thumbColor: '#00247d', thumbLabel: 'Melbourne Campus Brochure' },
+        { title: 'Student Handbook · English', meta: 'PDF · 4.8 MB · v5.0', downloads: 421, updated: 'Updated 6 weeks ago', badge: 'Live', badgeBg: '#e0f4e8', badgeColor: '#00843d', thumbBg: 'linear-gradient(135deg,#292827,#5a5652)', thumbColor: '#fff', thumbLabel: 'Student Handbook' },
+        { title: 'Agent Onboarding Kit', meta: 'ZIP · 22 MB · v2.0', downloads: 84, updated: 'Updated 2 months ago', badge: 'Live', badgeBg: '#e0f4e8', badgeColor: '#00843d', thumbBg: '#e0f4e8', thumbColor: '#004d24', thumbLabel: 'Agent Onboarding Kit' },
+      ],
+
+      offboardReasons: [
+        { label: 'Regulatory non-compliance', detail: 'MARN or QEAC expired without renewal.', checked: true, border: '#00843d', bg: '#e0f4e8' },
+        { label: 'Ethical breach', detail: 'Misleading marketing, poor student conduct.', checked: false, border: '#e8e4dd', bg: '#fff' },
+        { label: 'Underperformance', detail: 'Sustained low conversion or high refusal.', checked: false, border: '#e8e4dd', bg: '#fff' },
+        { label: 'Mutual termination', detail: 'Contract ended by agreement.', checked: false, border: '#e8e4dd', bg: '#fff' },
+      ],
+
+      offboardSteps: [
+        'Portal access revoked immediately',
+        'All marketing collateral downloads disabled',
+        'Pending invitations invalidated',
+        'Termination reason logged to audit trail',
+        'PRISMS + ASQAnet listings scheduled for update',
+      ],
+
+      agentMarketing: [
+        { title: 'Undergraduate Course Guide 2027', meta: 'PDF · 8.4 MB · v4.1', badge: 'New', badgeBg: '#ffcd00', badgeColor: '#00247d', iconBg: '#e0f4e8', iconColor: '#00843d' },
+        { title: 'Tuition Fee Schedule 2027', meta: 'PDF · 1.2 MB · v1.0', badge: 'Updated', badgeBg: '#fff4d4', badgeColor: '#8a6b00', iconBg: '#fff4d4', iconColor: '#8a6b00' },
+        { title: 'Melbourne Campus Brochure', meta: 'PDF · 12.3 MB · v3.0', badge: 'Live', badgeBg: '#e0f4e8', badgeColor: '#00843d', iconBg: '#dbe6ff', iconColor: '#00247d' },
+      ],
+
+      agentTasks: [
+        { title: 'Renew QEAC certificate', detail: 'Upload renewed certificate before 21 Feb 2027.', due: '184 days', color: '#00843d' },
+        { title: 'Sign ESOS declaration v3.2', detail: 'New version issued August 2026.', due: 'Due in 7 days', color: '#d4a300' },
+        { title: 'Verify commission invoice #INV-0912', detail: 'Match against Aug enrolments.', due: 'Due today', color: '#a12020' },
+      ],
+
+      invoiceKpis: [
+        { label: 'Awaiting match', value: '7', hint: 'AUD 184,220 total', color: '#d4a300' },
+        { label: 'Ready to pay', value: '11', hint: 'AUD 268,900 total', color: '#00843d' },
+        { label: 'Paid · MTD', value: 'AUD 412K', hint: '18 invoices · Aug 2026', color: '#292827' },
+        { label: 'Disputed', value: '2', hint: 'Requires finance review', color: '#a12020' },
+      ],
+      invoices: [
+        { id: 'INV-0918', agent: 'Global Bridge Education', students: 14, period: 'Aug 2026', amount: 'AUD 42,000', status: 'Ready to pay' },
+        { id: 'INV-0917', agent: 'Wattle & Willow Advisors', students: 9, period: 'Aug 2026', amount: 'AUD 27,900', status: 'Ready to pay' },
+        { id: 'INV-0916', agent: 'Southern Cross Study', students: 6, period: 'Aug 2026', amount: 'AUD 18,600', status: 'Awaiting match' },
+        { id: 'INV-0915', agent: 'Kangaroo Path Partners', students: 5, period: 'Aug 2026', amount: 'AUD 15,500', status: 'Awaiting match' },
+        { id: 'INV-0914', agent: 'Boomerang EduAgency', students: 4, period: 'Aug 2026', amount: 'AUD 12,400', status: 'Disputed' },
+        { id: 'INV-0913', agent: 'Outback Global Study', students: 3, period: 'Jul 2026', amount: 'AUD 9,300', status: 'Paid' },
+        { id: 'INV-0912', agent: 'Sunrise Overseas Consultants', students: 2, period: 'Jul 2026', amount: 'AUD 6,200', status: 'Paid' },
+      ].map(i => {
+        const map = {
+          'Ready to pay': ['#e0f4e8', '#00843d'],
+          'Awaiting match': ['#fff4d4', '#8a6b00'],
+          'Disputed': ['#fbe4e4', '#a12020'],
+          'Paid': ['#eeece9', '#73706d'],
+        };
+        return { ...i, statusBg: map[i.status][0], statusColor: map[i.status][1] };
+      }),
+
+      staff: [
+        { name: 'Priya Ramesh', email: 'priya.ramesh@kmc.edu.au', role: 'Admissions Manager', access: 'Owner', avatarBg: '#ffcd00', lastActive: 'Active now', status: 'Active' },
+        { name: 'Marcus Whitlow', email: 'marcus.whitlow@kmc.edu.au', role: 'Compliance Officer', access: 'Admin', avatarBg: '#c4e8d4', lastActive: '2 hours ago', status: 'Active' },
+        { name: 'Jasmine Ng', email: 'jasmine.ng@kmc.edu.au', role: 'International Recruitment Lead', access: 'Admin', avatarBg: '#d4d4f4', lastActive: 'Yesterday', status: 'Active' },
+        { name: 'Aditi Sharma', email: 'aditi.sharma@kmc.edu.au', role: 'Finance Officer', access: 'Finance', avatarBg: '#ffe4a0', lastActive: '3 days ago', status: 'Active' },
+        { name: 'Thomas Byrne', email: 'thomas.byrne@kmc.edu.au', role: 'Marketing Coordinator', access: 'Editor', avatarBg: '#c4e8f4', lastActive: '1 week ago', status: 'Active' },
+        { name: 'Elena Costa', email: 'elena.costa@kmc.edu.au', role: 'Admissions Officer', access: 'Reviewer', avatarBg: '#f4c4c4', lastActive: 'Invited', status: 'Invited' },
+      ].map(s => {
+        const map = { 'Active': ['#e0f4e8', '#00843d'], 'Invited': ['#fff4d4', '#8a6b00'] };
+        const initials = s.name.split(' ').map(w => w[0]).join('').slice(0,2);
+        return { ...s, initials, statusBg: map[s.status][0], statusColor: map[s.status][1] };
+      }),
+
+      reportTemplates: [
+        { title: 'Semi-annual Agent Activity Report', desc: 'Executive summary of applications, enrolments, conversion, compliance and risk across all agents.', tag: 'Exec · Board pack', tagBg: '#00247d', tagColor: '#fff', schedule: 'H1 & H2', last: 'Last generated 12 Feb 2026' },
+        { title: 'Agent Performance Scorecard', desc: 'Ranked table of every active agent with enrolments, conversion, visa refusal, withdrawals and comp score.', tag: 'Performance', tagBg: '#e0f4e8', tagColor: '#00843d', schedule: 'On demand', last: 'Last generated 4 Jul 2026' },
+        { title: 'Compliance & Risk Register', desc: 'MARN, QEAC, ASIC and ESOS status for every agent, with expiring certifications and risk band shifts.', tag: 'Compliance', tagBg: '#fff4d4', tagColor: '#8a6b00', schedule: 'Quarterly', last: 'Last generated 30 Jun 2026' },
+        { title: 'Country & Market Mix Report', desc: 'Enrolments and pipeline by source country, region and course level. Useful for board strategy discussions.', tag: 'Strategy', tagBg: '#ede1ff', tagColor: '#5c2ba0', schedule: 'Half-yearly', last: 'Last generated 12 Feb 2026' },
+        { title: 'Financial Contribution Report', desc: 'Revenue contribution by agent, commissions paid, and net margin per enrolled student.', tag: 'Finance', tagBg: '#dbe6ff', tagColor: '#00247d', schedule: 'Monthly', last: 'Last generated 31 Jul 2026' },
+        { title: 'Onboarding & Termination Log', desc: 'All agents onboarded, suspended or terminated in the reporting period, with reasons and audit trail.', tag: 'Audit', tagBg: '#eeece9', tagColor: '#73706d', schedule: 'Half-yearly', last: 'Last generated 12 Feb 2026' },
+      ],
+
+      agreementSteps: [
+        { n: '1', label: 'Approval', state: 'done' },
+        { n: '2', label: 'Agreement', state: 'current' },
+        { n: '3', label: 'Portal invite', state: 'upcoming' },
+      ],
+
+      agreementTerms: [
+        { label: 'Template', value: 'International Recruitment Agreement · v6.2 (2026)', hint: 'ESOS Act 2000 · ASQA compliant' },
+        { label: 'Term', value: '2 years · auto-renews annually', hint: 'Either party may terminate with 60 days notice' },
+        { label: 'Commission structure', value: '15% of Year 1 tuition · paid post-census', hint: 'Higher tier available for regional campuses' },
+        { label: 'Territories', value: 'India · Nepal · Sri Lanka', hint: 'Non-exclusive representation' },
+        { label: 'Compliance obligations', value: 'MARN + QEAC + ESOS annual attestation', hint: 'Certificate uploads via portal' },
+      ],
+
+      agreementSignatories: [
+        { name: 'Prof. David Chen', role: 'Deputy Vice-Chancellor, Kensington Melbourne College', email: 'd.chen@kmc.edu.au', order: 1, party: 'College', avatarBg: '#ffcd00' },
+        { name: 'Priya Ramesh', role: 'Admissions Manager (witness)', email: 'priya.ramesh@kmc.edu.au', order: 2, party: 'College', avatarBg: '#c4e8d4' },
+        { name: 'Ananya Iyer', role: 'Director, Sunrise Overseas Consultants', email: 'ananya@sunriseoverseas.in', order: 3, party: 'Agent', avatarBg: '#d4d4f4' },
+      ],
+
+      agreementSendVia: [
+        { name: 'DocuSign envelope', detail: 'Signed digitally · legally binding · auto-filed to audit trail', checked: true, border: '#00843d', bg: '#e0f4e8' },
+        { name: 'Email a copy to agent', detail: 'ananya@sunriseoverseas.in', checked: true, border: '#00843d', bg: '#e0f4e8' },
+        { name: 'Post signed PDF to Salesforce record', detail: 'Attaches to Sunrise Overseas account · CRM sync', checked: true, border: '#00843d', bg: '#e0f4e8' },
+      ],
+
+      sendAgreement: () => { this.showToast('Agreement sent via DocuSign · awaiting agent signature'); this.go('gov-registration'); },
+      goAudit: () => this.go('audit'),
+      goGovReg: () => this.go('gov-registration'),
+
+      govPortals: [
+        { name: 'PRISMS', full: 'Provider Registration &amp; International Student Management System', desc: 'Register agent for CoE issuance and reporting under ESOS Act.', owner: 'Dept. of Education', status: 'In progress', color: '#8a6b00', bg: '#fff4d4', priority: 'Required', priorityBg: '#a12020', ref: 'PRV-14022 · Pending review', due: 'Due 21 Aug 2026', action: 'Continue submission' },
+        { name: 'ASQAnet', full: 'Australian Skills Quality Authority regulator portal', desc: 'Add authorised representative for CRICOS-registered VET courses.', owner: 'ASQA', status: 'Not started', color: '#73706d', bg: '#eeece9', priority: 'Required', priorityBg: '#a12020', ref: 'Awaiting kickoff', due: 'Due 25 Aug 2026', action: 'Start' },
+        { name: 'TEQSA Provider Portal', full: 'Higher Education regulator record', desc: 'Notify TEQSA of new recruitment partner under HES Framework.', owner: 'TEQSA', status: 'Complete', color: '#00843d', bg: '#e0f4e8', priority: 'Required', priorityBg: '#a12020', ref: 'Case #TQ-88214 · Confirmed 8 Aug', due: 'Filed 8 Aug 2026', action: 'View filing' },
+        { name: 'Home Affairs · VEVO', full: 'Visa Entitlement Verification listing', desc: 'List agent as authorised recruitment partner for student visa lodgements.', owner: 'Dept. of Home Affairs', status: 'Not started', color: '#73706d', bg: '#eeece9', priority: 'Recommended', priorityBg: '#8a6b00', ref: '—', due: 'Due 4 Sep 2026', action: 'Start' },
+        { name: 'PIER Registry', full: 'Professional International Education Resources', desc: 'Verify agent QEAC / PIER certification is current in the industry registry.', owner: 'PIER', status: 'Complete', color: '#00843d', bg: '#e0f4e8', priority: 'Recommended', priorityBg: '#8a6b00', ref: 'QEAC #10829 · Valid to Feb 2027', due: 'Verified 6 Aug 2026', action: 'View record' },
+      ],
+
+      govProgress: { done: 2, total: 5, pct: '40%' },
+
+      auditFilters: [
+        { label: 'All events', count: '2,847', active: true },
+        { label: 'Approvals', count: 128, active: false },
+        { label: 'Agreements', count: 96, active: false },
+        { label: 'Gov. registrations', count: 84, active: false },
+        { label: 'Invites', count: 112, active: false },
+        { label: 'Terminations', count: 14, active: false },
+        { label: 'Data changes', count: 1420, active: false },
+      ],
+
+      auditEvents: [
+        { time: '14 Aug 2026 · 10:42 AEST', actor: 'Priya Ramesh', role: 'Admissions Manager', target: 'Sunrise Overseas Consultants', action: 'Approved application App-2087', detail: '6 of 6 compliance checks passed · AI review clear', category: 'Approvals', color: '#00843d', ip: '203.45.12.198', device: 'macOS · Chrome' },
+        { time: '14 Aug 2026 · 10:44 AEST', actor: 'AMP System', role: 'Automation', target: 'Sunrise Overseas Consultants', action: 'Sent agreement v6.2 for e-signature', detail: 'DocuSign envelope 8F2Q9 · 3 signatories · Salesforce record linked', category: 'Agreements', color: '#00247d', ip: '—', device: 'System' },
+        { time: '14 Aug 2026 · 09:15 AEST', actor: 'Marcus Whitlow', role: 'Compliance Officer', target: 'Southern Cross Study', action: 'Flagged QEAC expiry', detail: 'Auto-reminder scheduled 14 days before renewal deadline', category: 'Data changes', color: '#8a6b00', ip: '203.45.12.201', device: 'Windows · Edge' },
+        { time: '13 Aug 2026 · 17:22 AEST', actor: 'Jasmine Ng', role: 'International Recruitment Lead', target: 'Beacon Global Ed', action: 'Sent portal invitation', detail: 'Email + WhatsApp · link expires 20 Aug 2026', category: 'Invites', color: '#5c2ba0', ip: '203.45.12.204', device: 'macOS · Safari' },
+        { time: '13 Aug 2026 · 14:03 AEST', actor: 'Aditi Sharma', role: 'Finance Officer', target: 'INV-0918 · Global Bridge Education', action: 'Marked invoice ready to pay', detail: 'AUD 42,000 · 14 students · posted to NetSuite queue', category: 'Data changes', color: '#8a6b00', ip: '203.45.12.209', device: 'Windows · Edge' },
+        { time: '12 Aug 2026 · 11:58 AEST', actor: 'Priya Ramesh', role: 'Admissions Manager', target: 'Reef &amp; Ridge Global', action: 'Suspended agent', detail: 'Reason: regulatory non-compliance · MARN expired · access revoked', category: 'Terminations', color: '#a12020', ip: '203.45.12.198', device: 'macOS · Chrome' },
+        { time: '12 Aug 2026 · 09:31 AEST', actor: 'Marcus Whitlow', role: 'Compliance Officer', target: 'Global Bridge Education', action: 'Filed with TEQSA portal', detail: 'Case #TQ-88214 · registered as recruitment partner', category: 'Gov. registrations', color: '#00247d', ip: '203.45.12.201', device: 'Windows · Edge' },
+        { time: '11 Aug 2026 · 16:12 AEST', actor: 'AMP System', role: 'Automation', target: 'Emerald Pathway Global', action: 'Ran AI document scan', detail: '5 documents · match rate 96% · 1 attention flag', category: 'Data changes', color: '#8a6b00', ip: '—', device: 'System' },
+      ],
+
+      recentReports: [
+        { name: 'Semi-annual Agent Activity Report · H1 2026', by: 'Priya Ramesh · 12 Feb 2026', period: 'Jul 2025 – Dec 2025', pages: '24 pages · PDF + XLSX', color: '#00843d' },
+        { name: 'Compliance & Risk Register · Q2 2026', by: 'Marcus Whitlow · 30 Jun 2026', period: 'Apr 2026 – Jun 2026', pages: '11 pages · PDF', color: '#8a6b00' },
+        { name: 'Agent Performance Scorecard · YTD', by: 'Jasmine Ng · 4 Jul 2026', period: 'Jan 2026 – Jun 2026', pages: '8 pages · PDF', color: '#00843d' },
+        { name: 'Financial Contribution Report · July', by: 'Aditi Sharma · 31 Jul 2026', period: 'Jul 2026', pages: '6 pages · XLSX', color: '#00247d' },
+      ],
+
+      integrations: [
+        { name: 'NetSuite ERP', kind: 'ERP', desc: 'Sync invoices, commissions and payouts to General Ledger.', status: 'Connected', color: '#00843d', bg: '#e0f4e8', logo: 'NS', logoBg: '#00843d', logoColor: '#fff', lastSync: 'Synced 4 min ago · 128 records' },
+        { name: 'SAP S/4HANA', kind: 'ERP', desc: 'Push agent vendor master and invoice records nightly.', status: 'Connected', color: '#00843d', bg: '#e0f4e8', logo: 'SAP', logoBg: '#0070c0', logoColor: '#fff', lastSync: 'Synced yesterday · 04:00 AEST' },
+        { name: 'Salesforce Education Cloud', kind: 'CRM', desc: 'Two-way sync of applicants, enrolments and agent activity.', status: 'Connected', color: '#00843d', bg: '#e0f4e8', logo: 'SF', logoBg: '#00a1e0', logoColor: '#fff', lastSync: 'Live · webhook stream' },
+        { name: 'HubSpot CRM', kind: 'CRM', desc: 'Log agent-generated leads and enrolment lifecycle events.', status: 'Action needed', color: '#8a6b00', bg: '#fff4d4', logo: 'HS', logoBg: '#ff7a59', logoColor: '#fff', lastSync: 'Token expired · reconnect required' },
+        { name: 'Zoho CRM', kind: 'CRM', desc: 'Route applications from Zoho Forms into AMP intake.', status: 'Connected', color: '#00843d', bg: '#e0f4e8', logo: 'ZH', logoBg: '#c8202f', logoColor: '#fff', lastSync: 'Synced 12 min ago · 8 applications' },
+        { name: 'Xero Accounting', kind: 'ERP', desc: 'Post commission invoices and payments to Xero ledger.', status: 'Not connected', color: '#73706d', bg: '#eeece9', logo: 'XR', logoBg: '#13b5ea', logoColor: '#fff', lastSync: 'Available on Plus plan' },
+      ],
+      rolePermissions: [
+        { role: 'Owner', desc: 'Full access · billing · workspace deletion', color: '#00247d' },
+        { role: 'Admin', desc: 'Manage agents, applications, staff', color: '#00843d' },
+        { role: 'Finance', desc: 'Access invoices, commissions, payouts', color: '#8a6b00' },
+        { role: 'Editor', desc: 'Manage marketing collateral only', color: '#5c2ba0' },
+        { role: 'Reviewer', desc: 'Review applications · cannot approve', color: '#73706d' },
+      ],
+
+      toast: !!this.state.toast,
+      toastMsg: this.state.toast || '',
+    };
+  }
+}
+
+</script>
+</body>
+</html>

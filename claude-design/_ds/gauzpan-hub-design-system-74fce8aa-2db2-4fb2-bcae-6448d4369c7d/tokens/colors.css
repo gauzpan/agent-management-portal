@@ -1,0 +1,15 @@
+:root{
+--color-primary:#00843d;--color-primary-deep:#004d24;--color-on-primary:#ffffff;
+--color-ink:#292827;--color-ink-mute:#73706d;--color-ink-faint:#9a9794;
+--color-canvas:#ffffff;--color-canvas-soft:#fafaf8;
+--color-violet-soft:#ffcd00;--color-teal-deep:#00247d;--color-teal-mid:#1a3d8f;
+--color-hairline:#e8e4dd;--color-hairline-dark:#1c3a66;
+--color-on-dark-mute:#bcd4c4;--color-on-dark-faint:#6f9c85;
+--surface-hero:var(--color-primary);--surface-hero-deep:var(--color-primary-deep);
+--surface-body:var(--color-canvas);--surface-body-soft:var(--color-canvas-soft);
+--surface-cta-band:var(--color-teal-deep);--surface-cta-band-mid:var(--color-teal-mid);
+--surface-hero-cta:var(--color-violet-soft);
+--text-body:var(--color-ink);--text-body-mute:var(--color-ink-mute);--text-body-faint:var(--color-ink-faint);
+--text-on-dark:var(--color-on-primary);--text-on-dark-mute:var(--color-on-dark-mute);--text-on-dark-faint:var(--color-on-dark-faint);
+--border-hairline:var(--color-hairline);--border-hairline-dark:var(--color-hairline-dark);
+}

@@ -1,0 +1,31 @@
+/* Design-system tokens — copied verbatim from
+   claude-design/_ds/gauzpan-hub-design-system-.../tokens/*.css so the PWA
+   renders against the same variables as the designer's prototype.
+   Do not hand-edit values; re-copy from the DS if the comp changes. */
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
+
+:root {
+  --font-display: 'Inter', 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* colors */
+  --color-primary: #00843d; --color-primary-deep: #004d24; --color-on-primary: #ffffff;
+  --color-ink: #292827; --color-ink-mute: #73706d; --color-ink-faint: #9a9794;
+  --color-canvas: #ffffff; --color-canvas-soft: #fafaf8;
+  --color-violet-soft: #ffcd00; --color-teal-deep: #00247d; --color-teal-mid: #1a3d8f;
+  --color-hairline: #e8e4dd; --color-hairline-dark: #1c3a66;
+  --color-on-dark-mute: #bcd4c4; --color-on-dark-faint: #6f9c85;
+
+  /* spacing */
+  --space-xxs: 2px; --space-xs: 4px; --space-sm: 8px; --space-md: 12px;
+  --space-lg: 16px; --space-xl: 24px; --space-xxl: 32px; --space-huge: 64px;
+
+  /* radius */
+  --radius-xs: 4px; --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px;
+  --radius-xl: 16px; --radius-full: 9999px;
+
+  /* shadows */
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.08); --shadow-2: 0 8px 24px rgba(0,0,0,0.12);
+}
