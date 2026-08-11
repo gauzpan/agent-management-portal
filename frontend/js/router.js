@@ -13,6 +13,8 @@ import { renderInvite } from './pages/invite.js';
 import { renderAgentDashboard } from './pages/agent-dashboard.js';
 import { renderMarketing } from './pages/marketing.js';
 import { renderAgentProfile } from './pages/agent-profile.js';
+import { renderAgents } from './pages/agents.js';
+import { renderAgent } from './pages/agent.js';
 import { renderIntake } from './pages/intake.js';
 import { renderPlaceholder } from './pages/placeholder.js';
 
@@ -30,6 +32,7 @@ const PARENT_NAV = {
   application: 'applications',
   agreement: 'applications',
   invite: 'applications',
+  agent: 'agents',  // M4 individual agent profile → highlights Agents nav (admin)
 };
 
 const app = document.getElementById('app');
@@ -60,6 +63,8 @@ async function dispatchPage(pageMount, route, param) {
     case 'agent-view': return renderAgentDashboard(pageMount, { navigate });
     case 'marketing': return renderMarketing(pageMount, { navigate });
     case 'agent-profile': return renderAgentProfile(pageMount, { navigate });
+    case 'agents': return renderAgents(pageMount, { navigate });
+    case 'agent': return renderAgent(pageMount, param, { navigate });
     default: return renderPlaceholder(pageMount, route);
   }
 }

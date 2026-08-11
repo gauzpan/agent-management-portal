@@ -79,6 +79,8 @@ export const api = {
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   },
   agents: () => request('/agents'),
+  // M4 — individual agent profile (admin view).
+  agent: (id) => request(`/agents/${id}`),
   marketing: () => request('/marketing'),
   audit: () => request('/audit'),
 

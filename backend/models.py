@@ -37,6 +37,20 @@ class Agent(SQLModel, table=True):
     enrol: int = 0
     conv: str = ""  # conversion %, e.g. "71%"
     comp: str = ""  # compliance score %, e.g. "96%"
+    # M4 (active-agent management, Journey 4): partnership + validity + rating.
+    marn: str = ""            # MARA/MARN registration number (profile subline)
+    next_review: str = ""     # next scheduled compliance review (display string)
+    students: int = 0         # students currently enrolled (distinct from enrol,
+    #                           which is the trailing-12mo enrolments metric)
+    rating: float = 0.0       # agent quality rating (0–5), from student activity
+    rating_count: int = 0     # number of ratings behind `rating`
+    # Certification/license validity tracking. Each item:
+    # {"type": str, "identifier": str, "issued": "YYYY-MM-DD",
+    #  "expires": "YYYY-MM-DD"|"", "status": ""}. `status`/expiry state are
+    # computed at read time (main.cert_validity) — not stored.
+    certifications: Optional[list[dict[str, Any]]] = Field(
+        default=None, sa_column=Column(SA_JSON)
+    )
 
 
 class Application(SQLModel, table=True):

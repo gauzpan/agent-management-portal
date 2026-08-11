@@ -5,7 +5,7 @@ M2: application detail + the admin onboarding loop (decision → agreement → i
     all persisted with a tamper-evident AuditEvent per action.
 """
 import secrets
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 import uvicorn
@@ -1056,9 +1056,106 @@ def invite_agent(
     }
 
 
+# --- M4: active-agent management (Journey 4) --------------------------------
+# Certification/license validity is stored raw on the Agent; the expiry state is
+# derived here at read time so it always reflects "today" without a cron job.
+_EXPIRING_WINDOW_DAYS = 60
+
+
+def cert_validity(expires: str) -> dict:
+    """Classify a certification's expiry vs today.
+
+    Returns {"state": valid|expiring|expired|none, "days": int|None, "label": str}.
+    `days` is days-until-expiry (negative once past); None when there is no date.
+    """
+    if not expires:
+        return {"state": "none", "days": None, "label": "No expiry on file"}
+    try:
+        exp = date.fromisoformat(expires)
+    except ValueError:
+        return {"state": "none", "days": None, "label": "No expiry on file"}
+    days = (exp - date.today()).days
+    if days < 0:
+        return {"state": "expired", "days": days,
+                "label": f"Expired {abs(days)} day{'s' if abs(days) != 1 else ''} ago"}
+    if days <= _EXPIRING_WINDOW_DAYS:
+        return {"state": "expiring", "days": days,
+                "label": f"Expires in {days} day{'s' if days != 1 else ''}"}
+    return {"state": "valid", "days": days, "label": f"Valid · expires {expires}"}
+
+
+# Worst individual cert state → an overall compliance rollup for the agent.
+_COMPLIANCE_RANK = {"expired": 3, "expiring": 2, "valid": 1, "none": 0}
+_COMPLIANCE_LABEL = {3: "At risk", 2: "Action needed", 1: "Compliant", 0: "Compliant"}
+
+
+def _enriched_certs(agent: Agent) -> list[dict]:
+    """Agent's certifications with computed validity attached (never mutated)."""
+    out = []
+    for c in (agent.certifications or []):
+        v = cert_validity(c.get("expires", ""))
+        out.append({**c, "state": v["state"], "days": v["days"], "label": v["label"]})
+    return out
+
+
+def _compliance_state(certs: list[dict]) -> str:
+    worst = max((_COMPLIANCE_RANK[c["state"]] for c in certs), default=0)
+    return _COMPLIANCE_LABEL[worst]
+
+
 @app.get("/agents", tags=["agents"])
-def list_agents(session: Session = Depends(get_session)) -> list[Agent]:
-    return session.exec(select(Agent)).all()
+def list_agents(session: Session = Depends(get_session)) -> list[dict]:
+    """Roster of agents, each augmented with a read-time compliance rollup.
+
+    Additive fields only (compliance_state, expiring_count) — existing callers
+    that read the flat Agent fields (e.g. the dashboard KPI count) are unaffected.
+    """
+    rows = session.exec(select(Agent)).all()
+    out = []
+    for a in rows:
+        certs = _enriched_certs(a)
+        out.append({
+            **a.model_dump(),
+            "compliance_state": _compliance_state(certs),
+            "expiring_count": sum(1 for c in certs if c["state"] == "expiring"),
+            "expired_count": sum(1 for c in certs if c["state"] == "expired"),
+        })
+    return out
+
+
+@app.get("/agents/{agent_id}", tags=["agents"])
+def get_agent(agent_id: int, session: Session = Depends(get_session)) -> dict:
+    """Individual agent profile for the admin: metrics, certs, compliance ledger."""
+    agent = session.get(Agent, agent_id)
+    if agent is None:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    certs = _enriched_certs(agent)
+    rating = f"{agent.rating:.1f}" if agent.rating else "—"
+    metrics = {
+        "students": {"label": "Students enrolled", "value": agent.students},
+        "enrol": {"label": "Enrolments · 12mo", "value": agent.enrol},
+        "conversion": {"label": "Conversion", "value": agent.conv or "—"},
+        "compliance": {"label": "Compliance", "value": agent.comp or "—"},
+        "rating": {"label": "Quality rating",
+                   "value": rating, "hint": f"{agent.rating_count} ratings"},
+        "tenure": {"label": "Partner since", "value": agent.since or "—"},
+    }
+    # Compliance ledger = one row per certification, shaped for the profile panel.
+    ledger = [{
+        "item": c.get("type", "Certification"),
+        "detail": c.get("identifier", ""),
+        "issued": c.get("issued", ""),
+        "expires": c.get("expires", ""),
+        "state": c["state"],
+        "label": c["label"],
+    } for c in certs]
+    return {
+        "agent": agent,
+        "certifications": certs,
+        "metrics": metrics,
+        "ledger": ledger,
+        "compliance_state": _compliance_state(certs),
+    }
 
 
 @app.get("/marketing", tags=["marketing"])

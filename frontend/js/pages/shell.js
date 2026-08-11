@@ -9,6 +9,7 @@ const DETAIL_META = {
   application: ['Reviewing application', 'Business, documents & referee review'],
   agreement: ['Send agent agreement', 'Approval → Agreement → Invite'],
   invite: ['Send portal invitation', 'Grant the approved agent portal access'],
+  agent: ['Agent profile', 'Partnership, performance & certification validity'],
 };
 
 export function renderShell(mount, { route, activeNav, navigate, onLogout }) {
