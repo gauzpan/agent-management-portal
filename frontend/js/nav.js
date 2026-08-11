@@ -10,7 +10,6 @@ export const NAV = [
   { route: 'reports',    label: 'Reports',              badge: '',   roles: ['admin'],          milestone: 'M5' },
   { route: 'audit',      label: 'Audit trail',          badge: '',   roles: ['admin'],          milestone: 'M5' },
   { route: 'settings',   label: 'Settings',             badge: '',   roles: ['admin'],          milestone: 'M5' },
-  { route: 'agent-view', label: 'Agent portal',         badge: '',   roles: ['admin', 'agent'], milestone: 'M3' },
   { route: 'agent-profile', label: 'My profile',        badge: '',   roles: ['agent'],          milestone: 'M3' },
 ];
 
@@ -29,5 +28,6 @@ export const PAGE_META = {
 };
 
 export function defaultRouteForRole(role) {
-  return role === 'agent' ? 'agent-view' : 'dashboard';
+  // Agent portal was removed from nav; agents land on their profile instead.
+  return role === 'agent' ? 'agent-profile' : 'dashboard';
 }
