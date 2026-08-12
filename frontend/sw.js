@@ -2,7 +2,7 @@
 // code NETWORK-FIRST so a code change is never masked by a stale cache (a
 // cache-first worker made edits "disappear" until a manual cache clear). The
 // cache is the offline fallback, not the source of truth.
-const CACHE = 'amp-shell-v6';
+const CACHE = 'amp-shell-v7';
 const SHELL = [
   './',
   './index.html',
@@ -44,7 +44,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   // Never intercept API calls; let them hit the network (and fail loudly offline).
-  if (url.port === '8000') return;
+  // The backend is a different origin in every environment (:8000 locally, a
+  // separate onrender.com host in prod), so skip anything cross-origin.
+  if (url.origin !== self.location.origin) return;
   if (event.request.method !== 'GET') return;
 
   // Network-first: always try the live file, fall back to cache when offline.

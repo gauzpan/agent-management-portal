@@ -4,6 +4,7 @@ M1: health, /seed, stub login, read-only list endpoints.
 M2: application detail + the admin onboarding loop (decision → agreement → invite),
     all persisted with a tamper-evident AuditEvent per action.
 """
+import os
 import secrets
 from datetime import datetime
 from pathlib import Path
@@ -52,13 +53,17 @@ from seed import seed_all
 
 app = FastAPI(title="Agent Management Portal API", version="0.1.0")
 
-# Frontend is served statically from :8080 in dev; keep CORS explicit.
+# Frontend is served statically from :8080 in dev; keep CORS explicit. In
+# production the deployed frontend origin comes from FRONTEND_ORIGIN (set on the
+# Render service) so we never wildcard the allow-list.
+_cors_origins = ["http://127.0.0.1:8080", "http://localhost:8080"]
+_frontend_origin = os.environ.get("FRONTEND_ORIGIN")
+if _frontend_origin:
+    _cors_origins.append(_frontend_origin.rstrip("/"))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:8080",
-        "http://localhost:8080",
-    ],
+    allow_origins=_cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -1051,7 +1056,8 @@ def invite_agent(
         "ok": True, "channels": body.channels,
         "credentials": {
             "email": email, "password": temp_password,
-            "portal_url": "http://127.0.0.1:8080/#/login", "role": "agent",
+            "portal_url": f"{os.environ.get('FRONTEND_ORIGIN', 'http://127.0.0.1:8080').rstrip('/')}/#/login",
+            "role": "agent",
         },
     }
 
@@ -1205,5 +1211,9 @@ def list_audit(session: Session = Depends(get_session)) -> list[AuditEvent]:
 
 
 if __name__ == "__main__":
-    # Programmatic invocation of the server runtime.
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    # Programmatic invocation of the server runtime. Bind all interfaces and use
+    # the platform-provided $PORT (Render/most PaaS) so the app is reachable in
+    # production; fall back to :8000 locally. Hot-reload only when DEV is set.
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port,
+                reload=bool(os.environ.get("DEV")))

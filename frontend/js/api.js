@@ -2,7 +2,12 @@
 // headers, base URL, and error handling live in one place (per frontend/CLAUDE.md).
 import { store } from './store.js';
 
-const BASE = 'http://127.0.0.1:8000';
+// Local dev talks to the native FastAPI server on :8000. Anywhere else (the
+// deployed static site) talks to the backend web service. After the backend's
+// first Render deploy, replace PROD_BASE with the real https://<name>.onrender.com URL.
+const PROD_BASE = 'https://agent-management-portal.onrender.com';
+const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+const BASE = LOCAL ? 'http://127.0.0.1:8000' : PROD_BASE;
 
 async function request(path, { method = 'GET', body } = {}) {
   // FormData bodies (file uploads) must NOT set Content-Type — the browser adds
