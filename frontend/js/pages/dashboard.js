@@ -39,8 +39,8 @@ export async function renderDashboard(mount, { navigate } = {}) {
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">${cards}</div>
       ${emptyState({
         icon: '🚧',
-        title: 'Full dashboard arrives in M2',
-        hint: 'Risk profile, application pipeline, expiring certifications and top performers will render here once the admin onboarding loop is built. The counts above confirm the PWA ↔ FastAPI ↔ SQLite path is live.',
+        title: 'Stay tuned',
+        hint: '',
       })}`;
 
     // Clickable KPI cards redirect to their list page.
