@@ -144,8 +144,20 @@ def agent_me(
 
 
 @app.get("/applications", tags=["applications"])
-def list_applications(session: Session = Depends(get_session)) -> list[Application]:
-    return session.exec(select(Application)).all()
+def list_applications(
+    include_active: bool = False, session: Session = Depends(get_session)
+) -> list[Application]:
+    """List applications in the onboarding pipeline.
+
+    Once an application is onboarded end-to-end (approved → agreement signed →
+    invited), its status becomes 'Active' and a matching Agent is created. At that
+    point it has graduated to the Agents directory, so it's excluded here by
+    default — pass include_active=true to include onboarded applications too.
+    """
+    stmt = select(Application)
+    if not include_active:
+        stmt = stmt.where(Application.status != "Active")
+    return session.exec(stmt).all()
 
 
 _COUNTRY_FLAGS = {
