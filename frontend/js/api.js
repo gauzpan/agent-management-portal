@@ -106,6 +106,8 @@ export const api = {
     URL.revokeObjectURL(url);
     return filename;
   },
+  // Public: blank Agent Application Form PDF for applicants on the intake page.
+  downloadApplicationForm() { return this._downloadFile('/application-form/download', 'Agent Application Form.pdf'); },
   downloadMarketing(id) { return this._downloadFile(`/marketing/${id}/download`, `asset-${id}.pdf`); },
   downloadDocument(id) { return this._downloadFile(`/documents/${id}/download`, `document-${id}`); },
 };

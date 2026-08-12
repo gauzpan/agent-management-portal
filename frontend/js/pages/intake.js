@@ -7,7 +7,7 @@
 // (files stored in the app-forms document store) and shows a success state. The
 // submission lands in the admin's Applications list as "New".
 import { api, ApiError } from '../api.js';
-import { esc } from '../ui.js';
+import { esc, toast } from '../ui.js';
 
 // Supporting-document slots. `type` is persisted as Document.doc_type.
 const DOC_SLOTS = [
@@ -70,6 +70,14 @@ export function renderIntake(mount, { navigate }) {
             </div>
             ${field('in-country', 'Country', 'India')}
 
+            <div style="background:#f6f4ef;border:1px solid var(--color-hairline);border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+              <div style="font-size:12px;font-weight:600;color:var(--color-ink);">Don't have the form yet?</div>
+              <div style="font-size:11px;color:var(--color-ink-mute);margin:2px 0 9px;">Download the blank Agent Application Form, fill it in, then upload it below.</div>
+              <button type="button" id="in-download-form"
+                style="padding:8px 14px;background:#fff;color:var(--color-primary);border:1px solid var(--color-primary);border-radius:8px;
+                  font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">⬇ Download application form</button>
+            </div>
+
             <label class="field" style="display:block;margin-bottom:8px;">
               <span style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;">Application form (PDF) <span style="color:#a12020;">*</span></span>
               <input id="in-file" type="file" accept="application/pdf,.pdf" required
@@ -97,6 +105,20 @@ export function renderIntake(mount, { navigate }) {
       </div>`;
 
     mount.querySelector('#intake-form').addEventListener('submit', submit);
+
+    mount.querySelector('#in-download-form').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Downloading…';
+      try {
+        const filename = await api.downloadApplicationForm();
+        toast(`Downloaded ${filename}`);
+      } catch {
+        toast('Could not download the application form. Is the backend running on :8000?');
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    });
   }
 
   async function submit(e) {

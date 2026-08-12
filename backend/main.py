@@ -1135,6 +1135,29 @@ def download_marketing(asset_id: int, session: Session = Depends(get_session)) -
     )
 
 
+# Blank application form shipped for applicants to download, fill, and re-upload.
+# Lives in the repo's PRD folder (../PRD/application-forms) — the single master copy.
+_APP_FORM_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "PRD" / "application-forms" / "Agent Application Form.pdf"
+)
+
+
+@app.get("/application-form/download", tags=["applications"])
+def download_application_form() -> Response:
+    """Public: download the blank Agent Application Form PDF (no auth required).
+
+    Applicants grab this on the public intake page, fill it in, and re-upload it
+    with their submission.
+    """
+    if not _APP_FORM_PATH.exists():
+        raise HTTPException(status_code=404, detail="Application form not available")
+    return Response(
+        content=_APP_FORM_PATH.read_bytes(), media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="Agent Application Form.pdf"'},
+    )
+
+
 _MEDIA_BY_EXT = {".pdf": "application/pdf", ".jpg": "image/jpeg",
                  ".jpeg": "image/jpeg", ".png": "image/png"}
 

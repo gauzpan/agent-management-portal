@@ -32,11 +32,22 @@ export function renderLogin(mount, { navigate }) {
             <input id="login-password" type="password" placeholder="••••••••••" value="demo">
           </label>
           <button class="btn-primary" type="submit">Sign in</button>
-          <div class="login__hint">Not a partner yet? <a href="#/apply" style="color:var(--color-primary);font-weight:600;">Apply to become a partner →</a></div>
+
+          <div style="display:flex;align-items:center;gap:10px;margin:16px 0 4px;color:var(--color-ink-faint);font-size:11px;">
+            <span style="flex:1;height:1px;background:var(--color-hairline);"></span>New agent?<span style="flex:1;height:1px;background:var(--color-hairline);"></span>
+          </div>
+          <button type="button" id="apply-cta"
+            style="width:100%;padding:12px 16px;background:#fff;color:var(--color-primary);border:1px solid var(--color-primary);
+              border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
+            Apply to become a partner →
+          </button>
+
           <div class="login__hint">Demo: admin@kmc.edu.au (admin) · agent@sunriseoverseas.in (agent)</div>
         </form>
       </div>
     </div>`;
+
+  mount.querySelector('#apply-cta').addEventListener('click', () => navigate('apply'));
 
   mount.querySelector('#login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
