@@ -7,6 +7,7 @@ import { renderLogin } from './pages/login.js';
 import { renderShell } from './pages/shell.js';
 import { renderDashboard } from './pages/dashboard.js';
 import { renderApplications } from './pages/applications.js';
+import { renderAgents } from './pages/agents.js';
 import { renderApplication } from './pages/application.js';
 import { renderAgreement } from './pages/agreement.js';
 import { renderInvite } from './pages/invite.js';
@@ -54,6 +55,7 @@ async function dispatchPage(pageMount, route, param) {
   switch (route) {
     case 'dashboard': return renderDashboard(pageMount, { navigate });
     case 'applications': return renderApplications(pageMount, { navigate });
+    case 'agents': return renderAgents(pageMount, { navigate });
     case 'application': return renderApplication(pageMount, param, { navigate });
     case 'agreement': return renderAgreement(pageMount, param, { navigate });
     case 'invite': return renderInvite(pageMount, param, { navigate });
