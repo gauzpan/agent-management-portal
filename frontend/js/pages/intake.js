@@ -55,7 +55,13 @@ export function renderIntake(mount, { navigate }) {
     mount.innerHTML = `
       <div class="login">
         <div class="login__hero">
-          <div class="login__brand"><div class="sidebar__logo">A</div> Agent Management Portal</div>
+          <div class="login__brand">
+            <div class="sidebar__logo"><img src="icons/logo.svg" alt="Corridor"></div>
+            <div style="line-height:1.15;">
+              <div class="brand-wordmark" style="font-size:22px;">Corridor</div>
+              <div style="font-size:11px;font-weight:460;letter-spacing:0.3px;color:rgba(255,255,255,0.72);">Agent Management Portal</div>
+            </div>
+          </div>
           <div>
             <div class="login__headline">Apply to become a recruitment partner.</div>
             <div class="login__blurb">Submit your agency details, your completed application form, and the supporting documents. Our admissions team reviews every application against ESOS and ASQA standards and will be in touch.</div>
@@ -195,7 +201,13 @@ export function renderIntake(mount, { navigate }) {
     mount.innerHTML = `
       <div class="login">
         <div class="login__hero">
-          <div class="login__brand"><div class="sidebar__logo">A</div> Agent Management Portal</div>
+          <div class="login__brand">
+            <div class="sidebar__logo"><img src="icons/logo.svg" alt="Corridor"></div>
+            <div style="line-height:1.15;">
+              <div class="brand-wordmark" style="font-size:22px;">Corridor</div>
+              <div style="font-size:11px;font-weight:460;letter-spacing:0.3px;color:rgba(255,255,255,0.72);">Agent Management Portal</div>
+            </div>
+          </div>
           <div>
             <div class="login__headline">Application received.</div>
             <div class="login__blurb">Thank you — our admissions team will review your application and supporting documents and contact you at the email you provided.</div>

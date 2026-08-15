@@ -10,7 +10,30 @@ import { api, ApiError } from '../api.js';
 import { esc, statusPill, emptyState, modal, toast, dualBadge, signalIcon,
   confidenceBucketChip, sourcePage } from '../ui.js';
 
+// Inline spinner keyframes, injected once, so buttons can show a busy state
+// while their API call is in flight.
+function ensureSpinnerStyle() {
+  if (document.getElementById('amp-spin-style')) return;
+  const s = document.createElement('style');
+  s.id = 'amp-spin-style';
+  s.textContent = '@keyframes amp-spin{to{transform:rotate(360deg)}}'
+    + '.amp-spinner{display:inline-block;width:12px;height:12px;border:2px solid currentColor;'
+    + 'border-right-color:transparent;border-radius:50%;animation:amp-spin .6s linear infinite;vertical-align:-2px;}';
+  document.head.appendChild(s);
+}
+
+// Put a button into a disabled, spinner "busy" state while an async action runs.
+// A following draw() replaces the button and clears this automatically.
+function setButtonBusy(btn, label = 'Saving…') {
+  if (!btn) return;
+  btn.disabled = true;
+  btn.style.cursor = 'wait';
+  btn.style.opacity = '0.8';
+  btn.innerHTML = `<span class="amp-spinner"></span> ${label}`;
+}
+
 export async function renderApplication(mount, id, { navigate }) {
+  ensureSpinnerStyle();
   mount.innerHTML = `<div style="color:var(--color-ink-mute);font-size:13px;">Loading application…</div>`;
 
   let data, review;
@@ -729,7 +752,10 @@ export async function renderApplication(mount, id, { navigate }) {
     mount.querySelectorAll('.tl-item').forEach((t) => t.addEventListener('click', () => { tab = t.dataset.tab; draw(); }));
     const statNeeds = mount.querySelector('#stat-needs');
     if (statNeeds) statNeeds.addEventListener('click', openNeeds);
-    mount.querySelectorAll('.signoff').forEach((b) => b.addEventListener('click', () => signOff(tab, b.dataset.status)));
+    mount.querySelectorAll('.signoff').forEach((b) => b.addEventListener('click', () => {
+      setButtonBusy(b, b.dataset.status === 'approved' ? 'Approving…' : 'Flagging…');
+      signOff(tab, b.dataset.status);
+    }));
     mount.querySelectorAll('.nav-next').forEach((b) => b.addEventListener('click', () => { tab = b.dataset.next; draw(); }));
     mount.querySelector('#btn-scan')?.addEventListener('click', runScan);
     const inline = mount.querySelector('#btn-scan-inline');
@@ -762,11 +788,14 @@ export async function renderApplication(mount, id, { navigate }) {
     // Attached-document review: preview in a modal + verify/flag.
     mount.querySelectorAll('.doc-dl').forEach((b) => b.addEventListener('click', () => openDocumentModal(b.dataset.id)));
     mount.querySelectorAll('.doc-verify').forEach((b) =>
-      b.addEventListener('click', () => setDocStatus(b.dataset.id, 'Verified')));
+      b.addEventListener('click', () => { setButtonBusy(b, 'Verifying…'); setDocStatus(b.dataset.id, 'Verified'); }));
     mount.querySelectorAll('.doc-flag').forEach((b) =>
-      b.addEventListener('click', () => setDocStatus(b.dataset.id, 'Flagged')));
+      b.addEventListener('click', () => { setButtonBusy(b, 'Flagging…'); setDocStatus(b.dataset.id, 'Flagged'); }));
     mount.querySelectorAll('.docs-signoff').forEach((b) =>
-      b.addEventListener('click', () => setDocsSignoff(b.dataset.status)));
+      b.addEventListener('click', () => {
+        setButtonBusy(b, b.dataset.status === 'approved' ? 'Approving…' : 'Flagging…');
+        setDocsSignoff(b.dataset.status);
+      }));
 
     // Referee feedback.
     mount.querySelectorAll('.ref-enter').forEach((b) =>
@@ -842,8 +871,8 @@ export async function renderApplication(mount, id, { navigate }) {
       await api.setDocumentStatus(docId, status);
       await reloadApp();
       toast(`Document ${status.toLowerCase()}`);
-      draw();
     } catch { toast('Could not update the document.'); }
+    finally { draw(); }  // re-render on success AND failure (clears the busy state)
   }
 
   async function setDocsSignoff(status) {
@@ -851,8 +880,8 @@ export async function renderApplication(mount, id, { navigate }) {
       await api.reviewSection(id, 'documents', { admin_status: status });
       await reloadReview();
       toast(status === 'approved' ? 'Documents approved' : 'Documents flagged');
-      draw();
     } catch { toast('Could not update the documents review.'); }
+    finally { draw(); }  // re-render on success AND failure (clears the busy state)
   }
 
   // ---- agreement workflow handlers -----------------------------------------
@@ -901,8 +930,8 @@ export async function renderApplication(mount, id, { navigate }) {
       await api.reviewSection(id, key, { admin_status: status });
       await reloadReview();
       toast(status === 'approved' ? 'Section approved' : 'Section flagged');
-      draw();
     } catch { toast('Could not update the section.'); }
+    finally { draw(); }  // re-render on success AND failure (clears the busy state)
   }
 
   // ---- decisions (gate unchanged from M2.5) --------------------------------

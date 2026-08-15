@@ -6,9 +6,9 @@ import { esc, emptyState } from '../ui.js';
 
 const KPIS = [
   { key: 'applications', label: 'Total applications', hint: 'View all applications →', route: 'applications' },
-  { key: 'agents', label: 'Active agents', hint: 'from /agents' },
-  { key: 'marketing', label: 'Marketing assets', hint: 'from /marketing' },
-  { key: 'audit', label: 'Audit events', hint: 'from /audit' },
+  { key: 'agents', label: 'Active agents', hint: 'View agents →', route: 'agents' },
+  { key: 'marketing', label: 'Marketing assets', hint: 'View marketing collateral →', route: 'marketing' },
+  { key: 'audit', label: 'Audit events', hint: 'View audit trail →', route: 'audit' },
 ];
 
 export async function renderDashboard(mount, { navigate } = {}) {

@@ -52,7 +52,7 @@ from schemas import (
 )
 from seed import seed_all
 
-app = FastAPI(title="Agent Management Portal API", version="0.1.0")
+app = FastAPI(title="Corridor — Agent Management Portal API", version="0.1.0")
 
 # Frontend is served statically from :8080 in dev; keep CORS explicit. In
 # production the deployed frontend origin comes from FRONTEND_ORIGIN (set on the
@@ -486,17 +486,22 @@ def _get_app_or_404(app_id: int, session: Session) -> Application:
 
 
 def _sections(app_id: int, session: Session) -> list[ReviewSection]:
+    # Order by id (insertion order = the review-build order) so the section
+    # sequence is stable. Without this, Postgres returns rows in an undefined
+    # order that shifts after an UPDATE (approve/flag), reordering the review UI.
     return session.exec(
-        select(ReviewSection).where(ReviewSection.application_id == app_id)
+        select(ReviewSection)
+        .where(ReviewSection.application_id == app_id)
+        .order_by(ReviewSection.id)
     ).all()
 
 
 def _docs_refs(app_id: int, session: Session):
     documents = session.exec(
-        select(Document).where(Document.application_id == app_id)
+        select(Document).where(Document.application_id == app_id).order_by(Document.id)
     ).all()
     references = session.exec(
-        select(Reference).where(Reference.application_id == app_id)
+        select(Reference).where(Reference.application_id == app_id).order_by(Reference.id)
     ).all()
     return documents, references
 
@@ -523,7 +528,9 @@ def get_application(app_id: int, session: Session = Depends(get_session)) -> dic
 
 def _fields(app_id: int, session: Session) -> list[ExtractedField]:
     return session.exec(
-        select(ExtractedField).where(ExtractedField.application_id == app_id)
+        select(ExtractedField)
+        .where(ExtractedField.application_id == app_id)
+        .order_by(ExtractedField.id)
     ).all()
 
 
@@ -1171,7 +1178,7 @@ def download_marketing(asset_id: int, session: Session = Depends(get_session)) -
             "The single source of truth distributed to every partner agent.",
             "",
             "This portal-generated document stands in for the real asset",
-            "in the AMP demo; production serves the stored file from a bucket.",
+            "in the Corridor demo; production serves the stored file from a bucket.",
         ],
     )
     safe = "".join(c if c.isalnum() or c in " -_" else "" for c in asset.title).strip()

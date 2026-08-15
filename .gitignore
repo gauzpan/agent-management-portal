@@ -44,6 +44,13 @@ __pycache__/
 *.sqlite
 *.sqlite3
 
+# --- Runtime document-store artifacts (backend/app-forms/) ---
+# Applicant-generated files created at runtime; persisted to Supabase Storage in
+# production. Seeded showcase files (app-*.pdf, agreement-signed-*.pdf) are kept.
+backend/app-forms/intake-*.pdf
+backend/app-forms/upload-*.pdf
+backend/app-forms/doc-*
+
 # --- Node (frontend, if used) ---
 node_modules/
 dist/

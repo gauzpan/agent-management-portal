@@ -28,10 +28,10 @@ export function renderShell(mount, { route, activeNav, navigate, onLogout }) {
     <div class="app-shell">
       <aside class="sidebar amp-scroll">
         <div class="sidebar__brand">
-          <div class="sidebar__logo">A</div>
+          <div class="sidebar__logo"><img src="icons/logo.svg" alt="Corridor"></div>
           <div style="line-height:1.15;">
-            <div>AMP</div>
-            <div class="sidebar__college">Kensington Melbourne College</div>
+            <div class="brand-wordmark" style="font-size:18px;">Corridor</div>
+            <div class="sidebar__college">Agent Management Portal</div>
           </div>
         </div>
         <div class="sidebar__section">Workspace</div>

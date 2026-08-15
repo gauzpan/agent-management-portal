@@ -2,11 +2,13 @@
 // code NETWORK-FIRST so a code change is never masked by a stale cache (a
 // cache-first worker made edits "disappear" until a manual cache clear). The
 // cache is the offline fallback, not the source of truth.
-const CACHE = 'amp-shell-v8';
+const CACHE = 'amp-shell-v10';
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './icons/logo.svg',
+  './icons/icon-maskable.svg',
   './css/tokens.css',
   './css/app.css',
   './js/app.js',
@@ -28,6 +30,7 @@ const SHELL = [
   './js/pages/marketing.js',
   './js/pages/agent-profile.js',
   './js/pages/intake.js',
+  './js/pages/audit.js',
 ];
 
 self.addEventListener('install', (event) => {

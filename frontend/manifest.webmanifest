@@ -1,7 +1,7 @@
 {
-  "name": "Agent Management Portal",
-  "short_name": "AMP",
-  "description": "Centralised onboarding and management of education-agent partners.",
+  "name": "Corridor",
+  "short_name": "Corridor",
+  "description": "Corridor — Agent Management Portal. Centralised onboarding and management of education-agent partners.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -9,10 +9,16 @@
   "theme_color": "#00843d",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Crect width='192' height='192' rx='36' fill='%2300843d'/%3E%3Ctext x='50%25' y='54%25' font-size='120' font-family='Inter,sans-serif' font-weight='700' fill='%23ffcd00' text-anchor='middle' dominant-baseline='middle'%3EA%3C/text%3E%3C/svg%3E",
+      "src": "./icons/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ]
 }

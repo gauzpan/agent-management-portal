@@ -14,6 +14,7 @@ import { renderInvite } from './pages/invite.js';
 import { renderAgentDashboard } from './pages/agent-dashboard.js';
 import { renderMarketing } from './pages/marketing.js';
 import { renderAgentProfile } from './pages/agent-profile.js';
+import { renderAudit } from './pages/audit.js';
 import { renderIntake } from './pages/intake.js';
 import { renderPlaceholder } from './pages/placeholder.js';
 
@@ -62,6 +63,7 @@ async function dispatchPage(pageMount, route, param) {
     case 'agent-view': return renderAgentDashboard(pageMount, { navigate });
     case 'marketing': return renderMarketing(pageMount, { navigate });
     case 'agent-profile': return renderAgentProfile(pageMount, { navigate });
+    case 'audit': return renderAudit(pageMount, { navigate });
     default: return renderPlaceholder(pageMount, route);
   }
 }

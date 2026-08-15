@@ -5,10 +5,14 @@
 
 /* fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
+/* Graduate — a collegiate varsity display face for the Corridor wordmark. */
+@import url('https://fonts.googleapis.com/css2?family=Graduate&display=swap');
 
 :root {
   --font-display: 'Inter', 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Brand wordmark: collegiate, emphatic. Rockwell/Georgia are slab/serif fallbacks. */
+  --font-brand: 'Graduate', 'Rockwell', 'Georgia', serif;
 
   /* colors */
   --color-primary: #00843d; --color-primary-deep: #004d24; --color-on-primary: #ffffff;
