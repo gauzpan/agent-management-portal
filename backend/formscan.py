@@ -17,23 +17,22 @@ from typing import Any, Optional
 
 from pypdf import PdfReader
 
-# The single store for every application PDF on file — the one source of record
-# for applications in review. Holds seeded showcase forms, admin uploads
-# (upload-<id>.pdf), and public intake submissions (intake-<id>.pdf).
-DOCUMENT_STORE = Path(__file__).resolve().parent / "app-forms"
+import storage
+
+# Backwards-compatible alias for the local document directory. All actual file
+# access goes through the `storage` module (local disk or Supabase Storage) so
+# uploads survive deploys on an ephemeral hosted filesystem.
+DOCUMENT_STORE = storage._LOCAL_DIR
 
 
 def ensure_store() -> None:
-    """Make sure the application document store exists (called at app startup)."""
-    DOCUMENT_STORE.mkdir(exist_ok=True)
+    """Make sure the document store is ready (called at app startup)."""
+    storage.ensure()
 
 
-def resolve_pdf(name: Optional[str]) -> Optional[Path]:
-    """Resolve a stored application PDF by name. Returns the path, or None."""
-    if not name:
-        return None
-    candidate = DOCUMENT_STORE / name
-    return candidate if candidate.exists() else None
+def resolve_pdf(name: Optional[str]) -> Optional[str]:
+    """Return the stored name if a PDF exists under it, else None."""
+    return name if storage.exists(name) else None
 
 # The four review sections (human sign-off units). Order = review order.
 SECTIONS = [
@@ -52,10 +51,9 @@ _HEADER_MARKERS = [
 ]
 
 
-def form_path(app_id: int) -> Optional[Path]:
-    """Locate the submitted PDF for an application in the document store."""
-    p = DOCUMENT_STORE / f"app-{app_id}.pdf"
-    return p if p.exists() else None
+def form_name(app_id: int) -> str:
+    """The stored object name for an application's seeded showcase PDF."""
+    return f"app-{app_id}.pdf"
 
 
 def read_pdf_meta(path: Path) -> dict:
@@ -105,13 +103,14 @@ def scan_application(app, documents, references) -> dict:
     directors = fd.get("directors", []) if isinstance(fd, dict) else []
 
     meta = {"read": False, "pages": 0, "sections_detected": []}
-    path = form_path(app.id) if app.id else None
-    if path is not None:
-        try:
-            meta.update(read_pdf_meta(path))
-            meta["read"] = True
-        except Exception as err:  # pragma: no cover - defensive
-            meta["error"] = str(err)
+    if app.id:
+        with storage.open_path(form_name(app.id)) as path:
+            if path is not None:
+                try:
+                    meta.update(read_pdf_meta(path))
+                    meta["read"] = True
+                except Exception as err:  # pragma: no cover - defensive
+                    meta["error"] = str(err)
 
     # ---- Company & Directors -------------------------------------------------
     required_company = ["company_name", "registration_number", "legal_entity", "address"]

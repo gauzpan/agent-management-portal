@@ -4,3 +4,6 @@ sqlmodel==0.0.22
 pydantic==2.10.4
 pypdf==6.15.0
 python-multipart==0.0.20
+# Postgres driver — used when DATABASE_URL is set (Supabase/Render Postgres).
+# Harmless locally where the app falls back to SQLite.
+psycopg2-binary==2.9.10

@@ -16,6 +16,7 @@ from fastapi.responses import Response
 from sqlmodel import Session, select
 
 import formscan
+import storage
 from db import get_session, init_db
 from decisions import apply_decision, evaluate_gate
 from models import (
@@ -247,7 +248,7 @@ def upload_application(
     session.refresh(app)
 
     stored = f"upload-{app.id}.pdf"
-    (formscan.DOCUMENT_STORE / stored).write_bytes(data)
+    storage.save(stored, data, "application/pdf")
     app.source_pdf = stored
     session.add(app)
     session.add(AuditEvent(
@@ -306,6 +307,7 @@ def public_intake(
     country: str = Form(""),
     documents: list[UploadFile] = File(None),
     document_types: list[str] = Form(None),
+    declared_types: list[str] = Form(None),
     session: Session = Depends(get_session),
 ) -> dict:
     """Public/invited application intake — the agent's own front door (M3).
@@ -318,8 +320,14 @@ def public_intake(
 
     Supporting documents (ASIC/business registration, QEAC/PIER or education-agent
     training certificate, identity, MARA/MARN, insurance, licence, references) are
-    attached via the parallel `documents` / `document_types` arrays and stored as
-    Document rows on the application for the admin to verify.
+    attached as `documents`. Two typing modes are supported:
+
+    - Bundle mode (`declared_types`): the applicant uploads one combined bundle and
+      ticks a checklist of the document types it contains. Each ticked type becomes
+      a Document row typed for the admin's verification; when the bundle has fewer
+      files than ticked types (a single combined PDF), the ticked types reuse the
+      bundle files as evidence so the required-document checks still see them.
+    - Legacy per-file mode (`document_types`): each file is typed in lockstep.
     """
     biz = business.strip()
     if not biz:
@@ -336,8 +344,9 @@ def public_intake(
     # attachment can't leave an orphaned application or stray file behind.
     ups = documents or []
     types = document_types or []
-    valid_docs = []  # (name, doc_type, blob, ext)
-    for i, up in enumerate(ups):
+    declared = [t.strip()[:60] for t in (declared_types or []) if t and t.strip()]
+    files = []  # (name, blob, ext) — one entry per uploaded file
+    for up in ups:
         if up is None or not up.filename:
             continue
         blob = up.file.read()
@@ -350,8 +359,22 @@ def public_intake(
                 detail=f"Unsupported attachment '{up.filename}'. Use PDF, JPG or PNG.")
         if len(blob) > 15 * 1024 * 1024:
             raise HTTPException(status_code=400, detail=f"Attachment too large: {up.filename}")
-        dtype = (types[i] if i < len(types) else "Other").strip() or "Other"
-        valid_docs.append((up.filename[:120], dtype[:60], blob, ext))
+        files.append((up.filename[:120], blob, ext))
+
+    # Decide the Document rows to create. In bundle mode the ticked checklist
+    # drives the doc_types (mapped onto the uploaded files); otherwise each file
+    # keeps its own type. Each entry is (name, doc_type, file_index).
+    doc_plan = []  # (name, doc_type, file_index)
+    if declared and files:
+        rows = max(len(declared), len(files))
+        for i in range(rows):
+            fi = i if i < len(files) else len(files) - 1  # reuse bundle for extra types
+            dtype = declared[i] if i < len(declared) else "Supporting document"
+            doc_plan.append((files[fi][0], dtype, fi))
+    else:
+        for i, (name, _blob, _ext) in enumerate(files):
+            dtype = (types[i] if i < len(types) else "Other").strip() or "Other"
+            doc_plan.append((name, dtype[:60], i))
 
     now = datetime.utcnow()
     flag = _COUNTRY_FLAGS.get(country.strip().lower(), "🌐")
@@ -365,26 +388,34 @@ def public_intake(
     session.refresh(app)
 
     stored = f"intake-{app.id}.pdf"
-    (formscan.DOCUMENT_STORE / stored).write_bytes(data)
+    storage.save(stored, data, "application/pdf")
     app.source_pdf = stored
     session.add(app)
 
-    for n, (fname, dtype, blob, ext) in enumerate(valid_docs, start=1):
+    # Write each uploaded file once; Document rows reference stored names (a bundle
+    # file may back several declared document types).
+    stored_files = []  # parallel to `files`
+    for n, (fname, blob, ext) in enumerate(files, start=1):
         stored_doc = f"doc-{app.id}-{n}{ext}"
-        (formscan.DOCUMENT_STORE / stored_doc).write_bytes(blob)
+        storage.save(stored_doc, blob, _MEDIA_BY_EXT.get(ext, "application/octet-stream"))
+        stored_files.append(stored_doc)
+
+    for fname, dtype, fi in doc_plan:
+        blob = files[fi][1]
         session.add(Document(
             application_id=app.id, name=fname, doc_type=dtype,
-            status="Uploaded", size=_human_size(len(blob)), file=stored_doc,
+            status="Uploaded", size=_human_size(len(blob)), file=stored_files[fi],
         ))
 
     session.add(AuditEvent(
         actor="Applicant · self-service", action="Application submitted via intake",
         entity=f"Application {app.id}",
-        detail=f"{biz} submitted an application ({name}) with {len(valid_docs)} supporting document(s)",
+        detail=f"{biz} submitted an application ({name}) with {len(files)} file(s) "
+               f"covering {len(doc_plan)} supporting document(s)",
     ))
     session.commit()
     session.refresh(app)
-    return {"application_id": app.id, "business": app.business, "documents": len(valid_docs)}
+    return {"application_id": app.id, "business": app.business, "documents": len(doc_plan)}
 
 
 @app.delete("/applications/{app_id}", status_code=204, tags=["applications"])
@@ -403,8 +434,8 @@ def delete_application(app_id: int, session: Session = Depends(get_session)) -> 
                 row.signed_file if isinstance(row, Agreement) else None)
             if stored_name:
                 try:
-                    (formscan.DOCUMENT_STORE / stored_name).unlink(missing_ok=True)
-                except OSError:
+                    storage.delete(stored_name)
+                except Exception:
                     pass
             session.delete(row)
     # Audit events reference the application by entity string, not a foreign key.
@@ -415,12 +446,10 @@ def delete_application(app_id: int, session: Session = Depends(get_session)) -> 
     # Delete an admin-uploaded or intake-submitted document; leave seeded
     # showcase PDFs on disk.
     if app.source_pdf and app.source_pdf.startswith(("upload-", "intake-")):
-        resolved = formscan.resolve_pdf(app.source_pdf)
-        if resolved is not None:
-            try:
-                resolved.unlink(missing_ok=True)
-            except OSError:
-                pass
+        try:
+            storage.delete(app.source_pdf)
+        except Exception:
+            pass
 
     business = app.business
     session.delete(app)
@@ -505,10 +534,10 @@ def _scan_real(app: Application, session: Session) -> dict:
     from validate import validate_doc
     import review_build
 
-    resolved = formscan.resolve_pdf(app.source_pdf)
-    if resolved is None:
-        raise HTTPException(status_code=400, detail="Source document not found in any store")
-    raw = extract_application(str(resolved))
+    with storage.open_path(app.source_pdf) as resolved:
+        if resolved is None:
+            raise HTTPException(status_code=400, detail="Source document not found in any store")
+        raw = extract_application(str(resolved))
     doc = normalize(raw)
     verdicts = validate_doc(doc)
 
@@ -953,7 +982,7 @@ def upload_signed_agreement(
         raise HTTPException(status_code=400, detail="File too large (max 15 MB).")
     agreement = _get_agreement(app_id, session)
     stored = f"agreement-signed-{app_id}.pdf"
-    (formscan.DOCUMENT_STORE / stored).write_bytes(data)
+    storage.save(stored, data, "application/pdf")
     agreement.signed_file = stored
     agreement.signature_verified = False  # re-verify after any new upload
     session.add(agreement)
@@ -974,11 +1003,11 @@ def download_signed_agreement(app_id: int, session: Session = Depends(get_sessio
     ).first()
     if agreement is None or not agreement.signed_file:
         raise HTTPException(status_code=404, detail="No signed agreement on file")
-    path = formscan.DOCUMENT_STORE / agreement.signed_file
-    if not path.exists():
+    blob = storage.read(agreement.signed_file)
+    if blob is None:
         raise HTTPException(status_code=404, detail="File not found in store")
     return Response(
-        content=path.read_bytes(), media_type="application/pdf",
+        content=blob, media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{agreement.signed_file}"'},
     )
 
@@ -1186,13 +1215,13 @@ def download_document(doc_id: int, session: Session = Depends(get_session)) -> R
     doc = session.get(Document, doc_id)
     if doc is None or not doc.file:
         raise HTTPException(status_code=404, detail="Document has no stored file")
-    path = formscan.DOCUMENT_STORE / doc.file
-    if not path.exists():
+    blob = storage.read(doc.file)
+    if blob is None:
         raise HTTPException(status_code=404, detail="File not found in store")
     ext = Path(doc.file).suffix.lower()
     media = _MEDIA_BY_EXT.get(ext, "application/octet-stream")
     return Response(
-        content=path.read_bytes(), media_type=media,
+        content=blob, media_type=media,
         headers={"Content-Disposition": f'attachment; filename="{doc.name}"'},
     )
 

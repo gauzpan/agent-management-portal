@@ -105,7 +105,7 @@ export function emptyState({ icon = '🗂', title, hint }) {
 // Modal dialog matching the comp's overlay + card. `actions` is an array of
 // { label, kind: 'primary'|'danger'|'dark'|'ghost', onClick }. Returns a close()
 // fn; clicking the overlay or a non-ghost action closes automatically.
-export function modal({ title, bodyHtml, actions = [] }) {
+export function modal({ title, bodyHtml, actions = [], maxWidth = 520, onClose }) {
   const kinds = {
     primary: 'background:var(--color-primary);color:#fff;border:none;',
     danger: 'background:#a12020;color:#fff;border:none;',
@@ -116,7 +116,7 @@ export function modal({ title, bodyHtml, actions = [] }) {
     <div style="position:fixed;inset:0;background:rgba(41,40,39,0.4);display:flex;
       align-items:center;justify-content:center;z-index:100;padding:24px;">
       <div role="dialog" style="background:#fff;border-radius:16px;padding:32px;
-        max-width:520px;width:100%;box-shadow:var(--shadow-2);">
+        max-width:${maxWidth}px;width:100%;box-shadow:var(--shadow-2);">
         <div style="font-family:var(--font-display);font-weight:540;font-size:22px;
           letter-spacing:-0.4px;margin-bottom:12px;">${esc(title)}</div>
         <div data-body></div>
@@ -125,7 +125,13 @@ export function modal({ title, bodyHtml, actions = [] }) {
     </div>`);
   overlay.querySelector('[data-body]').innerHTML = bodyHtml || '';
 
-  function close() { overlay.remove(); }
+  let closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    overlay.remove();
+    if (onClose) onClose();
+  }
   overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
 
   const actionsRow = overlay.querySelector('[data-actions]');

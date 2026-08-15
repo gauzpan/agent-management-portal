@@ -494,18 +494,36 @@ export async function renderApplication(mount, id, { navigate }) {
     { type: 'Reference', label: 'Reference / support letter', required: false },
   ];
 
-  // The file + review actions for one attached document.
-  function attachedDocLine(d) {
-    const verified = d.status === 'Verified';
-    const flagged = d.status === 'Flagged' || d.status === 'Missing page';
+  // One uploaded file in the bundle — applicants upload their supporting documents
+  // together (a combined PDF or several files), so we list the raw files here with
+  // no per-document label; the verification checklist below is where the reviewer
+  // confirms each expected document against these files.
+  function uploadedFileLine(d) {
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;padding:8px 12px;background:var(--color-canvas-soft);border-radius:8px;flex-wrap:wrap;">
-      <div style="font-size:12px;color:var(--color-ink);min-width:0;">${esc(d.name)}${d.size ? ` · ${esc(d.size)}` : ''}</div>
-      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
-        ${docStatusChip(d.status)}
-        <button class="doc-dl" data-id="${d.id}" style="padding:5px 10px;background:#fff;color:var(--color-teal-deep);border:1px solid var(--color-hairline);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">⬇ View</button>
-        ${readOnly ? '' : `<button class="doc-verify" data-id="${d.id}" ${verified ? 'disabled' : ''} style="padding:5px 10px;background:${verified ? '#e9f5ee' : '#00843d'};color:${verified ? '#00843d' : '#fff'};border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:${verified ? 'default' : 'pointer'};font-family:inherit;">${verified ? '✓ Verified' : '✓ Verify'}</button>
-        <button class="doc-flag" data-id="${d.id}" ${flagged ? 'disabled' : ''} style="padding:5px 10px;background:#fff;color:#a12020;border:1px solid #f3d4d4;border-radius:7px;font-size:11px;font-weight:600;cursor:${flagged ? 'default' : 'pointer'};font-family:inherit;">${flagged ? 'Flagged' : 'Flag'}</button>`}
-      </div>
+      <div style="font-size:12px;color:var(--color-ink);min-width:0;">📄 ${esc(d.name)}${d.size ? ` · ${esc(d.size)}` : ''}</div>
+      <button class="doc-dl" data-id="${d.id}" style="padding:5px 10px;background:#fff;color:var(--color-teal-deep);border:1px solid var(--color-hairline);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;">⬇ View</button>
+    </div>`;
+  }
+
+  // One row of the reviewer's verification checklist. `doc` is the matching
+  // Document row (declared/attached) or null when nothing covers this type.
+  function checklistRow(label, required, doc) {
+    const status = doc ? doc.status : null;
+    const verified = status === 'Verified';
+    const flagged = status === 'Flagged' || status === 'Missing page';
+    const attached = !!doc;
+    const actions = (attached && !readOnly)
+      ? `<button class="doc-verify" data-id="${doc.id}" ${verified ? 'disabled' : ''} style="padding:5px 10px;background:${verified ? '#e9f5ee' : '#00843d'};color:${verified ? '#00843d' : '#fff'};border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:${verified ? 'default' : 'pointer'};font-family:inherit;">${verified ? '✓ Verified' : '✓ Mark verified'}</button>
+        <button class="doc-flag" data-id="${doc.id}" ${flagged ? 'disabled' : ''} style="padding:5px 10px;background:#fff;color:#a12020;border:1px solid #f3d4d4;border-radius:7px;font-size:11px;font-weight:600;cursor:${flagged ? 'default' : 'pointer'};font-family:inherit;">${flagged ? 'Flagged' : 'Flag'}</button>`
+      : '';
+    const chip = attached
+      ? docStatusChip(status)
+      : required
+        ? '<span style="font-size:10px;font-weight:700;color:#a12020;background:#fbe3e3;padding:2px 9px;border-radius:999px;">Not declared</span>'
+        : '<span style="font-size:10px;font-weight:600;color:#73706d;background:#f0efec;padding:2px 9px;border-radius:999px;">Not provided</span>';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #f3f0eb;flex-wrap:wrap;">
+      <div style="font-size:13px;font-weight:600;color:var(--color-ink);min-width:0;">${esc(label)}${required ? ' <span style="color:#a12020;">*</span>' : ''}</div>
+      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${chip}${actions}</div>
     </div>`;
   }
 
@@ -541,50 +559,44 @@ export async function renderApplication(mount, id, { navigate }) {
     const byType = {};
     docs.forEach((d) => { (byType[d.doc_type] = byType[d.doc_type] || []).push(d); });
 
-    const badge = (attached, required) => attached
-      ? '<span style="font-size:10px;font-weight:700;color:#00843d;background:#e9f5ee;padding:2px 9px;border-radius:999px;">Attached</span>'
-      : required
-        ? '<span style="font-size:10px;font-weight:700;color:#a12020;background:#fbe3e3;padding:2px 9px;border-radius:999px;">Not attached</span>'
-        : '<span style="font-size:10px;font-weight:600;color:#73706d;background:#f0efec;padding:2px 9px;border-radius:999px;">Not provided</span>';
+    // Applicants upload a single bundle, so several declared document types can
+    // share the same physical file — list each uploaded file once, unlabelled.
+    const seenFiles = new Set();
+    const uniqueFiles = docs.filter((d) => {
+      if (seenFiles.has(d.file)) return false;
+      seenFiles.add(d.file);
+      return true;
+    });
+    const filesBlock = uniqueFiles.length
+      ? uniqueFiles.map(uploadedFileLine).join('')
+      : '<div style="font-size:12px;color:var(--color-ink-mute);margin-top:8px;">No documents uploaded with this application.</div>';
 
-    const expectedRows = EXPECTED_DOCS.map((spec) => {
-      const found = byType[spec.type] || [];
-      const attached = found.length > 0;
-      return `<div style="padding:14px 0;border-top:1px solid #f3f0eb;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-          <div style="font-size:13px;font-weight:600;color:var(--color-ink);">${esc(spec.label)}${spec.required ? ' <span style="color:#a12020;">*</span>' : ''}</div>
-          ${badge(attached, spec.required)}
-        </div>
-        ${attached
-          ? found.map(attachedDocLine).join('')
-          : spec.required
-            ? '<div style="font-size:11px;color:#a12020;margin-top:5px;">Required for approval — request this from the applicant.</div>'
-            : ''}
-      </div>`;
-    }).join('');
-
+    // Verification checklist: the expected documents plus any extra declared types.
     const expectedTypes = new Set(EXPECTED_DOCS.map((s) => s.type));
-    const others = docs.filter((d) => !expectedTypes.has(d.doc_type));
-    const othersBlock = others.length ? `
-      <div style="margin-top:22px;">
-        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--color-ink-mute);">Other supporting documents · ${others.length}</div>
-        ${others.map((d) => `<div style="padding:14px 0;border-top:1px solid #f3f0eb;">
-          <div style="font-size:13px;font-weight:600;color:var(--color-ink);">${esc(d.doc_type || 'Document')}</div>
-          ${attachedDocLine(d)}
-        </div>`).join('')}
-      </div>` : '';
+    const expectedRows = EXPECTED_DOCS
+      .map((spec) => checklistRow(spec.label, spec.required, (byType[spec.type] || [])[0]))
+      .join('');
+    const extraTypes = [...new Set(docs.map((d) => d.doc_type).filter((t) => t && !expectedTypes.has(t)))];
+    const extraRows = extraTypes
+      .map((t) => checklistRow(t, false, (byType[t] || [])[0]))
+      .join('');
 
     const missingRequired = EXPECTED_DOCS.filter((s) => s.required && !(byType[s.type] || []).length).length;
     const subtitle = missingRequired
-      ? `${missingRequired} required document(s) not yet attached.`
-      : 'All required documents attached — verify each against the application.';
+      ? `${missingRequired} required document(s) not declared in the upload.`
+      : 'Open the uploaded files and mark each expected document verified.';
 
     return `<div style="background:#fff;border:1px solid var(--color-hairline);border-radius:12px;padding:24px;">
       <div style="font-family:var(--font-display);font-weight:540;font-size:16px;margin-bottom:2px;">Attached documents</div>
-      <div style="font-size:12px;color:${missingRequired ? '#a12020' : 'var(--color-ink-mute)'};margin-bottom:8px;">${esc(subtitle)}</div>
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--color-ink-mute);">Required &amp; expected documents</div>
+      <div style="font-size:12px;color:${missingRequired ? '#a12020' : 'var(--color-ink-mute)'};margin-bottom:14px;">${esc(subtitle)}</div>
+
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--color-ink-mute);">Uploaded files · ${uniqueFiles.length}</div>
+      ${filesBlock}
+
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--color-ink-mute);margin-top:22px;">Verification checklist</div>
+      <div style="font-size:11px;color:var(--color-ink-mute);margin-top:2px;">Check each document against the uploaded files and mark it verified.</div>
       ${expectedRows}
-      ${othersBlock}
+      ${extraRows}
     </div>`;
   }
 
@@ -747,14 +759,8 @@ export async function renderApplication(mount, id, { navigate }) {
     const editing = mount.querySelector('.fld-input');
     if (editing) { editing.focus(); editing.setSelectionRange(editing.value.length, editing.value.length); }
 
-    // Attached-document review: download + verify/flag.
-    mount.querySelectorAll('.doc-dl').forEach((b) => b.addEventListener('click', async () => {
-      const label = b.textContent;
-      b.disabled = true; b.textContent = 'Downloading…';
-      try { await api.downloadDocument(b.dataset.id); toast('Document downloaded'); }
-      catch { toast('Could not download the document.'); }
-      finally { b.disabled = false; b.textContent = label; }
-    }));
+    // Attached-document review: preview in a modal + verify/flag.
+    mount.querySelectorAll('.doc-dl').forEach((b) => b.addEventListener('click', () => openDocumentModal(b.dataset.id)));
     mount.querySelectorAll('.doc-verify').forEach((b) =>
       b.addEventListener('click', () => setDocStatus(b.dataset.id, 'Verified')));
     mount.querySelectorAll('.doc-flag').forEach((b) =>
@@ -796,6 +802,39 @@ export async function renderApplication(mount, id, { navigate }) {
       toast(`Reference request sent to ${name}`);
       draw();
     } catch { toast('Could not send the request.'); }
+  }
+
+  // Preview an attached document inline in a modal (PDF in an iframe, images
+  // inline), with a separate Download action.
+  async function openDocumentModal(docId) {
+    const doc = (data.documents || []).find((d) => String(d.id) === String(docId));
+    const title = (doc && doc.name) || 'Document';
+    let file;
+    try {
+      file = await api.fetchDocument(docId);
+    } catch {
+      toast('Could not open the document.');
+      return;
+    }
+    const isImage = (file.type || '').startsWith('image/');
+    const frameStyle = 'width:100%;height:70vh;border:1px solid var(--color-hairline);border-radius:10px;background:var(--color-canvas-soft);';
+    const bodyHtml = isImage
+      ? `<div style="text-align:center;background:var(--color-canvas-soft);border:1px solid var(--color-hairline);border-radius:10px;padding:12px;">
+           <img src="${file.url}" alt="${esc(title)}" style="max-width:100%;max-height:70vh;border-radius:6px;">
+         </div>`
+      : `<iframe src="${file.url}" title="${esc(title)}" style="${frameStyle}"></iframe>`;
+
+    modal({
+      title,
+      maxWidth: 900,
+      bodyHtml,
+      onClose: () => URL.revokeObjectURL(file.url),
+      actions: [
+        { label: '⬇ Download', kind: 'dark', keepOpen: true,
+          onClick: () => api.downloadDocument(docId).catch(() => toast('Could not download the document.')) },
+        { label: 'Close', kind: 'ghost' },
+      ],
+    });
   }
 
   async function setDocStatus(docId, status) {

@@ -38,13 +38,17 @@ export function renderIntake(mount, { navigate }) {
     </label>`;
   }
 
-  function docSlot(s) {
-    return `<div style="padding:12px 0;border-top:1px solid #f3f0eb;">
-      <div style="font-size:13px;font-weight:600;color:var(--color-ink);">${esc(s.label)}${s.required ? ' <span style="color:#a12020;">*</span>' : ' <span style="color:var(--color-ink-faint);font-weight:400;">(optional)</span>'}</div>
-      <div style="font-size:11px;color:var(--color-ink-mute);margin:2px 0 7px;">${esc(s.hint)}</div>
-      <input id="${s.id}" type="file" accept="${ACCEPT}" data-type="${esc(s.type)}"
-        style="width:100%;font-size:12px;font-family:inherit;">
-    </div>`;
+  // Checklist row: the applicant TICKS which supporting documents their uploaded
+  // bundle contains (self-attestation), instead of a file input per document.
+  function docCheck(s) {
+    return `<label style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid #f3f0eb;cursor:pointer;">
+      <input type="checkbox" class="doc-check" data-type="${esc(s.type)}" data-required="${s.required ? '1' : ''}"
+        style="margin-top:2px;width:16px;height:16px;flex:none;cursor:pointer;">
+      <span>
+        <span style="display:block;font-size:13px;font-weight:600;color:var(--color-ink);">${esc(s.label)}${s.required ? ' <span style="color:#a12020;">*</span>' : ' <span style="color:var(--color-ink-faint);font-weight:400;">(optional)</span>'}</span>
+        <span style="display:block;font-size:11px;color:var(--color-ink-mute);margin-top:2px;">${esc(s.hint)}</span>
+      </span>
+    </label>`;
   }
 
   function drawForm() {
@@ -87,13 +91,18 @@ export function renderIntake(mount, { navigate }) {
 
             <div style="margin-top:18px;">
               <div style="font-size:13px;font-weight:700;color:var(--color-ink);">Supporting documents</div>
-              <div style="font-size:11px;color:var(--color-ink-mute);margin-top:2px;">PDF, JPG or PNG. These are the compliance documents the college verifies.</div>
-              ${DOC_SLOTS.map(docSlot).join('')}
-              <div style="padding:12px 0;border-top:1px solid #f3f0eb;">
-                <div style="font-size:13px;font-weight:600;color:var(--color-ink);">Additional documents <span style="color:var(--color-ink-faint);font-weight:400;">(optional)</span></div>
-                <div style="font-size:11px;color:var(--color-ink-mute);margin:2px 0 7px;">Anything else that supports your application.</div>
-                <input id="doc-extra" type="file" accept="${ACCEPT}" multiple
+              <div style="font-size:11px;color:var(--color-ink-mute);margin-top:2px;">Upload all your compliance documents together in one place — a single combined PDF or several files. PDF, JPG or PNG.</div>
+
+              <div style="margin-top:10px;">
+                <input id="doc-bundle" type="file" accept="${ACCEPT}" multiple
                   style="width:100%;font-size:12px;font-family:inherit;">
+                <div id="doc-bundle-count" style="font-size:11px;color:var(--color-ink-faint);margin-top:5px;"></div>
+              </div>
+
+              <div style="margin-top:14px;">
+                <div style="font-size:12px;font-weight:600;color:var(--color-ink);">Tick the documents included in your upload</div>
+                <div style="font-size:11px;color:var(--color-ink-mute);margin-top:2px;">Items marked * are required. This tells our review team what to expect in your bundle.</div>
+                ${DOC_SLOTS.map(docCheck).join('')}
               </div>
             </div>
 
@@ -105,6 +114,13 @@ export function renderIntake(mount, { navigate }) {
       </div>`;
 
     mount.querySelector('#intake-form').addEventListener('submit', submit);
+
+    const bundle = mount.querySelector('#doc-bundle');
+    bundle.addEventListener('change', () => {
+      const n = bundle.files.length;
+      mount.querySelector('#doc-bundle-count').textContent =
+        n ? `${n} file${n === 1 ? '' : 's'} selected` : '';
+    });
 
     mount.querySelector('#in-download-form').addEventListener('click', async (e) => {
       const btn = e.currentTarget;
@@ -133,10 +149,20 @@ export function renderIntake(mount, { navigate }) {
     const appFile = fileOf('in-file');
     if (!appFile) { errBox.textContent = 'Please attach your application PDF.'; return; }
 
-    // Required supporting documents.
-    const missing = DOC_SLOTS.filter((s) => s.required && !fileOf(s.id));
+    // Which supporting documents the applicant declared (ticked the checklist).
+    const checks = [...mount.querySelectorAll('.doc-check')];
+    const declared = checks.filter((c) => c.checked).map((c) => c.dataset.type);
+    const bundleFiles = [...mount.querySelector('#doc-bundle').files];
+
+    // Required supporting documents must be ticked.
+    const missing = DOC_SLOTS.filter((s) =>
+      s.required && !checks.find((c) => c.dataset.type === s.type && c.checked));
     if (missing.length) {
-      errBox.textContent = `Please attach: ${missing.map((s) => s.label).join(', ')}.`;
+      errBox.textContent = `Please tick the required documents: ${missing.map((s) => s.label).join(', ')}.`;
+      return;
+    }
+    if (declared.length && !bundleFiles.length) {
+      errBox.textContent = 'Please upload your supporting documents for the items you ticked.';
       return;
     }
 
@@ -150,15 +176,11 @@ export function renderIntake(mount, { navigate }) {
       fd.append('email', val('in-email'));
       fd.append('phone', val('in-phone'));
       fd.append('country', val('in-country'));
-      // Typed slots — append file + its type in lockstep so the backend aligns them.
-      DOC_SLOTS.forEach((s) => {
-        const f = fileOf(s.id);
-        if (f) { fd.append('documents', f); fd.append('document_types', s.type); }
-      });
-      const extra = mount.querySelector('#doc-extra');
-      if (extra) [...extra.files].forEach((f) => {
-        fd.append('documents', f); fd.append('document_types', 'Other');
-      });
+      // One supporting-documents bundle + the applicant's declared checklist.
+      // The backend maps the ticked types onto the uploaded files (reusing the
+      // bundle as evidence when a single combined PDF covers several documents).
+      bundleFiles.forEach((f) => fd.append('documents', f));
+      declared.forEach((t) => fd.append('declared_types', t));
 
       const res = await api.submitIntake(fd);
       drawSuccess(res.business || business, res.documents || 0);
