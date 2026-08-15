@@ -125,6 +125,16 @@ export const api = {
   downloadApplicationForm() { return this._downloadFile('/application-form/download', 'Agent Application Form.pdf'); },
   downloadMarketing(id) { return this._downloadFile(`/marketing/${id}/download`, `asset-${id}.pdf`); },
   downloadDocument(id) { return this._downloadFile(`/documents/${id}/download`, `document-${id}`); },
+  // The original submitted application-form PDF for an application.
+  downloadSubmittedForm(id) { return this._downloadFile(`/applications/${id}/form`, `Application-${id}.pdf`); },
+  async fetchSubmittedForm(id) {
+    const token = store.getToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const res = await fetch(`${BASE}/applications/${id}/form`, { headers });
+    if (!res.ok) throw new ApiError(res.status, `Open failed (${res.status})`);
+    const blob = await res.blob();
+    return { url: URL.createObjectURL(blob), type: blob.type };
+  },
   // Fetch a document as a blob for inline preview inside a modal. Returns an
   // object URL (caller must URL.revokeObjectURL it), the filename, and MIME type.
   async fetchDocument(id) {

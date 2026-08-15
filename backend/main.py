@@ -1612,6 +1612,24 @@ _MEDIA_BY_EXT = {".pdf": "application/pdf", ".jpg": "image/jpeg",
                  ".jpeg": "image/jpeg", ".png": "image/png"}
 
 
+@app.get("/applications/{app_id}/form", tags=["applications"])
+def download_submitted_form(app_id: int, session: Session = Depends(get_session)) -> Response:
+    """Serve the original submitted agent application-form PDF for this application
+    (the source document the extraction pipeline ran on)."""
+    app = _get_app_or_404(app_id, session)
+    if not app.source_pdf:
+        raise HTTPException(status_code=404, detail="No application form on file for this application")
+    blob = storage.read(app.source_pdf)
+    if blob is None:
+        raise HTTPException(status_code=404, detail="Application form file not found in store")
+    safe = "".join(c for c in (app.business or "application") if c.isalnum() or c in " -_").strip()
+    filename = f"{safe or 'application'} - form (App-{app_id}).pdf"
+    return Response(
+        content=blob, media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 @app.get("/documents/{doc_id}/download", tags=["applications"])
 def download_document(doc_id: int, session: Session = Depends(get_session)) -> Response:
     """Download an applicant-uploaded supporting document."""

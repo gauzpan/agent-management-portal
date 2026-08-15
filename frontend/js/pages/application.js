@@ -714,6 +714,11 @@ export async function renderApplication(mount, id, { navigate }) {
       ? `<button id="btn-insights-open" style="padding:9px 14px;background:#fff;color:var(--color-teal-deep);border:1px solid var(--color-hairline);border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">✦ Smart Insights</button>`
       : '';
 
+    // View/download the original submitted application-form PDF (source document).
+    const formBtn = app.source_pdf
+      ? `<button id="btn-form" style="padding:9px 14px;background:#fff;color:var(--color-ink);border:1px solid var(--color-hairline);border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">📄 Application form</button>`
+      : '';
+
     // Final approval is only offered once every review section — the extraction
     // sections AND Attached documents — has been signed off by the admin.
     const allApproved = isScanned()
@@ -735,6 +740,7 @@ export async function renderApplication(mount, id, { navigate }) {
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+            ${formBtn}
             ${readOnly ? '' : `<button id="btn-scan" ${processing ? 'disabled' : ''} style="padding:9px 14px;background:#fff;color:var(--color-teal-deep);border:1px solid var(--color-hairline);border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">✦ Run scan</button>`}
             ${insightsBtn}
             ${readOnly ? '' : `<button id="btn-request" style="padding:9px 14px;background:#fff;color:var(--color-ink);border:1px solid var(--color-hairline);border-radius:8px;font-size:13px;font-weight:540;cursor:pointer;">Request info</button>
@@ -763,6 +769,7 @@ export async function renderApplication(mount, id, { navigate }) {
     }));
     mount.querySelectorAll('.nav-next').forEach((b) => b.addEventListener('click', () => { tab = b.dataset.next; draw(); }));
     mount.querySelector('#btn-scan')?.addEventListener('click', runScan);
+    mount.querySelector('#btn-form')?.addEventListener('click', (e) => openFormModal(e.currentTarget));
     const inline = mount.querySelector('#btn-scan-inline');
     if (inline) inline.addEventListener('click', runScan);
     const biOpen = mount.querySelector('#btn-insights-open');
@@ -843,6 +850,29 @@ export async function renderApplication(mount, id, { navigate }) {
 
   // Preview an attached document inline in a modal (PDF in an iframe, images
   // inline), with a separate Download action.
+  // View the original submitted application-form PDF inline, with a Download.
+  async function openFormModal(btn) {
+    let file;
+    try {
+      file = await runWithSpinner(btn, () => api.fetchSubmittedForm(id), 'Opening…');
+    } catch {
+      toast('Could not open the application form.');
+      return;
+    }
+    const frameStyle = 'width:100%;height:70vh;border:1px solid var(--color-hairline);border-radius:10px;background:var(--color-canvas-soft);';
+    modal({
+      title: 'Submitted application form',
+      maxWidth: 900,
+      bodyHtml: `<iframe src="${file.url}" title="Application form" style="${frameStyle}"></iframe>`,
+      onClose: () => URL.revokeObjectURL(file.url),
+      actions: [
+        { label: '⬇ Download', kind: 'dark', keepOpen: true,
+          onClick: (overlay) => runWithSpinner(overlay.querySelectorAll('[data-actions] button')[0], () => api.downloadSubmittedForm(id), 'Downloading…').catch(() => toast('Could not download the form.')) },
+        { label: 'Close', kind: 'ghost' },
+      ],
+    });
+  }
+
   async function openDocumentModal(docId) {
     const doc = (data.documents || []).find((d) => String(d.id) === String(docId));
     const title = (doc && doc.name) || 'Document';
