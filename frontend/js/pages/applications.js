@@ -29,7 +29,10 @@ export async function renderApplications(mount, { navigate }) {
     STATUSES.forEach((s) => { counts[s] = all.filter((a) => a.status === s).length; });
     const rows = filter === 'all' ? all : all.filter((a) => a.status === filter);
 
-    const chips = ['all', ...STATUSES].map((f) => {
+    // Only show status tabs that have applications (keep "All", and keep the
+    // active filter even if it just dropped to 0 so the selection stays visible).
+    const visibleStatuses = STATUSES.filter((s) => counts[s] > 0 || s === filter);
+    const chips = ['all', ...visibleStatuses].map((f) => {
       const selected = f === filter;
       const label = f === 'all' ? 'All' : f;
       const bg = selected ? 'var(--color-primary)' : '#fff';
