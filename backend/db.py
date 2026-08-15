@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 from typing import Iterator
 
+from sqlalchemy import inspect, text
 from sqlmodel import Session, SQLModel, create_engine
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -36,10 +37,48 @@ else:
 
 
 def init_db() -> None:
-    """Create all tables. Import models first so they register with metadata."""
+    """Create all tables, then apply additive column migrations.
+
+    Import models first so they register with metadata. `create_all` creates any
+    missing *tables* but never ALTERs an existing one, so a model gaining a new
+    column would break queries against an already-deployed table (Postgres 500s
+    on the unknown column). `_run_additive_migrations` closes that gap.
+    """
     import models  # noqa: F401  (registers SQLModel tables)
 
     SQLModel.metadata.create_all(engine)
+    _run_additive_migrations()
+
+
+def _run_additive_migrations() -> None:
+    """Add any model columns missing from an already-existing table (ADD COLUMN).
+
+    Purely additive and idempotent — safe to run on every startup. Columns are
+    added nullable (no NOT NULL constraint) with the model's Python default
+    backfilling existing rows, so no data is touched. Non-additive changes
+    (renames, drops, type changes) are out of scope and still need a real
+    migration.
+    """
+    insp = inspect(engine)
+    existing_tables = set(insp.get_table_names())
+    for table in SQLModel.metadata.sorted_tables:
+        if table.name not in existing_tables:
+            continue  # create_all just made it fresh with every column
+        db_cols = {c["name"] for c in insp.get_columns(table.name)}
+        for col in table.columns:
+            if col.name in db_cols:
+                continue
+            coltype = col.type.compile(dialect=engine.dialect)
+            default_sql = ""
+            arg = getattr(col.default, "arg", None) if col.default is not None else None
+            if arg is not None and not callable(arg):
+                default_sql = f" DEFAULT {arg!r}" if isinstance(arg, str) else f" DEFAULT {arg}"
+            ddl = f'ALTER TABLE "{table.name}" ADD COLUMN "{col.name}" {coltype}{default_sql}'
+            try:
+                with engine.begin() as conn:
+                    conn.execute(text(ddl))
+            except Exception as exc:  # noqa: BLE001 — never let one column crash startup
+                print(f"[migrate] skipped {table.name}.{col.name}: {exc}")
 
 
 def get_session() -> Iterator[Session]:
