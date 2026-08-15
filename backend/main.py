@@ -6,7 +6,7 @@ M2: application detail + the admin onboarding loop (decision → agreement → i
 """
 import os
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import uvicorn
@@ -16,8 +16,9 @@ from fastapi.responses import Response
 from sqlmodel import Session, select
 
 import formscan
+import mock_prisms
 import storage
-from db import get_session, init_db
+from db import engine, get_session, init_db
 from decisions import apply_decision, evaluate_gate
 from models import (
     Agent,
@@ -26,7 +27,10 @@ from models import (
     AuditEvent,
     Document,
     ExtractedField,
+    GovRegistration,
     MarketingAsset,
+    PrismsCompliance,
+    PrismsRecord,
     Reference,
     ReferenceFeedback,
     ReviewSection,
@@ -39,6 +43,9 @@ _MANDATORY_KEYS = {s[0] for s in _NORM_SPECS if s[3]}
 _SPEC_BY_KEY = {s[0]: (s[1], s[2], s[3]) for s in _NORM_SPECS}
 import insights as insights_engine
 from schemas import (
+    AgentRating,
+    AgentTerminate,
+    PrismsRegisterRequest,
     DecisionRequest,
     DocumentStatusUpdate,
     FieldCorrection,
@@ -50,7 +57,7 @@ from schemas import (
     ReferenceRequest,
     ReviewSectionUpdate,
 )
-from seed import seed_all
+from seed import seed_all, AUTO_SCAN_APP_IDS
 
 app = FastAPI(title="Corridor — Agent Management Portal API", version="0.1.0")
 
@@ -70,10 +77,33 @@ app.add_middleware(
 )
 
 
+def _start_compliance_poller() -> None:
+    """Background daemon that periodically polls the (mock) PRISMS system and
+    reconciles compliance trackers. Interval via PRISMS_POLL_INTERVAL seconds
+    (default 30); set to 0 to disable (e.g. in tests)."""
+    interval = int(os.environ.get("PRISMS_POLL_INTERVAL", "30"))
+    if interval <= 0:
+        return
+    import threading
+    import time
+
+    def loop() -> None:
+        while True:
+            time.sleep(interval)
+            try:
+                with Session(engine) as s:
+                    reconcile_prisms_compliance(s)
+            except Exception:
+                pass  # a transient poll failure must never take the server down
+
+    threading.Thread(target=loop, daemon=True, name="prisms-poller").start()
+
+
 @app.on_event("startup")
 def on_startup() -> None:
     init_db()
     formscan.ensure_store()
+    _start_compliance_poller()
 
 
 @app.get("/health", tags=["system"])
@@ -81,10 +111,36 @@ def health() -> dict:
     return {"status": "ok", "service": "amp-backend", "version": "0.1.0"}
 
 
+def _scan_seed_applications(session: Session) -> list[int]:
+    """Pre-run the real extraction pipeline on the designated demo applications so
+    their review opens with fields already populated — no manual "Run scan".
+
+    A failed pre-scan must never break seeding; on error we roll back that app and
+    move on (the user can still Run scan manually).
+    """
+    scanned = []
+    for app_id in AUTO_SCAN_APP_IDS:
+        app = session.get(Application, app_id)
+        if app is None or not formscan.resolve_pdf(app.source_pdf):
+            continue
+        try:
+            _scan_real(app, session)
+            scanned.append(app_id)
+        except Exception:
+            session.rollback()
+    return scanned
+
+
 @app.post("/seed", tags=["system"])
 def seed(session: Session = Depends(get_session)) -> dict:
-    """Reset the DB to the design's sample records. Dev-only convenience."""
-    return {"seeded": seed_all(session)}
+    """Reset the DB to the design's sample records. Dev-only convenience.
+
+    Also pre-scans the showcase application(s) so their fields are populated on
+    first open (see `_scan_seed_applications`).
+    """
+    result = seed_all(session)
+    result["scanned"] = _scan_seed_applications(session)
+    return {"seeded": result}
 
 
 @app.post("/auth/login", response_model=LoginResponse, tags=["auth"])
@@ -158,7 +214,21 @@ def list_applications(
     stmt = select(Application)
     if not include_active:
         stmt = stmt.where(Application.status != "Active")
-    return session.exec(stmt).all()
+    apps = session.exec(stmt).all()
+    # Most recently submitted first. `date` is a display string (e.g. "10 Aug
+    # 2026"); parse it to sort, falling back to id (roughly chronological) both as
+    # the same-day tiebreaker and when a date can't be parsed.
+    apps.sort(key=lambda a: (_parse_submitted(a.date), a.id or 0), reverse=True)
+    return apps
+
+
+def _parse_submitted(date_str: str) -> datetime:
+    """Parse an application's display submission date to a datetime for sorting.
+    Unparseable/empty dates sort oldest (datetime.min)."""
+    try:
+        return datetime.strptime((date_str or "").strip(), "%d %b %Y")
+    except ValueError:
+        return datetime.min
 
 
 _COUNTRY_FLAGS = {
@@ -516,6 +586,9 @@ def get_application(app_id: int, session: Session = Depends(get_session)) -> dic
     agreement = session.exec(
         select(Agreement).where(Agreement.application_id == app_id)
     ).first()
+    tracker = session.exec(
+        select(PrismsCompliance).where(PrismsCompliance.application_id == app_id)
+    ).first()
     return {
         "application": app,
         "detail": app.detail or _synthesize_detail(app),
@@ -523,6 +596,7 @@ def get_application(app_id: int, session: Session = Depends(get_session)) -> dic
         "documents": documents,
         "references": references,
         "agreement": agreement,
+        "prisms_compliance": _compliance_dict(tracker) if tracker else None,
     }
 
 
@@ -1037,9 +1111,238 @@ def verify_agreement(app_id: int, session: Session = Depends(get_session)) -> Ag
         entity=f"Application {app_id}",
         detail=f"Agreement signature verified for {app.business}",
     ))
+    # Start the 30-day PRISMS-registration compliance clock now that the signed
+    # agreement is confirmed received.
+    _ensure_compliance_tracker(app, session)
+    session.add(AuditEvent(
+        actor="System", action="PRISMS compliance started",
+        entity=f"Application {app_id}",
+        detail=f"30-day PRISMS registration window opened for {app.business}",
+    ))
     session.commit()
     session.refresh(agreement)
     return agreement
+
+
+# PRISMS = the Australian Dept. of Education's Provider Registration and
+# International Student Management System. Corridor hands the audited, signed
+# agreement details off to the admin, who signs in and enters the record there.
+PRISMS_PORTAL_URL = "https://prisms.education.gov.au/Logon/Logon.aspx"
+PROVIDER_NAME = "Kensington Melbourne College"
+# The college's PRISMS provider code — the key its registered agents live under
+# in the (mocked) PRISMS database.
+PRISMS_PROVIDER_CODE = "KMC-CRICOS-01234A"
+# Regulatory deadline: an agent must be registered in PRISMS within this many
+# days of the signed agreement being verified.
+PRISMS_DEADLINE_DAYS = 30
+PRISMS_EXPORT_STEPS = [
+    "Sign in to PRISMS with your provider (CRICOS) credentials — the portal opens in a new tab.",
+    "In PRISMS, open Agents → Register a new education agent.",
+    "Copy the agent's business and contact details below into the new agent record.",
+    "Under Agreement, record the signature-verified date and attach the signed agreement PDF (download it from this page first).",
+    "Enter the reference number shown below, then submit the record for registration.",
+    "When PRISMS issues a registration reference, return to Corridor to file it against this agent.",
+]
+
+
+@app.post("/applications/{app_id}/prisms-export", tags=["applications"])
+def prisms_export(app_id: int, session: Session = Depends(get_session)) -> dict:
+    """Prepare the audited, signed agreement details for hand-off to PRISMS.
+
+    Corridor does not push data into PRISMS directly — the admin signs in to the
+    government portal and enters the record. This endpoint gates on a verified
+    signature, records the hand-off on the audit trail, and returns the export
+    payload plus the steps the admin follows in the portal.
+    """
+    app = _get_app_or_404(app_id, session)
+    agreement = session.exec(
+        select(Agreement).where(Agreement.application_id == app_id)
+    ).first()
+    if agreement is None or not agreement.signature_verified:
+        raise HTTPException(
+            status_code=409,
+            detail="Verify the signed agreement before exporting to PRISMS")
+
+    reference = f"KMC-AGR-{app_id}"
+
+    # Once the agent record exists (post-invite), upsert its PRISMS registration
+    # as Submitted so the M5 Gov-registration workflow can track it from here.
+    agent = session.exec(select(Agent).where(Agent.name == app.business)).first()
+    if agent is not None:
+        reg = session.exec(
+            select(GovRegistration).where(
+                GovRegistration.agent_id == agent.id,
+                GovRegistration.portal == "PRISMS",
+            )
+        ).first()
+        if reg is None:
+            reg = GovRegistration(agent_id=agent.id, portal="PRISMS")
+        reg.status = "Submitted"
+        reg.reference_no = reference
+        session.add(reg)
+
+    session.add(AuditEvent(
+        actor=ACTOR, action="Exported to PRISMS",
+        entity=f"Application {app_id}",
+        detail=f"Signed agreement details for {app.business} exported to PRISMS ({reference})",
+    ))
+    session.commit()
+
+    return {
+        "portal_url": PRISMS_PORTAL_URL,
+        "reference": reference,
+        "prepared_by": ACTOR,
+        "prepared_at": datetime.utcnow().strftime("%d %b %Y, %H:%M UTC"),
+        "provider": PROVIDER_NAME,
+        "agent": {
+            "business": app.business, "contact": app.contact,
+            "email": app.email, "phone": app.phone, "country": app.country,
+        },
+        "agreement": {
+            "status": agreement.status,
+            "sent_date": agreement.sent_date,
+            "signed_date": agreement.signed_date,
+            "signature_verified": agreement.signature_verified,
+            "has_signed_pdf": bool(agreement.signed_file),
+        },
+        "steps": PRISMS_EXPORT_STEPS,
+    }
+
+
+# --- PRISMS 30-day registration compliance tracker -------------------------
+
+def _ensure_compliance_tracker(app: Application, session: Session) -> PrismsCompliance:
+    """Start (or return) the 30-day PRISMS-registration clock for an application.
+    Created when the signed agreement is verified."""
+    t = session.exec(
+        select(PrismsCompliance).where(PrismsCompliance.application_id == app.id)
+    ).first()
+    if t is None:
+        now = datetime.utcnow()
+        t = PrismsCompliance(
+            application_id=app.id, business=app.business,
+            started_at=now, due_at=now + timedelta(days=PRISMS_DEADLINE_DAYS),
+            status="Pending Upload",
+        )
+        session.add(t)
+    return t
+
+
+def _compliance_dict(t: PrismsCompliance) -> dict:
+    """Serialize a tracker with the live 30-day countdown + overdue flag."""
+    now = datetime.utcnow()
+    secs = (t.due_at - now).total_seconds()
+    return {
+        "id": t.id,
+        "application_id": t.application_id,
+        "agent_id": t.agent_id,
+        "business": t.business,
+        "status": t.status,
+        "started_at": t.started_at.isoformat(),
+        "due_at": t.due_at.isoformat(),
+        "deadline_days": PRISMS_DEADLINE_DAYS,
+        "days_left": round(secs / 86400),
+        "overdue": t.status != "Completed" and secs < 0,
+        "prisms_agent_id": t.prisms_agent_id,
+        "completed_at": t.completed_at.isoformat() if t.completed_at else None,
+        "last_checked_at": t.last_checked_at.isoformat() if t.last_checked_at else None,
+    }
+
+
+def reconcile_prisms_compliance(session: Session) -> int:
+    """Poll the (mock) PRISMS system and flip any 'Pending Upload' tracker to
+    'Completed' whose agent now has a PRISMS Agent ID. Returns how many flipped.
+
+    This is the periodic reconciliation the background poller runs and that
+    `POST /prisms-compliance/check` triggers on demand.
+    """
+    pending = session.exec(
+        select(PrismsCompliance).where(PrismsCompliance.status == "Pending Upload")
+    ).all()
+    if not pending:
+        return 0
+    now = datetime.utcnow()
+    flipped = 0
+    for t in pending:
+        t.last_checked_at = now
+        agent_id = mock_prisms.find_agent_id(session, PRISMS_PROVIDER_CODE, t.business)
+        if agent_id:
+            t.status = "Completed"
+            t.prisms_agent_id = agent_id
+            t.completed_at = now
+            # Link the local Agent + advance its GovRegistration when it exists.
+            agent = session.exec(select(Agent).where(Agent.name == t.business)).first()
+            if agent is not None:
+                t.agent_id = agent.id
+                reg = session.exec(
+                    select(GovRegistration).where(
+                        GovRegistration.agent_id == agent.id,
+                        GovRegistration.portal == "PRISMS",
+                    )
+                ).first()
+                if reg is None:
+                    reg = GovRegistration(agent_id=agent.id, portal="PRISMS")
+                reg.status = "Registered"
+                reg.reference_no = agent_id
+                session.add(reg)
+            session.add(AuditEvent(
+                actor="System", action="PRISMS registration confirmed",
+                entity=f"Application {t.application_id}" if t.application_id else f"Agent {t.agent_id}",
+                detail=f"{t.business} detected in PRISMS as {agent_id} — compliance marked Completed",
+            ))
+            flipped += 1
+        session.add(t)
+    session.commit()
+    return flipped
+
+
+@app.get("/mock/prisms/providers/{provider}/agents", tags=["mock-prisms"])
+def mock_prisms_get_agents(provider: str, session: Session = Depends(get_session)) -> dict:
+    """MOCK PRISMS API — 'Get the agent status for the provider'. Returns the
+    agents currently registered in PRISMS under this provider; this is the
+    endpoint Corridor polls to detect newly-registered agents."""
+    return {"provider": provider, "agents": mock_prisms.get_provider_agents(session, provider)}
+
+
+@app.post("/mock/prisms/providers/{provider}/agents", status_code=201, tags=["mock-prisms"])
+def mock_prisms_register(
+    provider: str, body: PrismsRegisterRequest, session: Session = Depends(get_session)
+) -> dict:
+    """MOCK PRISMS API — register an agent under a provider (assigns a PRISMS
+    Agent ID). Stands in for the admin completing registration inside the real
+    PRISMS portal."""
+    rec = mock_prisms.register_agent(session, provider, body.business)
+    return {"provider": rec.provider, "business": rec.business,
+            "prisms_agent_id": rec.prisms_agent_id, "status": rec.status}
+
+
+@app.get("/prisms-compliance", tags=["compliance"])
+def list_prisms_compliance(session: Session = Depends(get_session)) -> list[dict]:
+    """Every PRISMS-registration compliance tracker with its live countdown."""
+    trackers = session.exec(select(PrismsCompliance).order_by(PrismsCompliance.due_at)).all()
+    return [_compliance_dict(t) for t in trackers]
+
+
+@app.post("/prisms-compliance/check", tags=["compliance"])
+def check_prisms_compliance(session: Session = Depends(get_session)) -> dict:
+    """Poll the PRISMS system once now, then return the current trackers."""
+    flipped = reconcile_prisms_compliance(session)
+    trackers = session.exec(select(PrismsCompliance).order_by(PrismsCompliance.due_at)).all()
+    return {"flipped": flipped, "trackers": [_compliance_dict(t) for t in trackers]}
+
+
+@app.post("/prisms-compliance/{tracker_id}/simulate-registration", tags=["compliance"])
+def simulate_prisms_registration(tracker_id: int, session: Session = Depends(get_session)) -> dict:
+    """DEMO helper: register this tracker's agent in the mock PRISMS database (as
+    if the admin completed it in the portal), then reconcile so the tracker flips
+    to Completed on the spot."""
+    t = session.get(PrismsCompliance, tracker_id)
+    if t is None:
+        raise HTTPException(status_code=404, detail="Tracker not found")
+    mock_prisms.register_agent(session, PRISMS_PROVIDER_CODE, t.business)
+    reconcile_prisms_compliance(session)
+    session.refresh(t)
+    return _compliance_dict(t)
 
 
 @app.post("/applications/{app_id}/invite", tags=["applications"])
@@ -1113,6 +1416,99 @@ def invite_agent(
 @app.get("/agents", tags=["agents"])
 def list_agents(session: Session = Depends(get_session)) -> list[Agent]:
     return session.exec(select(Agent)).all()
+
+
+@app.get("/agents/{agent_id}", tags=["agents"])
+def get_agent(agent_id: int, session: Session = Depends(get_session)) -> dict:
+    """Single agent profile for the admin detail view: the Agent record plus its
+    own slice of the audit trail (most recent first)."""
+    agent = session.get(Agent, agent_id)
+    if agent is None:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    activity = session.exec(
+        select(AuditEvent)
+        .where(AuditEvent.entity == f"Agent {agent_id}")
+        .order_by(AuditEvent.at.desc())
+    ).all()
+    return {"agent": agent, "activity": activity}
+
+
+@app.patch("/agents/{agent_id}/rating", tags=["agents"])
+def rate_agent(
+    agent_id: int, body: AgentRating, session: Session = Depends(get_session)
+) -> Agent:
+    """Record (or update) a partner rating on a 1..5 scale with an optional note."""
+    agent = session.get(Agent, agent_id)
+    if agent is None:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    rating = round(float(body.rating), 1)
+    if rating < 1 or rating > 5:
+        raise HTTPException(status_code=422, detail="Rating must be between 1 and 5")
+
+    note = (body.note or "").strip()
+    agent.rating = rating
+    agent.rating_count += 1
+    agent.rating_note = note
+    session.add(agent)
+    detail = f"{agent.name} rated {rating}/5" + (f" — {note}" if note else "")
+    session.add(AuditEvent(
+        actor=ACTOR, action="Agent rated",
+        entity=f"Agent {agent_id}", detail=detail,
+    ))
+    session.commit()
+    session.refresh(agent)
+    return agent
+
+
+@app.patch("/agents/{agent_id}/terminate", tags=["agents"])
+def terminate_agent(
+    agent_id: int, body: AgentTerminate, session: Session = Depends(get_session)
+) -> Agent:
+    """End an active partnership: flip the agent to Terminated with a recorded
+    reason. Idempotent-guarded — an already-terminated agent returns 409 so the
+    original termination reason on the audit trail is never masked."""
+    agent = session.get(Agent, agent_id)
+    if agent is None:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    if agent.status == "Terminated":
+        raise HTTPException(status_code=409, detail="Agent is already terminated")
+    reason = (body.reason or "").strip()
+    if not reason:
+        raise HTTPException(status_code=422, detail="A termination reason is required")
+
+    prev = agent.status
+    agent.status = "Terminated"
+    session.add(agent)
+    session.add(AuditEvent(
+        actor=ACTOR, action="Agent terminated",
+        entity=f"Agent {agent_id}",
+        detail=f"{agent.name} terminated (was {prev}) — {reason}",
+    ))
+    session.commit()
+    session.refresh(agent)
+    return agent
+
+
+@app.delete("/agents/{agent_id}", status_code=204, tags=["agents"])
+def delete_agent(agent_id: int, session: Session = Depends(get_session)) -> None:
+    """Permanently remove an agent row. Any portal user linked to this agent is
+    unlinked (their login stays, but loses the agent profile)."""
+    agent = session.get(Agent, agent_id)
+    if agent is None:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
+    for u in session.exec(select(User).where(User.agent_id == agent_id)).all():
+        u.agent_id = None
+        session.add(u)
+
+    name = agent.name
+    session.delete(agent)
+    session.add(AuditEvent(
+        actor=ACTOR, action="Agent removed",
+        entity=f"Agent {agent_id}", detail=f"{name} removed",
+    ))
+    session.commit()
+    return None
 
 
 @app.get("/marketing", tags=["marketing"])

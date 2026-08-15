@@ -59,6 +59,24 @@ class InviteRequest(BaseModel):
     channels: list[str] = []
 
 
+class PrismsRegisterRequest(BaseModel):
+    # Mock PRISMS: the agent business name to register under a provider.
+    business: str
+
+
+class AgentRating(BaseModel):
+    # Partner rating on a 1..5 scale plus an optional qualitative note. Validated
+    # server-side; recorded on the audit trail.
+    rating: float
+    note: str = ""
+
+
+class AgentTerminate(BaseModel):
+    # Reason is mandatory — a termination without a recorded justification is not
+    # auditable. Trimmed/validated server-side.
+    reason: str
+
+
 class LoginResponse(BaseModel):
     ok: bool
     token: str

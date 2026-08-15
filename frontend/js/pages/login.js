@@ -4,7 +4,7 @@
 import { api } from '../api.js';
 import { store } from '../store.js';
 import { defaultRouteForRole } from '../nav.js';
-import { toast } from '../ui.js';
+import { toast, runWithSpinner } from '../ui.js';
 
 export function renderLogin(mount, { navigate }) {
   mount.innerHTML = `
@@ -57,8 +57,9 @@ export function renderLogin(mount, { navigate }) {
     e.preventDefault();
     const email = mount.querySelector('#login-email').value.trim();
     const password = mount.querySelector('#login-password').value;
+    const submitBtn = mount.querySelector('#login-form button[type="submit"]');
     try {
-      const res = await api.login(email, password);
+      const res = await runWithSpinner(submitBtn, () => api.login(email, password), 'Signing in…');
       store.setSession(res);
       navigate(defaultRouteForRole(res.role));
     } catch (err) {

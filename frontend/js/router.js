@@ -8,6 +8,7 @@ import { renderShell } from './pages/shell.js';
 import { renderDashboard } from './pages/dashboard.js';
 import { renderApplications } from './pages/applications.js';
 import { renderAgents } from './pages/agents.js';
+import { renderAgentDetail } from './pages/agent-detail.js';
 import { renderApplication } from './pages/application.js';
 import { renderAgreement } from './pages/agreement.js';
 import { renderInvite } from './pages/invite.js';
@@ -15,6 +16,7 @@ import { renderAgentDashboard } from './pages/agent-dashboard.js';
 import { renderMarketing } from './pages/marketing.js';
 import { renderAgentProfile } from './pages/agent-profile.js';
 import { renderAudit } from './pages/audit.js';
+import { renderCompliance } from './pages/compliance.js';
 import { renderIntake } from './pages/intake.js';
 import { renderPlaceholder } from './pages/placeholder.js';
 
@@ -22,6 +24,7 @@ const KNOWN_ROUTES = new Set([
   'dashboard', 'applications', 'application', 'agents', 'agent', 'invite',
   'marketing', 'invoices', 'reports', 'audit', 'settings', 'agent-view',
   'agent-profile', 'agreement', 'gov-registration', 'offboard', 'apply',
+  'compliance',
 ]);
 
 // Routes reachable WITHOUT authentication (public front doors).
@@ -32,6 +35,7 @@ const PARENT_NAV = {
   application: 'applications',
   agreement: 'applications',
   invite: 'applications',
+  agent: 'agents',
 };
 
 const app = document.getElementById('app');
@@ -57,6 +61,7 @@ async function dispatchPage(pageMount, route, param) {
     case 'dashboard': return renderDashboard(pageMount, { navigate });
     case 'applications': return renderApplications(pageMount, { navigate });
     case 'agents': return renderAgents(pageMount, { navigate });
+    case 'agent': return renderAgentDetail(pageMount, param, { navigate });
     case 'application': return renderApplication(pageMount, param, { navigate });
     case 'agreement': return renderAgreement(pageMount, param, { navigate });
     case 'invite': return renderInvite(pageMount, param, { navigate });
@@ -64,6 +69,7 @@ async function dispatchPage(pageMount, route, param) {
     case 'marketing': return renderMarketing(pageMount, { navigate });
     case 'agent-profile': return renderAgentProfile(pageMount, { navigate });
     case 'audit': return renderAudit(pageMount, { navigate });
+    case 'compliance': return renderCompliance(pageMount, { navigate });
     default: return renderPlaceholder(pageMount, route);
   }
 }

@@ -149,6 +149,58 @@ export function modal({ title, bodyHtml, actions = [], maxWidth = 520, onClose }
   return close;
 }
 
+// --- button busy / spinner ------------------------------------------------
+// Inline spinner keyframes, injected once, so any button can show a busy state
+// while its API call is in flight.
+function ensureSpinnerStyle() {
+  if (document.getElementById('amp-spin-style')) return;
+  const s = document.createElement('style');
+  s.id = 'amp-spin-style';
+  s.textContent = '@keyframes amp-spin{to{transform:rotate(360deg)}}'
+    + '.amp-spinner{display:inline-block;width:12px;height:12px;border:2px solid currentColor;'
+    + 'border-right-color:transparent;border-radius:50%;animation:amp-spin .6s linear infinite;vertical-align:-2px;}';
+  document.head.appendChild(s);
+}
+
+// Put a button into a disabled, spinner "busy" state. Returns a restore()
+// function that puts the button back exactly as it was. When `label` is omitted
+// the button keeps its own text next to the spinner. The width is frozen so the
+// button doesn't resize mid-action.
+export function setButtonBusy(btn, label) {
+  if (!btn) return () => {};
+  ensureSpinnerStyle();
+  const orig = {
+    html: btn.innerHTML, disabled: btn.disabled,
+    cursor: btn.style.cursor, opacity: btn.style.opacity, width: btn.style.width,
+  };
+  const w = btn.getBoundingClientRect().width;
+  if (w) btn.style.width = `${Math.ceil(w)}px`;
+  btn.disabled = true;
+  btn.style.cursor = 'wait';
+  btn.style.opacity = '0.8';
+  const text = label != null ? label : (btn.textContent || '').trim();
+  btn.innerHTML = text ? `<span class="amp-spinner"></span> ${esc(text)}` : '<span class="amp-spinner"></span>';
+  return () => {
+    btn.disabled = orig.disabled;
+    btn.style.cursor = orig.cursor;
+    btn.style.opacity = orig.opacity;
+    btn.style.width = orig.width;
+    btn.innerHTML = orig.html;
+  };
+}
+
+// Run an async action with a busy spinner on `btn`, restoring it afterwards.
+// If a re-render replaces the button while the action runs (it's no longer in
+// the DOM), the restore is skipped. Result is returned; errors are re-thrown.
+export async function runWithSpinner(btn, fn, label) {
+  const restore = setButtonBusy(btn, label);
+  try {
+    return await fn();
+  } finally {
+    if (btn && document.contains(btn)) restore();
+  }
+}
+
 let toastTimer = null;
 export function toast(message) {
   let node = document.getElementById('amp-toast');

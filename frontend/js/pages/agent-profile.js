@@ -46,7 +46,6 @@ export async function renderAgentProfile(mount) {
         <div style="font-family:var(--font-display);font-weight:540;font-size:16px;padding-top:24px;">Performance</div>
         ${row('Enrolments', esc(agent.enrol))}
         ${row('Conversion rate', esc(agent.conv))}
-        ${row('Compliance score', esc(agent.comp))}
       </div>
 
       <div style="font-size:12px;color:var(--color-ink-faint);margin-top:14px;">

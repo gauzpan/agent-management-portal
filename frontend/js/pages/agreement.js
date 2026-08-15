@@ -2,7 +2,7 @@
 // Sending records the agreement as Sent (+audit) and routes to Invite.
 // Mirrors dc.html L659-716. Preview text is static (template content).
 import { api, ApiError } from '../api.js';
-import { esc, emptyState, toast } from '../ui.js';
+import { esc, emptyState, toast, runWithSpinner } from '../ui.js';
 
 const STEPS = [
   ['1', 'Approval', 'done'],
@@ -84,9 +84,9 @@ export async function renderAgreement(mount, id, { navigate }) {
 
   mount.querySelector('#back-link').addEventListener('click', () => navigate('applications'));
   mount.querySelector('#btn-back-app').addEventListener('click', () => navigate(`application/${id}`));
-  mount.querySelector('#btn-send').addEventListener('click', async () => {
+  mount.querySelector('#btn-send').addEventListener('click', async (e) => {
     try {
-      await api.sendAgreement(id);
+      await runWithSpinner(e.currentTarget, () => api.sendAgreement(id), 'Sending…');
     } catch {
       toast('Could not send the agreement — is the backend running?');
       return;

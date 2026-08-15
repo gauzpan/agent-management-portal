@@ -1,7 +1,7 @@
 // Applications list: status filter chips + table. Rows open the detail screen.
 // Mirrors dc.html L238-269. Filter state is page-local (kept in a closure).
 import { api, ApiError } from '../api.js';
-import { esc, statusPill, emptyState, modal, toast } from '../ui.js';
+import { esc, statusPill, emptyState, modal, toast, setButtonBusy } from '../ui.js';
 
 const STATUSES = [
   'New', 'In Review', 'Pending Documents', 'Pending Agent Response',
@@ -103,6 +103,7 @@ export async function renderApplications(mount, { navigate }) {
       actions: [
         { label: 'Cancel', kind: 'ghost' },
         { label: 'Remove', kind: 'danger', keepOpen: true, onClick: async (overlay) => {
+          const restore = setButtonBusy(overlay.querySelectorAll('[data-actions] button')[1], 'Removing…');
           try {
             await api.deleteApplication(id);
             all = all.filter((a) => String(a.id) !== String(id));
@@ -110,6 +111,7 @@ export async function renderApplications(mount, { navigate }) {
             toast(`App-${id} removed`);
             draw();
           } catch {
+            restore();
             toast('Could not remove the application.');
           }
         } },
@@ -153,6 +155,7 @@ export async function renderApplications(mount, { navigate }) {
           const file = fileInput && fileInput.files[0];
           const business = val('up-business');
           if (!file && !business) { toast('Attach a PDF or enter a business name'); return; }
+          const restore = setButtonBusy(overlay.querySelectorAll('[data-actions] button')[1], file ? 'Uploading…' : 'Creating…');
           try {
             let id;
             if (file) {
@@ -177,6 +180,7 @@ export async function renderApplications(mount, { navigate }) {
             toast(`App-${id} created · in review`);
             navigate(`application/${id}`);
           } catch (err) {
+            restore();
             const msg = err instanceof ApiError && err.detail ? err.detail : 'Could not create the application.';
             toast(typeof msg === 'string' ? msg : 'Could not create the application.');
           }

@@ -69,6 +69,12 @@ export const api = {
   // Agreement lifecycle (post-approval).
   uploadSignedAgreement: (id, formData) => request(`/applications/${id}/agreement/upload`, { method: 'POST', body: formData }),
   verifyAgreement: (id) => request(`/applications/${id}/agreement/verify`, { method: 'POST' }),
+  // PRISMS hand-off: returns the audited signed-agreement details + steps + portal URL.
+  exportToPrisms: (id) => request(`/applications/${id}/prisms-export`, { method: 'POST' }),
+  // PRISMS 30-day registration compliance tracker.
+  prismsCompliance: () => request('/prisms-compliance'),
+  checkPrismsCompliance: () => request('/prisms-compliance/check', { method: 'POST' }),
+  simulatePrismsRegistration: (trackerId) => request(`/prisms-compliance/${trackerId}/simulate-registration`, { method: 'POST' }),
   async viewAgreement(id) { return this._openFile(`/applications/${id}/agreement/document`); },
   async downloadAgreementDoc(id) { return this._downloadFile(`/applications/${id}/agreement/document`, `Agreement-${id}.pdf`); },
   async viewSignedAgreement(id) { return this._openFile(`/applications/${id}/agreement/signed`); },
@@ -84,6 +90,10 @@ export const api = {
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   },
   agents: () => request('/agents'),
+  getAgent: (id) => request(`/agents/${id}`),
+  rateAgent: (id, rating, note) => request(`/agents/${id}/rating`, { method: 'PATCH', body: { rating, note } }),
+  terminateAgent: (id, reason) => request(`/agents/${id}/terminate`, { method: 'PATCH', body: { reason } }),
+  deleteAgent: (id) => request(`/agents/${id}`, { method: 'DELETE' }),
   marketing: () => request('/marketing'),
   audit: () => request('/audit'),
 
@@ -126,5 +136,15 @@ export const api = {
     const match = disposition.match(/filename="?([^"]+)"?/);
     const blob = await res.blob();
     return { url: URL.createObjectURL(blob), filename: match ? match[1] : `document-${id}`, type: blob.type };
+  },
+  // Fetch the uploaded signed agreement as a blob for inline preview in a modal.
+  // Caller must URL.revokeObjectURL the returned url.
+  async fetchSignedAgreement(id) {
+    const token = store.getToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const res = await fetch(`${BASE}/applications/${id}/agreement/signed`, { headers });
+    if (!res.ok) throw new ApiError(res.status, `Open failed (${res.status})`);
+    const blob = await res.blob();
+    return { url: URL.createObjectURL(blob), type: blob.type };
   },
 };

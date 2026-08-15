@@ -5,7 +5,7 @@ Tables mirror the sample records embedded in the designer's prototype
 the same shape and we avoid the frontend/CLAUDE.md "Scheme Mismatch" stop
 condition. Business logic (state transitions, validation) is added in M2+.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from sqlalchemy import Column
@@ -37,6 +37,9 @@ class Agent(SQLModel, table=True):
     enrol: int = 0
     conv: str = ""  # conversion %, e.g. "71%"
     comp: str = ""  # compliance score %, e.g. "96%"
+    rating: float = 0.0     # partner rating, 0..5 (0 = not yet rated)
+    rating_count: int = 0   # how many times the rating has been set
+    rating_note: str = ""   # latest qualitative note accompanying the rating
 
 
 class Application(SQLModel, table=True):
@@ -145,6 +148,38 @@ class AuditEvent(SQLModel, table=True):
     entity: str = ""  # e.g. "Application 2087"
     detail: str = ""
     at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class PrismsCompliance(SQLModel, table=True):
+    """Tracks the mandatory 30-day window to register a newly-signed agent in
+    PRISMS. Created when the signed agreement is verified (the clock start), and
+    flips 'Pending Upload' → 'Completed' when the agent's PRISMS Agent ID is
+    detected via the (mocked) PRISMS provider API.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    application_id: Optional[int] = Field(default=None, foreign_key="application.id")
+    agent_id: Optional[int] = Field(default=None, foreign_key="agent.id")
+    business: str = ""  # agent business name — the key matched against PRISMS
+    started_at: datetime = Field(default_factory=datetime.utcnow)
+    due_at: datetime = Field(default_factory=lambda: datetime.utcnow() + timedelta(days=30))
+    status: str = "Pending Upload"  # Pending Upload | Completed
+    prisms_agent_id: str = ""       # the Agent ID detected in the PRISMS database
+    completed_at: Optional[datetime] = None
+    last_checked_at: Optional[datetime] = None  # last poll of the PRISMS system
+
+
+class PrismsRecord(SQLModel, table=True):
+    """MOCK of the external PRISMS provider database — one row per agent the
+    college has registered in PRISMS. Populated by the mock 'register' endpoint;
+    read by the poller's 'get agent status for provider' call. In production this
+    lives in the real PRISMS system, reached over HTTP.
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    provider: str = ""             # provider (college) code the agent is registered under
+    business: str = ""             # registered agent business name
+    prisms_agent_id: str = ""      # PRISMS-issued Agent ID
+    status: str = "Registered"     # PRISMS-side status
+    registered_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class ExtractedField(SQLModel, table=True):

@@ -2,7 +2,7 @@
 // Browse the latest version of each asset and download it. Visible to both admin
 // and agent roles. Version history is out of scope for M3 (only the latest ships).
 import { api, ApiError } from '../api.js';
-import { esc, emptyState, toast } from '../ui.js';
+import { esc, emptyState, toast, runWithSpinner } from '../ui.js';
 
 const CATEGORY_ICON = {
   'Course guide': '📘', 'Fee schedule': '💵', 'Handbook': '📗', 'Brochure': '📄',
@@ -51,15 +51,11 @@ export async function renderMarketing(mount) {
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">${cards}</div>`;
 
   mount.querySelectorAll('.mk-dl').forEach((b) => b.addEventListener('click', async () => {
-    const label = b.textContent;
-    b.disabled = true; b.textContent = 'Downloading…';
     try {
-      const filename = await api.downloadMarketing(b.dataset.id);
+      const filename = await runWithSpinner(b, () => api.downloadMarketing(b.dataset.id), 'Downloading…');
       toast(`Downloaded ${filename}`);
     } catch {
       toast('Could not download this asset.');
-    } finally {
-      b.disabled = false; b.textContent = label;
     }
   }));
 }

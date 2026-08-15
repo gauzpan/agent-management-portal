@@ -7,6 +7,7 @@ import { esc } from '../ui.js';
 // Titles for detail routes that aren't top-level nav items.
 const DETAIL_META = {
   application: ['Reviewing application', 'Business, documents & referee review'],
+  agent: ['Agent profile', 'Partnership status, performance, rating & activity'],
   agreement: ['Send agent agreement', 'Approval → Agreement → Invite'],
   invite: ['Send portal invitation', 'Grant the approved agent portal access'],
 };

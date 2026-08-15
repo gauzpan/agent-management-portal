@@ -2,7 +2,7 @@
 // code NETWORK-FIRST so a code change is never masked by a stale cache (a
 // cache-first worker made edits "disappear" until a manual cache clear). The
 // cache is the offline fallback, not the source of truth.
-const CACHE = 'amp-shell-v10';
+const CACHE = 'amp-shell-v17';
 const SHELL = [
   './',
   './index.html',
@@ -23,6 +23,9 @@ const SHELL = [
   './js/pages/placeholder.js',
   './js/pages/applications.js',
   './js/pages/agents.js',
+  './js/pages/agent-detail.js',
+  './js/pages/agent-actions.js',
+  './js/pages/compliance.js',
   './js/pages/application.js',
   './js/pages/agreement.js',
   './js/pages/invite.js',

@@ -7,7 +7,7 @@
 // (files stored in the app-forms document store) and shows a success state. The
 // submission lands in the admin's Applications list as "New".
 import { api, ApiError } from '../api.js';
-import { esc, toast } from '../ui.js';
+import { esc, toast, setButtonBusy, runWithSpinner } from '../ui.js';
 
 // Supporting-document slots. `type` is persisted as Document.doc_type.
 const DOC_SLOTS = [
@@ -129,16 +129,11 @@ export function renderIntake(mount, { navigate }) {
     });
 
     mount.querySelector('#in-download-form').addEventListener('click', async (e) => {
-      const btn = e.currentTarget;
-      const label = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Downloading…';
       try {
-        const filename = await api.downloadApplicationForm();
+        const filename = await runWithSpinner(e.currentTarget, () => api.downloadApplicationForm(), 'Downloading…');
         toast(`Downloaded ${filename}`);
       } catch {
         toast('Could not download the application form. Is the backend running on :8000?');
-      } finally {
-        btn.disabled = false; btn.textContent = label;
       }
     });
   }
@@ -173,7 +168,7 @@ export function renderIntake(mount, { navigate }) {
     }
 
     const btn = mount.querySelector('#in-submit');
-    btn.disabled = true; btn.textContent = 'Submitting…';
+    const restore = setButtonBusy(btn, 'Submitting…');
     try {
       const fd = new FormData();
       fd.append('file', appFile);
@@ -193,7 +188,7 @@ export function renderIntake(mount, { navigate }) {
     } catch (err) {
       const detail = err instanceof ApiError && typeof err.detail === 'string' ? err.detail : null;
       errBox.textContent = detail || 'Could not submit your application. Please try again.';
-      btn.disabled = false; btn.textContent = 'Submit application';
+      restore();
     }
   }
 

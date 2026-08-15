@@ -2,7 +2,7 @@
 // Sending writes an audit event and returns to the applications list.
 // Mirrors dc.html invite data L1787-1792. Email/WhatsApp/SMS are stubbed.
 import { api, ApiError } from '../api.js';
-import { esc, emptyState, toast } from '../ui.js';
+import { esc, emptyState, toast, runWithSpinner } from '../ui.js';
 
 export async function renderInvite(mount, id, { navigate }) {
   mount.innerHTML = `<div style="color:var(--color-ink-mute);font-size:13px;">Loading…</div>`;
@@ -56,11 +56,11 @@ export async function renderInvite(mount, id, { navigate }) {
       row.style.background = cb.checked ? '#e0f4e8' : '#fff';
     }));
 
-  mount.querySelector('#btn-send').addEventListener('click', async () => {
+  mount.querySelector('#btn-send').addEventListener('click', async (e) => {
     const selected = [...mount.querySelectorAll('input[data-channel]:checked')].map((c) => c.dataset.channel);
     if (!selected.length) { toast('Select at least one channel'); return; }
     try {
-      await api.sendInvite(id, selected);
+      await runWithSpinner(e.currentTarget, () => api.sendInvite(id, selected), 'Sending…');
     } catch {
       toast('Could not send the invitation — is the backend running?');
       return;

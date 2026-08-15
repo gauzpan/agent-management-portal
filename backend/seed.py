@@ -3,6 +3,8 @@
 Populates SQLite so the shell has realistic content in M1 and the M2 admin loop
 has data to act on. Idempotent: wipes and re-inserts on each call.
 """
+from datetime import datetime, timedelta
+
 from sqlmodel import Session, delete, select
 
 from models import (
@@ -13,6 +15,8 @@ from models import (
     Document,
     ExtractedField,
     MarketingAsset,
+    PrismsCompliance,
+    PrismsRecord,
     Reference,
     ReferenceFeedback,
     ReviewSection,
@@ -51,28 +55,36 @@ _AGENTS = [
     # a real, own record.
     {"name": "Sunrise Overseas Consultants", "initials": "SO", "avatar_bg": "#ffd9a0",
      "country": "India", "flag": "🇮🇳", "status": "Active", "since": "Apr 24",
-     "enrol": 57, "conv": "63%", "comp": "90%"},
+     "enrol": 57, "conv": "63%", "comp": "90%",
+     "rating": 4.2, "rating_count": 1, "rating_note": "Reliable pipeline; docs occasionally late."},
     {"name": "Global Bridge Education", "initials": "GB", "avatar_bg": "#ffcd00",
      "country": "Vietnam", "flag": "🇻🇳", "status": "Active", "since": "Feb 23",
-     "enrol": 128, "conv": "71%", "comp": "96%"},
+     "enrol": 128, "conv": "71%", "comp": "96%",
+     "rating": 4.8, "rating_count": 1, "rating_note": "Top performer — high conversion and compliance."},
     {"name": "Wattle & Willow Advisors", "initials": "WW", "avatar_bg": "#c4e8d4",
      "country": "India", "flag": "🇮🇳", "status": "Active", "since": "Aug 22",
-     "enrol": 94, "conv": "64%", "comp": "92%"},
+     "enrol": 94, "conv": "64%", "comp": "92%",
+     "rating": 4.4, "rating_count": 1, "rating_note": "Strong, steady partner."},
     {"name": "Southern Cross Study", "initials": "SC", "avatar_bg": "#ffe4a0",
      "country": "Nepal", "flag": "🇳🇵", "status": "Expiring Soon", "since": "Nov 21",
-     "enrol": 61, "conv": "58%", "comp": "74%"},
+     "enrol": 61, "conv": "58%", "comp": "74%",
+     "rating": 3.3, "rating_count": 1, "rating_note": "Compliance slipping; agreement up for renewal."},
     {"name": "Kangaroo Path Partners", "initials": "KP", "avatar_bg": "#d4d4f4",
      "country": "Philippines", "flag": "🇵🇭", "status": "Active", "since": "Mar 24",
-     "enrol": 47, "conv": "69%", "comp": "89%"},
+     "enrol": 47, "conv": "69%", "comp": "89%",
+     "rating": 4.1, "rating_count": 1, "rating_note": "Promising newer partner."},
     {"name": "Reef & Ridge Global", "initials": "RR", "avatar_bg": "#f4c4c4",
      "country": "Kenya", "flag": "🇰🇪", "status": "Suspended", "since": "Jun 23",
-     "enrol": 12, "conv": "32%", "comp": "48%"},
+     "enrol": 12, "conv": "32%", "comp": "48%",
+     "rating": 1.8, "rating_count": 1, "rating_note": "Suspended — poor compliance and low conversion."},
     {"name": "Boomerang EduAgency", "initials": "BE", "avatar_bg": "#c4e8f4",
      "country": "Sri Lanka", "flag": "🇱🇰", "status": "Active", "since": "Jan 25",
-     "enrol": 33, "conv": "61%", "comp": "88%"},
+     "enrol": 33, "conv": "61%", "comp": "88%",
+     "rating": 3.9, "rating_count": 1, "rating_note": "Solid; still ramping volume."},
     {"name": "Outback Global Study", "initials": "OG", "avatar_bg": "#e4d4f4",
      "country": "Bangladesh", "flag": "🇧🇩", "status": "Active", "since": "Oct 24",
-     "enrol": 28, "conv": "67%", "comp": "91%"},
+     "enrol": 28, "conv": "67%", "comp": "91%",
+     "rating": 4.0, "rating_count": 1, "rating_note": "Good compliance discipline."},
 ]
 
 _MARKETING = [
@@ -95,10 +107,17 @@ _AUDIT = [
      "entity": "Application 2092", "detail": "Apex Horizons Migration & Global Education — form received via intake"},
 ]
 
+# Applications the seeder pre-scans end-to-end so their review opens with the
+# extracted fields already populated (no manual "Run scan"). App-2090 is the
+# Sino-Aus showcase, backed by the real Filled_agent-app.pdf form.
+AUTO_SCAN_APP_IDS = [2090]
+
+
 def seed_all(session: Session) -> dict:
     # Wipe children first, then parents.
     for model in (ExtractedField, ReviewSection, Agreement, Document, Reference,
-                  ReferenceFeedback, AuditEvent, MarketingAsset, Application, Agent, User):
+                  ReferenceFeedback, AuditEvent, MarketingAsset, PrismsCompliance,
+                  PrismsRecord, Application, Agent, User):
         session.exec(delete(model))
     session.commit()
 
@@ -124,6 +143,8 @@ def seed_all(session: Session) -> dict:
         session.add(AuditEvent(**e))
     session.commit()
 
+    compliance = _seed_prisms_compliance(session)
+
     # NB: no pre-scan — applications open with raw, unchecked fields. The admin
     # clicks "Run scan" to generate the system checks + confidence scores.
     return {
@@ -134,4 +155,53 @@ def seed_all(session: Session) -> dict:
         "audit": len(_AUDIT),
         "documents": 0,
         "references": 0,
+        "prisms_compliance": compliance,
     }
+
+
+# The college's PRISMS provider code (mirrors main.PRISMS_PROVIDER_CODE; kept
+# here too so the seeder need not import main).
+_PRISMS_PROVIDER_CODE = "KMC-CRICOS-01234A"
+
+
+def _seed_prisms_compliance(session: Session) -> int:
+    """Illustrative PRISMS 30-day compliance trackers for existing partners so the
+    Compliance Tracker page is populated: two already Completed (present in the
+    mock PRISMS DB), one Pending with time left, one Pending and overdue."""
+    now = datetime.utcnow()
+
+    def agent(name):
+        return session.exec(select(Agent).where(Agent.name == name)).first()
+
+    # name, days_ago_started, completed(bool), prisms_id
+    plan = [
+        ("Global Bridge Education", 210, True, "PRN-4H8T2X"),
+        ("Wattle & Willow Advisors", 180, True, "PRN-9K1M7B"),
+        ("Boomerang EduAgency", 8, False, ""),    # Pending — ~22 days left
+        ("Outback Global Study", 34, False, ""),  # Pending — overdue (started >30d ago)
+    ]
+    n = 0
+    for name, days_ago, completed, prisms_id in plan:
+        a = agent(name)
+        if a is None:
+            continue
+        started = now - timedelta(days=days_ago)
+        t = PrismsCompliance(
+            agent_id=a.id, business=a.name, started_at=started,
+            due_at=started + timedelta(days=30),
+            status="Completed" if completed else "Pending Upload",
+            prisms_agent_id=prisms_id if completed else "",
+            completed_at=(started + timedelta(days=12)) if completed else None,
+            last_checked_at=now if completed else None,
+        )
+        session.add(t)
+        if completed:
+            # A Completed tracker means the agent IS in the mock PRISMS database.
+            session.add(PrismsRecord(
+                provider=_PRISMS_PROVIDER_CODE, business=a.name,
+                prisms_agent_id=prisms_id, status="Registered",
+                registered_at=started + timedelta(days=12),
+            ))
+        n += 1
+    session.commit()
+    return n

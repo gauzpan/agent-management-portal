@@ -8,32 +8,9 @@
 // without a source PDF fall back to the M2.5 simulated signals view.
 import { api, ApiError } from '../api.js';
 import { esc, statusPill, emptyState, modal, toast, dualBadge, signalIcon,
-  confidenceBucketChip, sourcePage } from '../ui.js';
-
-// Inline spinner keyframes, injected once, so buttons can show a busy state
-// while their API call is in flight.
-function ensureSpinnerStyle() {
-  if (document.getElementById('amp-spin-style')) return;
-  const s = document.createElement('style');
-  s.id = 'amp-spin-style';
-  s.textContent = '@keyframes amp-spin{to{transform:rotate(360deg)}}'
-    + '.amp-spinner{display:inline-block;width:12px;height:12px;border:2px solid currentColor;'
-    + 'border-right-color:transparent;border-radius:50%;animation:amp-spin .6s linear infinite;vertical-align:-2px;}';
-  document.head.appendChild(s);
-}
-
-// Put a button into a disabled, spinner "busy" state while an async action runs.
-// A following draw() replaces the button and clears this automatically.
-function setButtonBusy(btn, label = 'Saving…') {
-  if (!btn) return;
-  btn.disabled = true;
-  btn.style.cursor = 'wait';
-  btn.style.opacity = '0.8';
-  btn.innerHTML = `<span class="amp-spinner"></span> ${label}`;
-}
+  confidenceBucketChip, sourcePage, setButtonBusy, runWithSpinner } from '../ui.js';
 
 export async function renderApplication(mount, id, { navigate }) {
-  ensureSpinnerStyle();
   mount.innerHTML = `<div style="color:var(--color-ink-mute);font-size:13px;">Loading application…</div>`;
 
   let data, review;
@@ -479,6 +456,7 @@ export async function renderApplication(mount, id, { navigate }) {
       actions: [
         { label: hasInsights ? '↻ Re-run' : '✦ Run AI review', kind: 'ghost', keepOpen: true,
           onClick: async (overlay) => {
+            const restore = setButtonBusy(overlay.querySelectorAll('[data-actions] button')[0], 'Analysing…');
             const body = overlay.querySelector('[data-body]');
             body.innerHTML = `<div style="font-size:12px;color:var(--color-ink-mute);padding:10px 0;">Analysing…</div>`;
             try {
@@ -487,6 +465,7 @@ export async function renderApplication(mount, id, { navigate }) {
               review.insights_source = res.insights_source;
             } catch { toast('Could not generate insights.'); }
             body.innerHTML = insightsBodyHtml();
+            restore();
           } },
         { label: 'Close', kind: 'ghost' },
       ],
@@ -633,6 +612,8 @@ export async function renderApplication(mount, id, { navigate }) {
       : 'sent';
     const ghost = 'background:#fff;color:var(--color-ink);border:1px solid var(--color-hairline);';
     const green = 'background:#00843d;color:#fff;border:none;';
+    // Static (non-interactive) green pill signalling the signature is verified.
+    const verifiedStatic = 'background:#00843d;color:#fff;border:none;cursor:default;';
     const btn = (cls, label, style) => `<button class="${cls}" style="padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;${style}">${label}</button>`;
     const uploadLabel = (text, style) => `<label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;${style}">${text}<input type="file" id="agr-file" accept="application/pdf,.pdf" style="display:none;"></label>`;
 
@@ -646,14 +627,15 @@ export async function renderApplication(mount, id, { navigate }) {
       statusLine = `Agreement sent${ag.sent_date ? ` on ${esc(ag.sent_date)}` : ''} — awaiting the agent's signed copy (returned by email).`;
       actions = `${btn('agr-view', 'View agreement', ghost)}${btn('agr-download', '⬇ Download', ghost)}${uploadLabel('⬆ Upload signed agreement', green)}`;
     } else if (stage === 'uploaded') {
-      statusLine = 'Signed copy received — review the signature, then verify it.';
-      actions = `${btn('agr-view-signed', 'View signed copy', ghost)}${btn('agr-verify', '✓ Verify signature', green)}${uploadLabel('Re-upload', ghost)}`;
+      statusLine = 'Signed copy received — review the signature in the viewer, then verify it.';
+      // White until verified: opens the signed copy in a modal where the admin verifies.
+      actions = `${btn('agr-verify-open', 'Verify signed agreement', ghost)}${uploadLabel('Re-upload', ghost)}`;
     } else if (stage === 'verified') {
       statusLine = `Signature verified${ag.signed_date ? ` on ${esc(ag.signed_date)}` : ''} — grant the agent portal access.`;
-      actions = `${btn('agr-view-signed', 'View signed copy', ghost)}${btn('agr-invite', '✉ Send invite & login details', green)}`;
+      actions = `${btn('agr-verified', '✓ Verified', verifiedStatic)}${btn('agr-view-signed', 'View signed copy', ghost)}${btn('agr-prisms', '⤴ Export to PRISMS', ghost)}${btn('agr-invite', '✉ Send invite & login details', green)}`;
     } else {
       statusLine = 'Agent onboarded — portal login details have been sent.';
-      actions = `${btn('agr-view-signed', 'View signed agreement', ghost)}`;
+      actions = `${btn('agr-verified', '✓ Verified', verifiedStatic)}${btn('agr-view-signed', 'View signed agreement', ghost)}${btn('agr-prisms', '⤴ Export to PRISMS', ghost)}`;
     }
 
     return `<div style="background:#fff;border:1px solid var(--color-hairline);border-radius:12px;padding:20px 24px;margin-bottom:16px;">
@@ -663,7 +645,30 @@ export async function renderApplication(mount, id, { navigate }) {
       </div>
       <div style="font-size:13px;color:var(--color-ink-mute);margin:6px 0 12px;">${statusLine}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">${actions}</div>
+      ${prismsComplianceBanner()}
     </div>`;
+  }
+
+  // Compact PRISMS 30-day registration status inside the agreement card (once the
+  // signed agreement is verified and the compliance clock has started).
+  function prismsComplianceBanner() {
+    const c = data.prisms_compliance;
+    if (!c) return '';
+    const done = c.status === 'Completed';
+    const overdue = c.overdue;
+    const [bg, color] = done ? ['#e0f4e8', '#00843d'] : overdue ? ['#fbe3e3', '#a12020'] : ['#fff6d6', '#8a6d00'];
+    const days = Math.abs(c.days_left);
+    const right = done
+      ? `Registered as ${esc(c.prisms_agent_id || '—')}`
+      : `${days} day${days === 1 ? '' : 's'} ${overdue ? 'overdue' : 'left'}`;
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+        margin-top:14px;padding:10px 14px;border-radius:8px;background:${bg};">
+        <div style="font-size:12px;color:${color};font-weight:600;">
+          PRISMS registration · ${esc(done ? 'Completed' : overdue ? 'Overdue' : 'Pending Upload')}</div>
+        <div style="font-size:12px;color:${color};">${right}
+          · <a href="#/compliance" style="color:${color};font-weight:600;text-decoration:underline;">Compliance tracker</a></div>
+      </div>`;
   }
 
   function showCredentials(c) {
@@ -767,11 +772,12 @@ export async function renderApplication(mount, id, { navigate }) {
     mount.querySelector('#btn-request')?.addEventListener('click', openRequest);
 
     // Agreement workflow (post-approval).
-    mount.querySelector('.agr-view')?.addEventListener('click', agrView);
-    mount.querySelector('.agr-download')?.addEventListener('click', agrDownload);
-    mount.querySelector('.agr-view-signed')?.addEventListener('click', agrViewSigned);
-    mount.querySelector('.agr-verify')?.addEventListener('click', agrVerify);
-    mount.querySelector('.agr-invite')?.addEventListener('click', agrInvite);
+    mount.querySelector('.agr-view')?.addEventListener('click', (e) => agrView(e.currentTarget));
+    mount.querySelector('.agr-download')?.addEventListener('click', (e) => agrDownload(e.currentTarget));
+    mount.querySelector('.agr-view-signed')?.addEventListener('click', (e) => agrViewSigned(e.currentTarget));
+    mount.querySelector('.agr-verify-open')?.addEventListener('click', (e) => openVerifyModal(e.currentTarget));
+    mount.querySelector('.agr-invite')?.addEventListener('click', (e) => agrInvite(e.currentTarget));
+    mount.querySelector('.agr-prisms')?.addEventListener('click', (e) => agrPrisms(e.currentTarget));
     const agrFile = mount.querySelector('#agr-file');
     if (agrFile) agrFile.addEventListener('change', () => { if (agrFile.files[0]) agrUpload(agrFile.files[0]); });
 
@@ -781,7 +787,7 @@ export async function renderApplication(mount, id, { navigate }) {
     mount.querySelectorAll('.fld-cancel').forEach((b) =>
       b.addEventListener('click', () => { editingKey = null; draw(); }));
     mount.querySelectorAll('.fld-save').forEach((b) =>
-      b.addEventListener('click', () => saveField(b.dataset.key)));
+      b.addEventListener('click', () => { setButtonBusy(b, 'Saving…'); saveField(b.dataset.key); }));
     const editing = mount.querySelector('.fld-input');
     if (editing) { editing.focus(); editing.setSelectionRange(editing.value.length, editing.value.length); }
 
@@ -803,34 +809,36 @@ export async function renderApplication(mount, id, { navigate }) {
     mount.querySelectorAll('.ref-cancel').forEach((b) =>
       b.addEventListener('click', () => { editingRef = null; draw(); }));
     mount.querySelectorAll('.ref-save').forEach((b) =>
-      b.addEventListener('click', () => saveFeedback(b.dataset.key, b.dataset.name)));
+      b.addEventListener('click', () => saveFeedback(b.dataset.key, b.dataset.name, b)));
     mount.querySelectorAll('.ref-request').forEach((b) =>
-      b.addEventListener('click', () => requestReference(b.dataset.key, b.dataset.name)));
+      b.addEventListener('click', () => requestReference(b.dataset.key, b.dataset.name, b)));
     const refEditing = mount.querySelector('.ref-input');
     if (refEditing) refEditing.focus();
   }
 
-  async function saveFeedback(refKey, name) {
+  async function saveFeedback(refKey, name, btn) {
     const input = mount.querySelector(`.ref-input[data-key="${CSS.escape(refKey)}"]`);
     if (!input) return;
     const text = input.value.trim();
     if (!text) { toast('Enter the feedback text first'); return; }
+    const restore = setButtonBusy(btn, 'Saving…');
     try {
       await api.saveReferenceFeedback(id, refKey, text, name);
       await reloadReview();
       editingRef = null;
       toast('Feedback recorded');
       draw();
-    } catch { toast('Could not save the feedback.'); }
+    } catch { restore(); toast('Could not save the feedback.'); }
   }
 
-  async function requestReference(refKey, name) {
+  async function requestReference(refKey, name, btn) {
+    const restore = setButtonBusy(btn, 'Sending…');
     try {
       await api.requestReference(id, refKey, name);
       await reloadReview();
       toast(`Reference request sent to ${name}`);
       draw();
-    } catch { toast('Could not send the request.'); }
+    } catch { restore(); toast('Could not send the request.'); }
   }
 
   // Preview an attached document inline in a modal (PDF in an iframe, images
@@ -860,7 +868,7 @@ export async function renderApplication(mount, id, { navigate }) {
       onClose: () => URL.revokeObjectURL(file.url),
       actions: [
         { label: '⬇ Download', kind: 'dark', keepOpen: true,
-          onClick: () => api.downloadDocument(docId).catch(() => toast('Could not download the document.')) },
+          onClick: (overlay) => runWithSpinner(overlay.querySelectorAll('[data-actions] button')[0], () => api.downloadDocument(docId), 'Downloading…').catch(() => toast('Could not download the document.')) },
         { label: 'Close', kind: 'ghost' },
       ],
     });
@@ -885,24 +893,136 @@ export async function renderApplication(mount, id, { navigate }) {
   }
 
   // ---- agreement workflow handlers -----------------------------------------
-  async function agrView() { try { await api.viewAgreement(id); } catch { toast('Could not open the agreement.'); } }
-  async function agrDownload() { try { await api.downloadAgreementDoc(id); toast('Agreement downloaded'); } catch { toast('Download failed.'); } }
-  async function agrViewSigned() { try { await api.viewSignedAgreement(id); } catch { toast('Could not open the signed copy.'); } }
+  async function agrView(btn) { try { await runWithSpinner(btn, () => api.viewAgreement(id), 'Opening…'); } catch { toast('Could not open the agreement.'); } }
+  async function agrDownload(btn) { try { await runWithSpinner(btn, () => api.downloadAgreementDoc(id), 'Downloading…'); toast('Agreement downloaded'); } catch { toast('Download failed.'); } }
+  async function agrViewSigned(btn) { try { await runWithSpinner(btn, () => api.viewSignedAgreement(id), 'Opening…'); } catch { toast('Could not open the signed copy.'); } }
   async function agrUpload(file) {
     const fd = new FormData(); fd.append('file', file);
     try { await api.uploadSignedAgreement(id, fd); await reloadAll(); toast('Signed agreement uploaded'); draw(); }
     catch (err) { toast(err instanceof ApiError && typeof err.detail === 'string' ? err.detail : 'Upload failed.'); }
   }
-  async function agrVerify() {
-    try { await api.verifyAgreement(id); await reloadAll(); toast('Signature verified'); draw(); }
-    catch (err) { toast(err instanceof ApiError && typeof err.detail === 'string' ? err.detail : 'Could not verify.'); }
+  // Open the signed agreement copy in a modal, let the admin review it, then
+  // verify from inside. On success the card advances to the 'verified' stage
+  // (green "✓ Verified" pill).
+  async function openVerifyModal(btn) {
+    let file;
+    try {
+      file = await runWithSpinner(btn, () => api.fetchSignedAgreement(id), 'Opening…');
+    } catch {
+      toast('Could not open the signed copy.');
+      return;
+    }
+    const frameStyle = 'width:100%;height:70vh;border:1px solid var(--color-hairline);border-radius:10px;background:var(--color-canvas-soft);';
+    modal({
+      title: 'Verify signed agreement',
+      maxWidth: 900,
+      bodyHtml: `
+        <div style="font-size:13px;color:var(--color-ink-mute);margin-bottom:12px;">
+          Review the agent's signed copy below. Confirm the signature is present and correct, then verify.</div>
+        <iframe src="${file.url}" title="Signed agreement" style="${frameStyle}"></iframe>`,
+      onClose: () => URL.revokeObjectURL(file.url),
+      actions: [
+        { label: '⬇ Download', kind: 'dark', keepOpen: true,
+          onClick: (overlay) => runWithSpinner(overlay.querySelectorAll('[data-actions] button')[0], () => api.downloadSignedAgreement(id), 'Downloading…').catch(() => toast('Could not download the signed copy.')) },
+        { label: 'Cancel', kind: 'ghost' },
+        { label: '✓ Verify signature', kind: 'primary', keepOpen: true,
+          onClick: async (overlay) => {
+            const vbtn = [...overlay.querySelectorAll('button')].find((b) => /Verify signature/.test(b.textContent));
+            const restore = setButtonBusy(vbtn, 'Verifying…');
+            try {
+              await api.verifyAgreement(id);
+              URL.revokeObjectURL(file.url);
+              overlay.remove();
+              await reloadAll();
+              toast('Signature verified');
+              draw();
+            } catch (err) {
+              restore();
+              toast(err instanceof ApiError && typeof err.detail === 'string' ? err.detail : 'Could not verify.');
+            }
+          } },
+      ],
+    });
   }
-  async function agrInvite() {
+  async function agrInvite(btn) {
+    const restore = setButtonBusy(btn, 'Sending…');
     try { const res = await api.sendInvite(id, ['Email']); await reloadAll(); showCredentials(res.credentials); draw(); }
     catch (err) {
+      restore();
       toast(err instanceof ApiError && err.status === 409 && typeof err.detail === 'string'
         ? err.detail : 'Could not send the invitation.');
     }
+  }
+  // Hand the audited, signed agreement details off to PRISMS: show the steps to
+  // follow, the details to enter, and a redirect to the portal login. Corridor
+  // never submits to (or logs into) PRISMS — the admin does that in the portal.
+  async function agrPrisms(btn) {
+    let info;
+    try {
+      info = await runWithSpinner(btn, () => api.exportToPrisms(id), 'Preparing…');
+    } catch (err) {
+      toast(err instanceof ApiError && typeof err.detail === 'string'
+        ? err.detail : 'Could not prepare the PRISMS export.');
+      return;
+    }
+
+    const ag = info.agreement || {};
+    const agent = info.agent || {};
+    const stepsHtml = (info.steps || []).map((s) =>
+      `<li style="margin-bottom:8px;">${esc(s)}</li>`).join('');
+
+    const detailRow = (label, value) => value ? `
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:10px;padding:5px 0;">
+        <div style="color:var(--color-ink-mute);">${esc(label)}</div>
+        <div style="color:var(--color-ink);font-weight:540;">${esc(value)}</div>
+      </div>` : '';
+    const agreementLabel = ag.signature_verified ? 'Signed & signature-verified' : (ag.status || '—');
+    const detailsHtml = [
+      detailRow('Provider', info.provider),
+      detailRow('Reference', info.reference),
+      detailRow('Agent', agent.business),
+      detailRow('Contact', agent.contact),
+      detailRow('Email', agent.email),
+      detailRow('Phone', agent.phone),
+      detailRow('Country', agent.country),
+      detailRow('Agreement', agreementLabel),
+      detailRow('Signed on', ag.signed_date),
+      detailRow('Prepared by', `${info.prepared_by || ''}${info.prepared_at ? ` · ${info.prepared_at}` : ''}`),
+    ].join('');
+
+    const plain = [
+      `Provider: ${info.provider}`, `Reference: ${info.reference}`,
+      `Agent: ${agent.business}`, `Contact: ${agent.contact}`,
+      `Email: ${agent.email}`, `Phone: ${agent.phone}`, `Country: ${agent.country}`,
+      `Agreement: ${agreementLabel}`, `Signed on: ${ag.signed_date || '—'}`,
+      `Prepared by: ${info.prepared_by || ''} · ${info.prepared_at || ''}`,
+    ].join('\n');
+
+    modal({
+      title: 'Export to PRISMS',
+      maxWidth: 620,
+      bodyHtml: `
+        <div style="font-size:13px;color:var(--color-ink-mute);line-height:1.5;margin-bottom:18px;">
+          Corridor doesn't submit to PRISMS directly. Follow these steps in the government portal —
+          it opens in a new tab where you sign in with your provider credentials.</div>
+        <div style="font-family:var(--font-display);font-weight:540;font-size:14px;margin-bottom:8px;">Steps to follow</div>
+        <ol style="font-size:13px;color:var(--color-ink);line-height:1.5;margin:0 0 20px;padding-left:20px;">${stepsHtml}</ol>
+        <div style="font-family:var(--font-display);font-weight:540;font-size:14px;margin-bottom:8px;">Details to enter in PRISMS</div>
+        <div style="background:var(--color-canvas-soft);border:1px solid var(--color-hairline);border-radius:8px;padding:12px 16px;font-size:13px;">
+          ${detailsHtml}</div>
+        <div style="font-size:11px;color:var(--color-ink-faint);margin-top:10px;">
+          This hand-off is recorded on the audit trail. Never enter a portal password into Corridor — sign in on the PRISMS site itself.</div>`,
+      actions: [
+        { label: 'Copy details', kind: 'ghost', keepOpen: true, onClick: async () => {
+            try { await navigator.clipboard.writeText(plain); toast('Details copied'); }
+            catch { toast('Copy failed — select the text and copy manually.'); }
+          } },
+        { label: 'Close', kind: 'ghost' },
+        { label: 'Open PRISMS portal ↗', kind: 'primary', keepOpen: true, onClick: () => {
+            window.open(info.portal_url, '_blank', 'noopener');
+          } },
+      ],
+    });
   }
 
   async function saveField(key) {
@@ -964,9 +1084,11 @@ export async function renderApplication(mount, id, { navigate }) {
         { label: needsOverride ? 'Override & approve' : 'Approve & continue', kind: 'primary', keepOpen: true, onClick: async (overlay) => {
           const reason = needsOverride ? overlay.querySelector('#ov-reason').value.trim() : '';
           if (needsOverride && !reason) { toast('Enter an override reason'); return; }
+          const restore = setButtonBusy(overlay.querySelectorAll('[data-actions] button')[1], 'Approving…');
           const res = await decide('approve', { override: needsOverride, override_reason: reason });
           if (res === true) { overlay.remove(); toast('Approved · draft agreement ready'); navigate(`agreement/${id}`); }
           else if (res) { overlay.remove(); await reloadReview(); openApprove(); }
+          else { restore(); }
         } },
       ],
     });
@@ -981,10 +1103,12 @@ export async function renderApplication(mount, id, { navigate }) {
         <textarea id="rej-comment" rows="3" style="width:100%;padding:11px 14px;border:1px solid var(--color-hairline);border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;"></textarea>`,
       actions: [
         { label: 'Cancel', kind: 'ghost' },
-        { label: 'Send rejection', kind: 'danger', onClick: async (overlay) => {
+        { label: 'Send rejection', kind: 'danger', keepOpen: true, onClick: async (overlay) => {
           const reason = overlay.querySelector('#rej-reason').value;
           const comment = overlay.querySelector('#rej-comment').value;
-          if ((await decide('reject', { reason, comment })) === true) { toast('Rejection sent'); navigate('applications'); }
+          const restore = setButtonBusy(overlay.querySelectorAll('[data-actions] button')[1], 'Sending…');
+          if ((await decide('reject', { reason, comment })) === true) { overlay.remove(); toast('Rejection sent'); navigate('applications'); }
+          else { restore(); }
         } }],
     });
   }
@@ -997,9 +1121,11 @@ export async function renderApplication(mount, id, { navigate }) {
       bodyHtml: `<div style="font-size:13px;color:var(--color-ink-mute);margin-bottom:8px;">Status → <b style="color:#8a4b00;">Pending Agent Response</b>.</div>${checks}`,
       actions: [
         { label: 'Cancel', kind: 'ghost' },
-        { label: 'Send request', kind: 'dark', onClick: async (overlay) => {
+        { label: 'Send request', kind: 'dark', keepOpen: true, onClick: async (overlay) => {
           const checked = [...overlay.querySelectorAll('input[data-item]:checked')].map((c) => items[Number(c.dataset.item)]);
-          if ((await decide('request_info', { items: checked })) === true) { toast('Request sent'); navigate('applications'); }
+          const restore = setButtonBusy(overlay.querySelectorAll('[data-actions] button')[1], 'Sending…');
+          if ((await decide('request_info', { items: checked })) === true) { overlay.remove(); toast('Request sent'); navigate('applications'); }
+          else { restore(); }
         } }],
     });
   }
