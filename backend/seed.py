@@ -14,6 +14,8 @@ from models import (
     AuditEvent,
     Document,
     ExtractedField,
+    GovRegistration,
+    Invoice,
     MarketingAsset,
     PrismsCompliance,
     PrismsRecord,
@@ -114,10 +116,14 @@ AUTO_SCAN_APP_IDS = [2090]
 
 
 def seed_all(session: Session) -> dict:
-    # Wipe children first, then parents.
+    # Wipe children first, then parents. Order matters under enforced foreign
+    # keys (Postgres): every referencing row must go before the row it points to.
+    # In particular User.agent_id -> agent.id, so User must precede Agent, else
+    # `DELETE FROM agent` violates the constraint and aborts the transaction
+    # (SQLite doesn't enforce FKs by default, so this only 500s on Postgres).
     for model in (ExtractedField, ReviewSection, Agreement, Document, Reference,
                   ReferenceFeedback, AuditEvent, MarketingAsset, PrismsCompliance,
-                  PrismsRecord, Application, Agent, User):
+                  PrismsRecord, GovRegistration, Invoice, Application, User, Agent):
         session.exec(delete(model))
     session.commit()
 
