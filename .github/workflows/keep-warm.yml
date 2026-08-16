@@ -1,0 +1,31 @@
+name: keep-render-warm
+
+# Pings the backend's /health so Render's free tier doesn't spin the service
+# down (~15 min idle) during the demo — a cold boot is what makes the first
+# sign-in slow. Self-limiting: the ping is skipped after the demo cutoff below,
+# so once the demo is over this workflow goes inert (safe to delete it then).
+#
+# Cadence is every 5 min (not 10): GitHub's scheduled runs are best-effort and
+# can be delayed several minutes under load, so 5 leaves margin under Render's
+# 15-min spin-down window.
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: {}   # lets you trigger a ping immediately from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend until demo cutoff (1PM IST / 07:30 UTC on 2026-08-16)
+        run: |
+          CUTOFF=$(date -u -d '2026-08-16 07:30:00' +%s)
+          NOW=$(date -u +%s)
+          if [ "$NOW" -ge "$CUTOFF" ]; then
+            echo "Past demo cutoff — skipping ping. This workflow can be deleted."
+            exit 0
+          fi
+          echo "Warming backend…"
+          curl -fsS -o /dev/null -w 'health: %{http_code} in %{time_total}s\n' \
+            https://agent-management-portal.onrender.com/health
